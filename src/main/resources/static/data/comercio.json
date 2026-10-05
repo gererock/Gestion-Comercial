@@ -7,5 +7,7 @@
   "correo": "",
   "direccion": "",
   "localidad": "Villa María",
-  "provincia": "Córdoba"
+  "provincia": "Córdoba",
+  "portada": "/img/comercio/portada.jpg",
+  "catalogoUrl": "/catalogo/index.html"
 }
