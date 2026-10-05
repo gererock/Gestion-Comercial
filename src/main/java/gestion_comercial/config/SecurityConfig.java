@@ -64,13 +64,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
-                                "/login/**",
+                                "/index.html",
+                                "/css/**",
                                 "/js/**",
+                                "/data/**",
+                                "/img/**",
+                                "/login/**",
                                 "/admin/**",
                                 "/vendedor/**",
                                 "/cliente/**"
                         ).permitAll()
-                        
+
                         // Endpoint de error
                         .requestMatchers("/error").permitAll()
 
