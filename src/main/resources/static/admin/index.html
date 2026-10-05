@@ -24,10 +24,7 @@
 
 <script>
 
-    if (Auth.requerirRol(
-            'VENDEDOR',
-            'ADMINISTRADOR'
-            )); {
+    if (Auth.requerirRol('ADMINISTRADOR')) {
 
         const usuario =
             Auth.obtenerUsuario();

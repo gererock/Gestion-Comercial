@@ -58,7 +58,7 @@
         sessionStorage.removeItem(ROLE_KEY);
         sessionStorage.removeItem(USER_KEY);
 
-        window.location.href = '/login/';
+        window.location.href = '/login/index.html';
     }
 
 
@@ -67,16 +67,16 @@
         switch (rol) {
 
             case 'ADMINISTRADOR':
-                return '/admin/';
+                return '/admin/index.html';
 
             case 'VENDEDOR':
-                return '/vendedor/';
+                return '/vendedor/index.html';
 
             case 'CLIENTE':
-                return '/cliente/';
+                return '/cliente/index.html';
 
             default:
-                return '/login/';
+                return '/login/index.html';
         }
     }
 
@@ -94,7 +94,7 @@
         const rol = obtenerRol();
 
         if (!token || !rol) {
-            window.location.href = '/login/';
+            window.location.href = '/login/index.html';
             return false;
         }
 
