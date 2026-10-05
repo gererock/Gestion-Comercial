@@ -5,6 +5,9 @@ public record LoginResponse(
         String nombre,
         String apellido,
         String email,
+        String rol,
+        String token,
+        String tipoToken,
         String mensaje
 ) {
 }
