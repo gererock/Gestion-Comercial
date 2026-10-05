@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,5 +64,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(body);
+
     }
+    @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ApiErrorResponse> handleBadCredentials(
+                BadCredentialsException exception,
+                HttpServletRequest request
+        ) {
+
+        ApiErrorResponse body = ApiErrorResponse.simple(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                "Correo o contraseña incorrectos",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(body);
+        }
 }
