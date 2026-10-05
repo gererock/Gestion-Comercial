@@ -83,4 +83,21 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(body);
         }
+        @ExceptionHandler(UsuarioNoHabilitadoException.class)
+        public ResponseEntity<ApiErrorResponse> handleUsuarioNoHabilitado(
+                UsuarioNoHabilitadoException exception,
+                HttpServletRequest request
+        ) {
+
+        ApiErrorResponse body = ApiErrorResponse.simple(
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(body);
+        }
 }
