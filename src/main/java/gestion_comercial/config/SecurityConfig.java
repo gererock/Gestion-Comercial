@@ -62,7 +62,15 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-
+                        .requestMatchers(
+                                "/",
+                                "/login/**",
+                                "/js/**",
+                                "/admin/**",
+                                "/vendedor/**",
+                                "/cliente/**"
+                        ).permitAll()
+                        
                         // Endpoint de error
                         .requestMatchers("/error").permitAll()
 

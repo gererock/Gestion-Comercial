@@ -10,16 +10,25 @@
     const emailError = document.getElementById('email-error');
     const passwordError = document.getElementById('password-error');
 
-    const togglePassword = document.getElementById('toggle-password');
+    const togglePassword =
+        document.getElementById('toggle-password');
 
-    const loginMessage = document.getElementById('login-message');
+    const loginMessage =
+        document.getElementById('login-message');
+
+    const submitButton =
+        form.querySelector('button[type="submit"]');
 
 
     const EMAIL_REGEX =
         /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
 
-    function mostrarError(input, errorElement, mensaje) {
+    function mostrarError(
+        input,
+        errorElement,
+        mensaje
+    ) {
 
         errorElement.textContent = mensaje;
 
@@ -27,11 +36,17 @@
             .closest('[data-field]')
             .classList.add('is-error');
 
-        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute(
+            'aria-invalid',
+            'true'
+        );
     }
 
 
-    function limpiarError(input, errorElement) {
+    function limpiarError(
+        input,
+        errorElement
+    ) {
 
         errorElement.textContent = '';
 
@@ -39,13 +54,37 @@
             .closest('[data-field]')
             .classList.remove('is-error');
 
-        input.removeAttribute('aria-invalid');
+        input.removeAttribute(
+            'aria-invalid'
+        );
+    }
+
+
+    function mostrarMensaje(
+        mensaje,
+        tipo = 'error'
+    ) {
+
+        loginMessage.textContent = mensaje;
+
+        loginMessage.className =
+            `cl-login02__message is-${tipo}`;
+
+        loginMessage.hidden = false;
+    }
+
+
+    function ocultarMensaje() {
+
+        loginMessage.hidden = true;
+        loginMessage.textContent = '';
     }
 
 
     function validarEmail() {
 
-        const email = emailInput.value.trim();
+        const email =
+            emailInput.value.trim();
 
         if (email === '') {
 
@@ -91,7 +130,8 @@
 
     function validarPassword() {
 
-        const password = passwordInput.value;
+        const password =
+            passwordInput.value;
 
         if (password.trim() === '') {
 
@@ -125,86 +165,172 @@
     );
 
 
-    emailInput.addEventListener('input', () => {
+    emailInput.addEventListener(
+        'input',
+        () => {
 
-        if (emailError.textContent !== '') {
-            validarEmail();
+            if (emailError.textContent !== '') {
+                validarEmail();
+            }
         }
-    });
+    );
 
 
-    passwordInput.addEventListener('input', () => {
+    passwordInput.addEventListener(
+        'input',
+        () => {
 
-        if (passwordError.textContent !== '') {
-            validarPassword();
+            if (passwordError.textContent !== '') {
+                validarPassword();
+            }
         }
-    });
+    );
 
 
-    togglePassword.addEventListener('click', () => {
+    togglePassword.addEventListener(
+        'click',
+        () => {
 
-        const mostrar =
-            passwordInput.type === 'password';
+            const mostrar =
+                passwordInput.type === 'password';
 
-        passwordInput.type =
-            mostrar
-                ? 'text'
-                : 'password';
+            passwordInput.type =
+                mostrar
+                    ? 'text'
+                    : 'password';
 
-        togglePassword.setAttribute(
-            'aria-pressed',
-            String(mostrar)
-        );
+            togglePassword.setAttribute(
+                'aria-pressed',
+                String(mostrar)
+            );
 
-        togglePassword.setAttribute(
-            'aria-label',
-            mostrar
-                ? 'Ocultar contraseña'
-                : 'Mostrar contraseña'
-        );
-    });
-
-
-    form.addEventListener('submit', (event) => {
-
-        event.preventDefault();
-
-        loginMessage.hidden = true;
-        loginMessage.textContent = '';
-
-        const emailValido =
-            validarEmail();
-
-        const passwordValida =
-            validarPassword();
-
-
-        if (!emailValido) {
-
-            emailInput.focus();
-            return;
+            togglePassword.setAttribute(
+                'aria-label',
+                mostrar
+                    ? 'Ocultar contraseña'
+                    : 'Mostrar contraseña'
+            );
         }
+    );
 
 
-        if (!passwordValida) {
+    form.addEventListener(
+        'submit',
+        async (event) => {
 
-            passwordInput.focus();
-            return;
+            event.preventDefault();
+
+            ocultarMensaje();
+
+            const emailValido =
+                validarEmail();
+
+            const passwordValida =
+                validarPassword();
+
+            if (!emailValido) {
+                emailInput.focus();
+                return;
+            }
+
+            if (!passwordValida) {
+                passwordInput.focus();
+                return;
+            }
+
+
+            submitButton.disabled = true;
+            submitButton.textContent =
+                'Iniciando sesión...';
+
+
+            try {
+
+                const response = await fetch(
+                    '/api/auth/login',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            email:
+                                emailInput.value.trim(),
+
+                            password:
+                                passwordInput.value
+                        })
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    if (data.errors?.email) {
+
+                        mostrarError(
+                            emailInput,
+                            emailError,
+                            data.errors.email
+                        );
+                    }
+
+                    if (data.errors?.password) {
+
+                        mostrarError(
+                            passwordInput,
+                            passwordError,
+                            data.errors.password
+                        );
+                    }
+
+                    mostrarMensaje(
+                        data.message ||
+                        'No se pudo iniciar sesión.'
+                    );
+
+                    return;
+                }
+
+
+                Auth.guardarSesion(data);
+
+                /*
+                 * No se elimina localStorage.
+                 * Si existe un carrito previo,
+                 * continúa guardado después del login.
+                 */
+
+                mostrarMensaje(
+                    'Inicio de sesión correcto.',
+                    'success'
+                );
+
+
+                Auth.redirigirSegunRol(
+                    data.rol
+                );
+
+            } catch (error) {
+
+                mostrarMensaje(
+                    'No se pudo conectar con el servidor.'
+                );
+
+            } finally {
+
+                submitButton.disabled = false;
+                submitButton.textContent =
+                    'Iniciar sesión';
+            }
         }
-
-
-        /*
-         * En la próxima etapa se realizará
-         * la petición al backend.
-         */
-
-        loginMessage.textContent =
-            'Los datos ingresados son válidos.';
-
-        loginMessage.className =
-            'cl-login02__message is-success';
-
-        loginMessage.hidden = false;
-    });
+    );
 
 })();

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Panel administrador</title>
+</head>
+
+<body>
+
+<h1>Panel administrador</h1>
+
+<p id="usuario"></p>
+
+<button id="logout">
+    Cerrar sesión
+</button>
+
+
+<script src="../js/auth.js"></script>
+
+<script>
+
+    if (Auth.requerirRol(
+            'VENDEDOR',
+            'ADMINISTRADOR'
+            )); {
+
+        const usuario =
+            Auth.obtenerUsuario();
+
+        document.getElementById(
+            'usuario'
+        ).textContent =
+            `Bienvenido, ${usuario.nombre}`;
+    }
+
+    document.getElementById(
+        'logout'
+    ).addEventListener(
+        'click',
+        Auth.cerrarSesion
+    );
+
+</script>
+
+</body>
+
+</html>
