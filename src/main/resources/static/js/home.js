@@ -3,6 +3,16 @@
     'use strict';
 
 
+    const navToggle =
+        document.getElementById('nav-toggle');
+
+    const mainNav =
+        document.getElementById('main-nav');
+
+    const portada =
+        document.getElementById('imagen-portada');
+
+
     async function cargarDatosComercio() {
 
         try {
@@ -64,10 +74,23 @@
         );
 
 
-        if (comercio.nombre) {
+        aplicarPortada(
+            comercio.portada
+        );
+
+
+        aplicarRutaCatalogo(
+            comercio.catalogoUrl
+        );
+
+
+        if (
+            typeof comercio.nombre === 'string'
+            && comercio.nombre.trim() !== ''
+        ) {
 
             document.title =
-                `${comercio.nombre} | Inicio`;
+                `${comercio.nombre.trim()} | Inicio`;
 
         }
 
@@ -102,6 +125,237 @@
     }
 
 
+    function aplicarPortada(ruta) {
+
+        if (!portada) {
+            return;
+        }
+
+
+        if (
+            typeof ruta !== 'string'
+            || ruta.trim() === ''
+        ) {
+
+            portada.remove();
+
+            return;
+        }
+
+
+        portada.src =
+            ruta.trim();
+
+    }
+
+
+    function aplicarRutaCatalogo(ruta) {
+
+        if (
+            typeof ruta !== 'string'
+            || ruta.trim() === ''
+        ) {
+            return;
+        }
+
+
+        const enlaces = [
+
+            document.getElementById(
+                'shop-link-header'
+            ),
+
+            document.getElementById(
+                'shop-link-hero'
+            )
+
+        ];
+
+
+        enlaces.forEach(enlace => {
+
+            if (enlace) {
+
+                enlace.href =
+                    ruta.trim();
+
+            }
+
+        });
+
+    }
+
+
+    function configurarPortada() {
+
+        if (!portada) {
+            return;
+        }
+
+
+        portada.addEventListener(
+            'load',
+            () => {
+
+                portada.classList.add(
+                    'is-loaded'
+                );
+
+            }
+        );
+
+
+        portada.addEventListener(
+            'error',
+            () => {
+
+                portada.classList.remove(
+                    'is-loaded'
+                );
+
+            }
+        );
+
+    }
+
+
+    function abrirMenu() {
+
+        mainNav.classList.add(
+            'is-open'
+        );
+
+        navToggle.classList.add(
+            'is-active'
+        );
+
+        navToggle.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+        navToggle.setAttribute(
+            'aria-label',
+            'Cerrar menú'
+        );
+
+        document.body.classList.add(
+            'nav-open'
+        );
+
+    }
+
+
+    function cerrarMenu() {
+
+        mainNav.classList.remove(
+            'is-open'
+        );
+
+        navToggle.classList.remove(
+            'is-active'
+        );
+
+        navToggle.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+        navToggle.setAttribute(
+            'aria-label',
+            'Abrir menú'
+        );
+
+        document.body.classList.remove(
+            'nav-open'
+        );
+
+    }
+
+
+    function alternarMenu() {
+
+        const abierto =
+            mainNav.classList.contains(
+                'is-open'
+            );
+
+
+        if (abierto) {
+
+            cerrarMenu();
+
+        } else {
+
+            abrirMenu();
+
+        }
+
+    }
+
+
+    function configurarNavbar() {
+
+        if (
+            !navToggle
+            || !mainNav
+        ) {
+            return;
+        }
+
+
+        navToggle.addEventListener(
+            'click',
+            alternarMenu
+        );
+
+
+        mainNav
+            .querySelectorAll('a')
+            .forEach(enlace => {
+
+                enlace.addEventListener(
+                    'click',
+                    cerrarMenu
+                );
+
+            });
+
+
+        document.addEventListener(
+            'keydown',
+            event => {
+
+                if (
+                    event.key === 'Escape'
+                ) {
+
+                    cerrarMenu();
+
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            'resize',
+            () => {
+
+                if (
+                    window.innerWidth > 900
+                ) {
+
+                    cerrarMenu();
+
+                }
+
+            }
+        );
+
+    }
+
+
     function cargarAnioActual() {
 
         const elemento =
@@ -121,7 +375,12 @@
     }
 
 
+    configurarNavbar();
+
+    configurarPortada();
+
     cargarDatosComercio();
+
     cargarAnioActual();
 
 })();

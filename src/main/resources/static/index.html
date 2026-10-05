@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -20,9 +21,15 @@
             rel="stylesheet"
             href="/css/home.css"
     >
+
 </head>
 
 <body>
+
+
+<!-- =====================================================
+     HEADER / NAVBAR
+     ===================================================== -->
 
 <header class="site-header">
 
@@ -30,12 +37,15 @@
 
         <a
                 class="brand"
-                href="/"
+                href="#inicio"
                 aria-label="Ir al inicio"
         >
 
-            <span class="brand__mark">
-                GC
+            <span
+                    class="brand__mark"
+                    aria-hidden="true"
+            >
+                TD
             </span>
 
             <span
@@ -47,10 +57,80 @@
 
         </a>
 
-        <!--
-            La navbar completa se implementará
-            en la Etapa 2.
-        -->
+
+        <button
+                class="nav-toggle"
+                id="nav-toggle"
+                type="button"
+                aria-label="Abrir menú"
+                aria-expanded="false"
+                aria-controls="main-nav"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+
+        <nav
+                class="main-nav"
+                id="main-nav"
+                aria-label="Navegación principal"
+        >
+
+            <a
+                    class="main-nav__link"
+                    href="#inicio"
+            >
+                Inicio
+            </a>
+
+            <a
+                    class="main-nav__link"
+                    href="#nosotros"
+            >
+                Sobre nosotros
+            </a>
+
+            <a
+                    class="main-nav__link"
+                    href="#historia"
+            >
+                Historia
+            </a>
+
+            <a
+                    class="main-nav__link"
+                    href="#equipo"
+            >
+                Equipo
+            </a>
+
+            <a
+                    class="main-nav__link"
+                    href="#contacto"
+            >
+                Contacto
+            </a>
+
+            <a
+                    class="main-nav__link"
+                    href="#ubicacion"
+            >
+                Dónde encontrarnos
+            </a>
+
+            <a
+                    class="main-nav__shop"
+                    id="shop-link-header"
+                    href="/catalogo/index.html"
+            >
+                Shop
+            </a>
+
+        </nav>
 
     </div>
 
@@ -59,62 +139,108 @@
 
 <main>
 
-    <!--
-        BASE DE LA PÁGINA INSTITUCIONAL
 
-        Etapa 2:
-        - Navbar
-        - Hero
-        - Shop
+    <!-- =================================================
+         HERO
+         ================================================= -->
 
-        Etapa 3:
-        - Sobre nosotros
-        - Historia
+    <section
+            class="hero"
+            id="inicio"
+    >
 
-        Etapa 4:
-        - Equipo
-        - Contacto
-        - Ubicación
-    -->
+        <div class="container hero__grid">
 
-    <section class="home-base">
 
-        <div class="container">
+            <!-- CONTENIDO -->
 
-            <span class="section-label">
-                Sitio institucional
-            </span>
+            <div class="hero__content">
 
-            <h1
-                    class="home-base__title"
-                    id="nombre-comercio"
-            >
-                Comercio
-            </h1>
+                <span class="hero__eyebrow">
+                    Todo para tu negocio
+                </span>
 
-            <p
-                    class="home-base__description"
-                    id="descripcion-comercio"
-            >
-                Cargando información...
-            </p>
 
-            <div class="home-base__actions">
-
-                <a
-                        class="button button--primary"
-                        href="#"
-                        aria-disabled="true"
+                <h1
+                        class="hero__title"
+                        id="nombre-comercio"
                 >
-                    Ver catálogo
-                </a>
+                    Comercio
+                </h1>
 
-                <a
-                        class="button button--secondary"
-                        href="#nosotros"
+
+                <p
+                        class="hero__description"
+                        id="descripcion-comercio"
                 >
-                    Conocenos
-                </a>
+                    Cargando información...
+                </p>
+
+
+                <div class="hero__actions">
+
+                    <a
+                            class="button button--primary"
+                            id="shop-link-hero"
+                            href="/catalogo/index.html"
+                    >
+                        Ver catálogo
+
+                        <span aria-hidden="true">
+                            →
+                        </span>
+                    </a>
+
+
+                    <a
+                            class="button button--secondary"
+                            href="#nosotros"
+                    >
+                        Conocenos
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- IMAGEN -->
+
+            <div class="hero__visual">
+
+                <div class="hero__image-wrapper">
+
+                    <div
+                            class="hero__image-fallback"
+                            aria-hidden="true"
+                    >
+
+                        <span>
+                            TD
+                        </span>
+
+                    </div>
+
+
+                    <img
+                            class="hero__image"
+                            id="imagen-portada"
+                            src="/img/comercio/portada.jpg"
+                            alt="Imagen principal del comercio"
+                    >
+
+                </div>
+
+
+                <div
+                        class="hero__decoration hero__decoration--one"
+                        aria-hidden="true"
+                ></div>
+
+                <div
+                        class="hero__decoration hero__decoration--two"
+                        aria-hidden="true"
+                ></div>
 
             </div>
 
@@ -122,19 +248,153 @@
 
     </section>
 
+
+    <!-- =================================================
+         SECCIONES QUE COMPLETAREMOS EN LAS PRÓXIMAS ETAPAS
+         ================================================= -->
+
+
+    <section
+            class="section-placeholder"
+            id="nosotros"
+    >
+
+        <div class="container">
+
+            <span class="section-label">
+                Conocenos
+            </span>
+
+            <h2>
+                Sobre nosotros
+            </h2>
+
+            <p>
+                Esta sección será desarrollada en la siguiente etapa.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section
+            class="section-placeholder section-placeholder--soft"
+            id="historia"
+    >
+
+        <div class="container">
+
+            <span class="section-label">
+                Trayectoria
+            </span>
+
+            <h2>
+                Nuestra historia
+            </h2>
+
+            <p>
+                Esta sección será desarrollada en la siguiente etapa.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section
+            class="section-placeholder"
+            id="equipo"
+    >
+
+        <div class="container">
+
+            <span class="section-label">
+                Personas
+            </span>
+
+            <h2>
+                Nuestro equipo
+            </h2>
+
+            <p>
+                Esta sección se completará próximamente.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section
+            class="section-placeholder section-placeholder--soft"
+            id="contacto"
+    >
+
+        <div class="container">
+
+            <span class="section-label">
+                Hablemos
+            </span>
+
+            <h2>
+                Contacto
+            </h2>
+
+            <p>
+                Esta sección se completará próximamente.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section
+            class="section-placeholder"
+            id="ubicacion"
+    >
+
+        <div class="container">
+
+            <span class="section-label">
+                Visitanos
+            </span>
+
+            <h2>
+                Dónde encontrarnos
+            </h2>
+
+            <p>
+                Esta sección se completará próximamente.
+            </p>
+
+        </div>
+
+    </section>
+
+
 </main>
 
+
+<!-- =====================================================
+     FOOTER TEMPORAL
+     ===================================================== -->
 
 <footer class="site-footer">
 
     <div class="container site-footer__content">
 
         <p>
+
             ©
+
             <span id="anio-actual"></span>
+
             <span id="nombre-comercio-footer">
                 Comercio
             </span>
+
         </p>
 
     </div>
@@ -146,6 +406,7 @@
         src="/js/home.js"
         defer
 ></script>
+
 
 </body>
 
