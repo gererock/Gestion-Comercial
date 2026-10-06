@@ -1106,7 +1106,553 @@ select {
 
     font-size: 17px;
 }
+/* =========================================================
+   NUESTRO EQUIPO
+   ========================================================= */
 
+.team-section {
+
+    padding:
+            120px 0;
+
+    background:
+            var(--color-background);
+}
+
+
+.section-heading {
+
+    max-width: 720px;
+
+    margin-bottom: 55px;
+}
+
+
+.section-heading__description {
+
+    max-width: 620px;
+
+    color:
+            var(--color-text-soft);
+
+    font-size: 17px;
+
+    line-height: 1.8;
+}
+
+
+.team-grid {
+
+    display: grid;
+
+    grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+    gap: 28px;
+}
+
+
+.team-card {
+
+    overflow: hidden;
+
+    border:
+            1px solid var(--color-border);
+
+    border-radius:
+            var(--radius-medium);
+
+    background:
+            #ffffff;
+
+    transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+}
+
+
+.team-card:hover {
+
+    transform:
+            translateY(-6px);
+
+    box-shadow:
+            var(--shadow-soft);
+}
+
+
+.team-card__image {
+
+    position: relative;
+
+    overflow: hidden;
+
+    aspect-ratio:
+            4 / 3;
+
+    background:
+            var(--gradient-primary);
+}
+
+
+.team-card__fallback {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    color:
+            rgba(255, 255, 255, 0.94);
+
+    font-size: 48px;
+
+    font-weight: 800;
+}
+
+
+.team-card__img {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    opacity: 0;
+
+    transition:
+            opacity 0.35s ease;
+}
+
+
+.team-card__img.is-loaded {
+
+    opacity: 1;
+}
+
+
+.team-card__content {
+
+    padding:
+            22px;
+}
+
+
+.team-card__name {
+
+    margin-bottom:
+            4px;
+
+    font-size:
+            20px;
+
+    font-weight:
+            700;
+}
+
+
+.team-card__role {
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            14px;
+}
+
+
+/* =========================================================
+   UBICACIÓN + CONTACTO
+   ========================================================= */
+
+.location-contact-section {
+
+    padding:
+            120px 0;
+
+    background:
+            var(--color-background-soft);
+}
+
+
+.location-contact-grid {
+
+    display: grid;
+
+    grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    align-items: stretch;
+
+    gap: 30px;
+}
+
+
+.info-panel {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding:
+            40px;
+
+    border:
+            1px solid var(--color-border);
+
+    border-radius:
+            var(--radius-large);
+
+    background:
+            #ffffff;
+
+    box-shadow:
+            0 14px 45px rgba(0, 0, 0, 0.04);
+}
+
+
+.info-panel__title {
+
+    margin-bottom:
+            30px;
+
+    font-size:
+            clamp(
+                    32px,
+                    4vw,
+                    46px
+            );
+
+    line-height:
+            1.08;
+
+    letter-spacing:
+            -0.035em;
+}
+
+
+/* =========================================================
+   UBICACIÓN
+   ========================================================= */
+
+.location-data {
+
+    display: grid;
+
+    gap: 25px;
+
+    margin-bottom:
+            30px;
+}
+
+
+.info-row {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 16px;
+}
+
+
+.info-row__icon {
+
+    flex-shrink: 0;
+
+    width: 45px;
+    height: 45px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius:
+            13px;
+
+    background:
+            var(--color-background-soft);
+
+    font-size:
+            20px;
+}
+
+
+.info-row__label {
+
+    display: block;
+
+    margin-bottom:
+            4px;
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            12px;
+
+    font-weight:
+            700;
+
+    letter-spacing:
+            0.08em;
+
+    text-transform:
+            uppercase;
+}
+
+
+.info-row p {
+
+    font-weight:
+            600;
+}
+
+
+.info-row__secondary {
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            14px;
+
+    font-weight:
+            400 !important;
+}
+
+
+/* =========================================================
+   MAPA
+   ========================================================= */
+
+.map-wrapper {
+
+    overflow: hidden;
+
+    margin-top:
+            auto;
+
+    min-height:
+            340px;
+
+    border-radius:
+            var(--radius-medium);
+
+    background:
+            var(--color-background-soft);
+}
+
+
+.map-wrapper iframe {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    min-height:
+            340px;
+
+    border: 0;
+}
+
+
+/* =========================================================
+   CONTACTO
+   ========================================================= */
+
+.contact-panel__intro {
+
+    max-width:
+            500px;
+
+    margin-bottom:
+            30px;
+
+    color:
+            var(--color-text-soft);
+
+    line-height:
+            1.7;
+}
+
+
+.contact-list {
+
+    display: grid;
+
+    gap: 12px;
+}
+
+
+.contact-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding:
+            16px;
+
+    border:
+            1px solid var(--color-border);
+
+    border-radius:
+            var(--radius-small);
+
+    transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease;
+}
+
+
+.contact-item:hover {
+
+    transform:
+            translateX(4px);
+
+    border-color:
+            rgba(37, 99, 235, 0.35);
+
+    background:
+            var(--color-background-soft);
+}
+
+
+.contact-item__icon {
+
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius:
+            12px;
+
+    color:
+            var(--color-primary);
+
+    background:
+            rgba(37, 99, 235, 0.08);
+
+    font-size:
+            21px;
+}
+
+
+.contact-item__label {
+
+    display: block;
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            12px;
+
+    font-weight:
+            700;
+
+    text-transform:
+            uppercase;
+
+    letter-spacing:
+            0.06em;
+}
+
+
+.contact-item__value {
+
+    display: block;
+
+    margin-top:
+            2px;
+
+    font-weight:
+            600;
+
+    overflow-wrap:
+            anywhere;
+}
+
+
+/* =========================================================
+   WHATSAPP
+   ========================================================= */
+
+.whatsapp-button {
+
+    min-height:
+            58px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top:
+            auto;
+
+    padding:
+            0 24px;
+
+    border-radius:
+            var(--radius-small);
+
+    color:
+            #ffffff;
+
+    background:
+            #25d366;
+
+    font-weight:
+            700;
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+
+.whatsapp-button:hover {
+
+    transform:
+            translateY(-2px);
+
+    box-shadow:
+            0 12px 30px rgba(37, 211, 102, 0.25);
+}
+
+
+.whatsapp-button svg {
+
+    width:
+            27px;
+
+    height:
+            27px;
+
+    flex-shrink:
+            0;
+}
 
 /* =========================================================
    FOOTER
@@ -1164,6 +1710,46 @@ select {
 
 
 @media (max-width: 900px) {
+
+
+
+        .team-section,
+        .location-contact-section {
+
+        padding:
+                90px 0;
+        }
+
+
+        .team-grid {
+
+        grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+
+        .location-contact-grid {
+
+        grid-template-columns:
+                1fr;
+        }
+
+
+        /*
+        Contacto queda después de ubicación,
+        por lo tanto continúa siendo la última sección.
+        */
+
+        .location-panel {
+
+        order: 1;
+        }
+
+
+        .contact-panel {
+
+        order: 2;
+        }
 
         .about-section,
         .history-section {
@@ -1347,6 +1933,46 @@ select {
 
 
 @media (max-width: 600px) {
+
+        .team-section,
+        .location-contact-section {
+
+        padding:
+                75px 0;
+        }
+
+
+        .team-grid {
+
+        grid-template-columns:
+                1fr;
+        }
+
+
+        .info-panel {
+
+        padding:
+                26px;
+        }
+
+
+        .map-wrapper,
+        .map-wrapper iframe {
+
+        min-height:
+                280px;
+        }
+
+
+        .whatsapp-button {
+
+        margin-top:
+                30px;
+
+        width:
+                100%;
+        }
+
         .about-section,
         .history-section {
 

@@ -29,7 +29,7 @@
 
 
     /* =====================================================
-       CARGAR DATOS DEL COMERCIO
+       CARGAR DATOS
        ===================================================== */
 
     async function cargarDatosComercio() {
@@ -69,12 +69,10 @@
 
 
     /* =====================================================
-       APLICAR DATOS A LA PÁGINA
+       APLICAR DATOS
        ===================================================== */
 
     function aplicarDatosComercio(comercio) {
-
-        /* Nombre */
 
         establecerTexto(
             'nombre-comercio',
@@ -94,15 +92,11 @@
         );
 
 
-        /* Descripción principal */
-
         establecerTexto(
             'descripcion-comercio',
             comercio.descripcion
         );
 
-
-        /* Sobre nosotros */
 
         establecerTexto(
             'texto-nosotros',
@@ -110,11 +104,73 @@
         );
 
 
-        /* Historia */
-
         establecerTexto(
             'texto-historia',
             comercio.historia
+        );
+
+
+        /* Ubicación */
+
+        establecerTexto(
+            'direccion-comercio',
+            comercio.direccion
+        );
+
+
+        establecerTexto(
+            'localidad-comercio',
+            comercio.localidad
+        );
+
+
+        establecerTexto(
+            'provincia-comercio',
+            comercio.provincia
+        );
+
+
+        aplicarHorarios(
+            comercio.horarios
+        );
+
+
+        aplicarMapa(
+            comercio.mapaUrl
+        );
+
+
+        /* Contacto */
+
+        establecerTexto(
+            'telefono-comercio',
+            comercio.telefono
+        );
+
+
+        establecerTexto(
+            'correo-comercio',
+            comercio.correo
+        );
+
+
+        aplicarTelefono(
+            comercio.telefono
+        );
+
+
+        aplicarCorreo(
+            comercio.correo
+        );
+
+
+        aplicarWhatsapp(
+            comercio.whatsapp
+        );
+
+
+        aplicarInstagram(
+            comercio.instagram
         );
 
 
@@ -138,6 +194,13 @@
         );
 
 
+        /* Equipo */
+
+        renderizarEquipo(
+            comercio.equipo
+        );
+
+
         /* Catálogo */
 
         aplicarRutaCatalogo(
@@ -145,7 +208,7 @@
         );
 
 
-        /* Título del navegador */
+        /* Título */
 
         if (
             typeof comercio.nombre === 'string'
@@ -161,7 +224,7 @@
 
 
     /* =====================================================
-       COLOCAR TEXTO
+       TEXTO
        ===================================================== */
 
     function establecerTexto(
@@ -256,11 +319,6 @@
         );
 
 
-        /*
-         * Si la imagen ya estaba cargada
-         * antes de registrar el evento.
-         */
-
         if (
             elemento.complete
             && elemento.naturalWidth > 0
@@ -276,10 +334,438 @@
 
 
     /* =====================================================
+       EQUIPO
+       ===================================================== */
+
+    function renderizarEquipo(
+        integrantes
+    ) {
+
+        const contenedor =
+            document.getElementById(
+                'equipo-lista'
+            );
+
+
+        if (!contenedor) {
+            return;
+        }
+
+
+        contenedor.innerHTML = '';
+
+
+        if (
+            !Array.isArray(integrantes)
+            || integrantes.length === 0
+        ) {
+
+            return;
+
+        }
+
+
+        integrantes.forEach(
+            integrante => {
+
+                const tarjeta =
+                    document.createElement(
+                        'article'
+                    );
+
+
+                tarjeta.className =
+                    'team-card';
+
+
+                const imagenContenedor =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                imagenContenedor.className =
+                    'team-card__image';
+
+
+                const fallback =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                fallback.className =
+                    'team-card__fallback';
+
+
+                const inicial =
+                    obtenerInicial(
+                        integrante.nombre
+                    );
+
+
+                fallback.textContent =
+                    inicial;
+
+
+                imagenContenedor.appendChild(
+                    fallback
+                );
+
+
+                if (
+                    typeof integrante.imagen === 'string'
+                    && integrante.imagen.trim() !== ''
+                ) {
+
+                    const imagen =
+                        document.createElement(
+                            'img'
+                        );
+
+
+                    imagen.className =
+                        'team-card__img';
+
+
+                    imagen.src =
+                        integrante.imagen.trim();
+
+
+                    imagen.alt =
+                        integrante.nombre
+                            ? `Foto de ${integrante.nombre}`
+                            : 'Integrante del equipo';
+
+
+                    imagen.loading =
+                        'lazy';
+
+
+                    configurarImagen(
+                        imagen
+                    );
+
+
+                    imagenContenedor.appendChild(
+                        imagen
+                    );
+
+                }
+
+
+                const contenido =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                contenido.className =
+                    'team-card__content';
+
+
+                const nombre =
+                    document.createElement(
+                        'h3'
+                    );
+
+
+                nombre.className =
+                    'team-card__name';
+
+
+                nombre.textContent =
+                    integrante.nombre
+                    || 'Integrante';
+
+
+                const rol =
+                    document.createElement(
+                        'p'
+                    );
+
+
+                rol.className =
+                    'team-card__role';
+
+
+                rol.textContent =
+                    integrante.rol
+                    || 'Equipo';
+
+
+                contenido.appendChild(
+                    nombre
+                );
+
+
+                contenido.appendChild(
+                    rol
+                );
+
+
+                tarjeta.appendChild(
+                    imagenContenedor
+                );
+
+
+                tarjeta.appendChild(
+                    contenido
+                );
+
+
+                contenedor.appendChild(
+                    tarjeta
+                );
+
+            }
+        );
+
+    }
+
+
+    function obtenerInicial(nombre) {
+
+        if (
+            typeof nombre !== 'string'
+            || nombre.trim() === ''
+        ) {
+
+            return '?';
+
+        }
+
+
+        return nombre
+            .trim()
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+
+    /* =====================================================
+       HORARIOS
+       ===================================================== */
+
+    function aplicarHorarios(
+        horarios
+    ) {
+
+        const contenedor =
+            document.getElementById(
+                'horarios-comercio'
+            );
+
+
+        if (
+            !contenedor
+            || !Array.isArray(horarios)
+        ) {
+            return;
+        }
+
+
+        contenedor.innerHTML = '';
+
+
+        horarios.forEach(
+            horario => {
+
+                if (
+                    typeof horario !== 'string'
+                    || horario.trim() === ''
+                ) {
+                    return;
+                }
+
+
+                const parrafo =
+                    document.createElement(
+                        'p'
+                    );
+
+
+                parrafo.textContent =
+                    horario.trim();
+
+
+                contenedor.appendChild(
+                    parrafo
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       MAPA
+       ===================================================== */
+
+    function aplicarMapa(
+        ruta
+    ) {
+
+        const mapa =
+            document.getElementById(
+                'mapa-comercio'
+            );
+
+
+        if (
+            !mapa
+            || typeof ruta !== 'string'
+            || ruta.trim() === ''
+        ) {
+            return;
+        }
+
+
+        mapa.src =
+            ruta.trim();
+
+    }
+
+
+    /* =====================================================
+       TELÉFONO
+       ===================================================== */
+
+    function aplicarTelefono(
+        telefono
+    ) {
+
+        const enlace =
+            document.getElementById(
+                'telefono-link'
+            );
+
+
+        if (
+            !enlace
+            || typeof telefono !== 'string'
+            || telefono.trim() === ''
+        ) {
+            return;
+        }
+
+
+        const numero =
+            telefono.replace(
+                /\D/g,
+                ''
+            );
+
+
+        enlace.href =
+            `tel:+54${numero}`;
+
+    }
+
+
+    /* =====================================================
+       CORREO
+       ===================================================== */
+
+    function aplicarCorreo(
+        correo
+    ) {
+
+        const enlace =
+            document.getElementById(
+                'correo-link'
+            );
+
+
+        if (
+            !enlace
+            || typeof correo !== 'string'
+            || correo.trim() === ''
+        ) {
+            return;
+        }
+
+
+        enlace.href =
+            `mailto:${correo.trim()}`;
+
+    }
+
+
+    /* =====================================================
+       WHATSAPP
+       ===================================================== */
+
+    function aplicarWhatsapp(
+        numero
+    ) {
+
+        const enlace =
+            document.getElementById(
+                'whatsapp-link'
+            );
+
+
+        if (
+            !enlace
+            || typeof numero !== 'string'
+            || numero.trim() === ''
+        ) {
+            return;
+        }
+
+
+        const numeroLimpio =
+            numero.replace(
+                /\D/g,
+                ''
+            );
+
+
+        enlace.href =
+            `https://wa.me/${numeroLimpio}`;
+
+    }
+
+
+    /* =====================================================
+       INSTAGRAM
+       ===================================================== */
+
+    function aplicarInstagram(
+        ruta
+    ) {
+
+        const enlace =
+            document.getElementById(
+                'instagram-link'
+            );
+
+
+        if (
+            !enlace
+            || typeof ruta !== 'string'
+            || ruta.trim() === ''
+        ) {
+            return;
+        }
+
+
+        enlace.href =
+            ruta.trim();
+
+    }
+
+
+    /* =====================================================
        CATÁLOGO
        ===================================================== */
 
-    function aplicarRutaCatalogo(ruta) {
+    function aplicarRutaCatalogo(
+        ruta
+    ) {
 
         if (
             typeof ruta !== 'string'
@@ -302,16 +788,18 @@
         ];
 
 
-        enlaces.forEach(enlace => {
+        enlaces.forEach(
+            enlace => {
 
-            if (enlace) {
+                if (enlace) {
 
-                enlace.href =
-                    ruta.trim();
+                    enlace.href =
+                        ruta.trim();
+
+                }
 
             }
-
-        });
+        );
 
     }
 
@@ -434,29 +922,25 @@
         }
 
 
-        /* Abrir / cerrar menú */
-
         navToggle.addEventListener(
             'click',
             alternarMenu
         );
 
 
-        /* Cerrar al seleccionar una opción */
-
         mainNav
             .querySelectorAll('a')
-            .forEach(enlace => {
+            .forEach(
+                enlace => {
 
-                enlace.addEventListener(
-                    'click',
-                    cerrarMenu
-                );
+                    enlace.addEventListener(
+                        'click',
+                        cerrarMenu
+                    );
 
-            });
+                }
+            );
 
-
-        /* Cerrar con Escape */
 
         document.addEventListener(
             'keydown',
@@ -473,8 +957,6 @@
             }
         );
 
-
-        /* Cerrar si vuelve a escritorio */
 
         window.addEventListener(
             'resize',
@@ -495,7 +977,7 @@
 
 
     /* =====================================================
-       AÑO DEL FOOTER
+       FOOTER
        ===================================================== */
 
     function cargarAnioActual() {
