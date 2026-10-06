@@ -750,7 +750,310 @@ select {
     text-transform:
             uppercase;
 }
+/* =========================================================
+   TÍTULOS Y TEXTOS DE SECCIONES
+   ========================================================= */
 
+.section-title {
+
+    margin-bottom: 24px;
+
+    font-size:
+            clamp(
+                    38px,
+                    5vw,
+                    60px
+            );
+
+    font-weight: 750;
+
+    line-height: 1.05;
+
+    letter-spacing:
+            -0.04em;
+}
+
+
+.section-text {
+
+    max-width: 590px;
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            clamp(
+                    16px,
+                    2vw,
+                    18px
+            );
+
+    line-height: 1.85;
+}
+
+
+/* =========================================================
+   SOBRE NOSOTROS
+   ========================================================= */
+
+.about-section {
+
+    padding:
+            120px 0;
+
+    background:
+            var(--color-background);
+}
+
+
+.about-section__grid {
+
+    display: grid;
+
+    grid-template-columns:
+            minmax(0, 0.95fr)
+            minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 90px;
+}
+
+
+.about-section__content {
+
+    max-width: 600px;
+}
+
+
+.text-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 30px;
+
+    color:
+            var(--color-primary);
+
+    font-weight: 700;
+
+    transition:
+            gap 0.2s ease;
+}
+
+
+.text-link:hover {
+
+    gap: 15px;
+}
+
+
+/* =========================================================
+   NUESTRA HISTORIA
+   ========================================================= */
+
+.history-section {
+
+    padding:
+            120px 0;
+
+    background:
+            var(--color-background-soft);
+}
+
+
+.history-section__grid {
+
+    display: grid;
+
+    grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 0.95fr);
+
+    align-items: center;
+
+    gap: 90px;
+}
+
+
+.history-section__content {
+
+    max-width: 620px;
+}
+
+
+.history-highlight {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    max-width: 470px;
+
+    margin-top: 34px;
+
+    padding:
+            20px 22px;
+
+    border:
+            1px solid var(--color-border);
+
+    border-radius:
+            var(--radius-medium);
+
+    background:
+            #ffffff;
+}
+
+
+.history-highlight__number {
+
+    flex-shrink: 0;
+
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius:
+            14px;
+
+    color:
+            #ffffff;
+
+    background:
+            var(--gradient-primary);
+
+    font-size: 25px;
+
+    font-weight: 700;
+}
+
+
+.history-highlight__text {
+
+    color:
+            var(--color-text-soft);
+
+    font-size: 15px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   IMÁGENES INSTITUCIONALES
+   ========================================================= */
+
+.institutional-image {
+
+    position: relative;
+
+    overflow: hidden;
+
+    width: 100%;
+
+    aspect-ratio:
+            4 / 5;
+
+    border-radius:
+            var(--radius-large);
+
+    background:
+            var(--gradient-primary);
+
+    box-shadow:
+            var(--shadow-soft);
+}
+
+
+.institutional-image__fallback {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    padding: 30px;
+
+    background:
+
+            linear-gradient(
+                    145deg,
+                    rgba(37, 99, 235, 0.92),
+                    rgba(237, 58, 58, 0.84)
+            );
+}
+
+
+.institutional-image__fallback--history {
+
+    background:
+
+            linear-gradient(
+                    145deg,
+                    rgba(237, 58, 58, 0.88),
+                    rgba(37, 99, 235, 0.90)
+            );
+}
+
+
+.institutional-image__fallback span {
+
+    color:
+            rgba(255, 255, 255, 0.94);
+
+    font-size:
+            clamp(
+                    30px,
+                    5vw,
+                    52px
+            );
+
+    font-weight: 750;
+
+    text-align: center;
+
+    line-height: 1.1;
+
+    letter-spacing:
+            -0.04em;
+}
+
+
+.institutional-image__img {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    opacity: 0;
+
+    transition:
+            opacity 0.35s ease;
+}
+
+
+.institutional-image__img.is-loaded {
+
+    opacity: 1;
+}
 
 /* =========================================================
    PLACEHOLDERS DE FUTURAS SECCIONES
@@ -861,6 +1164,51 @@ select {
 
 
 @media (max-width: 900px) {
+
+        .about-section,
+        .history-section {
+
+        padding:
+                90px 0;
+        }
+
+
+        .about-section__grid,
+        .history-section__grid {
+
+        grid-template-columns:
+                1fr;
+
+        gap: 55px;
+        }
+
+
+        /*
+        En Historia ponemos primero el texto
+        y después la imagen.
+        */
+
+        .history-section__content {
+
+        order: 1;
+        }
+
+
+        .history-section__visual {
+
+        order: 2;
+        }
+
+
+        .institutional-image {
+
+        max-width: 650px;
+
+        margin-inline: auto;
+
+        aspect-ratio:
+                16 / 11;
+        }
 
     .nav-toggle {
 
@@ -999,6 +1347,36 @@ select {
 
 
 @media (max-width: 600px) {
+        .about-section,
+        .history-section {
+
+        padding:
+                75px 0;
+        }
+
+
+        .section-title {
+
+        font-size:
+                clamp(
+                        36px,
+                        11vw,
+                        48px
+                );
+        }
+
+
+        .institutional-image {
+
+        aspect-ratio:
+                4 / 3;
+        }
+
+
+        .history-highlight {
+
+        align-items: flex-start;
+        }
 
     .container {
 
