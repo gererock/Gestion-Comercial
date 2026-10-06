@@ -14,8 +14,15 @@
         document.getElementById('main-nav');
 
 
+    const accountLink =
+        document.getElementById('account-link');
+
+    const footerAccountLink =
+        document.getElementById('footer-account-link');
+
+
     /* =====================================================
-       IMÁGENES PRINCIPALES
+       IMÁGENES
        ===================================================== */
 
     const logoHeader =
@@ -59,7 +66,9 @@
                 await response.json();
 
 
-            aplicarDatosComercio(comercio);
+            aplicarDatosComercio(
+                comercio
+            );
 
 
         } catch (error) {
@@ -78,7 +87,9 @@
        APLICAR DATOS
        ===================================================== */
 
-    function aplicarDatosComercio(comercio) {
+    function aplicarDatosComercio(
+        comercio
+    ) {
 
         /* Nombre */
 
@@ -146,6 +157,7 @@
             comercio.provincia
         );
 
+
         establecerTexto(
             'footer-direccion',
             comercio.direccion
@@ -165,6 +177,7 @@
         aplicarHorarios(
             comercio.horarios
         );
+
 
         aplicarMapa(
             comercio.mapaUrl
@@ -188,13 +201,17 @@
             comercio.telefono
         );
 
+
         aplicarCorreo(
             comercio.correo
         );
 
+
         aplicarWhatsapp(
-            comercio.whatsapp
+            comercio.whatsapp,
+            comercio.whatsappMensaje
         );
+
 
         aplicarInstagram(
             comercio.instagram
@@ -208,20 +225,24 @@
             comercio.logo
         );
 
+
         aplicarImagen(
             logoFooter,
             comercio.logo
         );
+
 
         aplicarImagen(
             portada,
             comercio.portada
         );
 
+
         aplicarImagen(
             imagenNosotros,
             comercio.imagenNosotros
         );
+
 
         aplicarImagen(
             imagenHistoria,
@@ -250,7 +271,7 @@
         );
 
 
-        /* Título navegador */
+        /* Título */
 
         if (
             typeof comercio.nombre === 'string'
@@ -560,7 +581,9 @@
     }
 
 
-    function obtenerInicial(nombre) {
+    function obtenerInicial(
+        nombre
+    ) {
 
         if (
             typeof nombre !== 'string'
@@ -915,7 +938,8 @@
        ===================================================== */
 
     function aplicarWhatsapp(
-        numero
+        numero,
+        mensaje
     ) {
 
         if (
@@ -931,6 +955,23 @@
                 /\D/g,
                 ''
             );
+
+
+        let ruta =
+            `https://wa.me/${numeroLimpio}`;
+
+
+        if (
+            typeof mensaje === 'string'
+            && mensaje.trim() !== ''
+        ) {
+
+            ruta +=
+                `?text=${encodeURIComponent(
+                    mensaje.trim()
+                )}`;
+
+        }
 
 
         const enlaces = [
@@ -952,7 +993,7 @@
                 if (enlace) {
 
                     enlace.href =
-                        `https://wa.me/${numeroLimpio}`;
+                        ruta;
 
                 }
 
@@ -1052,6 +1093,220 @@
 
             }
         );
+
+    }
+
+
+    /* =====================================================
+       SESIÓN / MI CUENTA
+       ===================================================== */
+
+    function configurarAccesoCuenta() {
+
+        const enlaces = [
+            accountLink,
+            footerAccountLink
+        ];
+
+
+        if (
+            typeof Auth === 'undefined'
+        ) {
+            return;
+        }
+
+
+        const token =
+            Auth.obtenerToken();
+
+        const rol =
+            Auth.obtenerRol();
+
+
+        let texto =
+            'Ingresar';
+
+
+        let ruta =
+            '/login/index.html';
+
+
+        if (
+            token
+            && rol
+        ) {
+
+            texto =
+                'Mi cuenta';
+
+
+            ruta =
+                Auth.obtenerRutaPorRol(
+                    rol
+                );
+
+        }
+
+
+        enlaces.forEach(
+            enlace => {
+
+                if (!enlace) {
+                    return;
+                }
+
+
+                enlace.textContent =
+                    texto;
+
+
+                enlace.href =
+                    ruta;
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SECCIÓN ACTIVA
+       ===================================================== */
+
+    function configurarSeccionActiva() {
+
+        const enlaces =
+            Array.from(
+                document.querySelectorAll(
+                    '.main-nav__link[data-section]'
+                )
+            );
+
+
+        if (
+            enlaces.length === 0
+        ) {
+            return;
+        }
+
+
+        function actualizar() {
+
+            const referencia =
+                150;
+
+
+            let enlaceActivo =
+                enlaces[0];
+
+
+            let menorDistancia =
+                Number.POSITIVE_INFINITY;
+
+
+            enlaces.forEach(
+                enlace => {
+
+                    const id =
+                        enlace.dataset.section;
+
+
+                    const seccion =
+                        document.getElementById(
+                            id
+                        );
+
+
+                    if (!seccion) {
+                        return;
+                    }
+
+
+                    const rect =
+                        seccion.getBoundingClientRect();
+
+
+                    if (
+                        rect.bottom <= 0
+                        || rect.top >= window.innerHeight
+                    ) {
+                        return;
+                    }
+
+
+                    const distancia =
+                        Math.abs(
+                            rect.top - referencia
+                        );
+
+
+                    if (
+                        distancia < menorDistancia
+                    ) {
+
+                        menorDistancia =
+                            distancia;
+
+
+                        enlaceActivo =
+                            enlace;
+
+                    }
+
+                }
+            );
+
+
+            enlaces.forEach(
+                enlace => {
+
+                    const activo =
+                        enlace === enlaceActivo;
+
+
+                    enlace.classList.toggle(
+                        'is-active',
+                        activo
+                    );
+
+
+                    if (activo) {
+
+                        enlace.setAttribute(
+                            'aria-current',
+                            'location'
+                        );
+
+                    } else {
+
+                        enlace.removeAttribute(
+                            'aria-current'
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        window.addEventListener(
+            'scroll',
+            actualizar,
+            {
+                passive: true
+            }
+        );
+
+
+        window.addEventListener(
+            'resize',
+            actualizar
+        );
+
+
+        actualizar();
 
     }
 
@@ -1254,6 +1509,12 @@
        ===================================================== */
 
     configurarNavbar();
+
+
+    configurarAccesoCuenta();
+
+
+    configurarSeccionActiva();
 
 
     [

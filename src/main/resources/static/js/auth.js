@@ -145,10 +145,11 @@
         obtenerToken,
         obtenerRol,
         obtenerUsuario,
+        obtenerRutaPorRol,
         cerrarSesion,
         redirigirSegunRol,
         requerirRol,
         fetchAutenticado
     };
 
-})();
+})();   
