@@ -15,8 +15,14 @@
 
 
     /* =====================================================
-       IMÁGENES
+       IMÁGENES PRINCIPALES
        ===================================================== */
+
+    const logoHeader =
+        document.getElementById('logo-header');
+
+    const logoFooter =
+        document.getElementById('logo-footer');
 
     const portada =
         document.getElementById('imagen-portada');
@@ -74,35 +80,48 @@
 
     function aplicarDatosComercio(comercio) {
 
+        /* Nombre */
+
         establecerTexto(
             'nombre-comercio',
             comercio.nombre
         );
-
 
         establecerTexto(
             'nombre-comercio-header',
             comercio.nombre
         );
 
-
         establecerTexto(
             'nombre-comercio-footer',
             comercio.nombre
         );
 
+        establecerTexto(
+            'footer-copyright-nombre',
+            comercio.nombre
+        );
+
+
+        /* Descripción */
 
         establecerTexto(
             'descripcion-comercio',
             comercio.descripcion
         );
 
+        establecerTexto(
+            'descripcion-comercio-footer',
+            comercio.descripcion
+        );
+
+
+        /* Institucional */
 
         establecerTexto(
             'texto-nosotros',
             comercio.sobreNosotros
         );
-
 
         establecerTexto(
             'texto-historia',
@@ -117,15 +136,28 @@
             comercio.direccion
         );
 
-
         establecerTexto(
             'localidad-comercio',
             comercio.localidad
         );
 
-
         establecerTexto(
             'provincia-comercio',
+            comercio.provincia
+        );
+
+        establecerTexto(
+            'footer-direccion',
+            comercio.direccion
+        );
+
+        establecerTexto(
+            'footer-localidad',
+            comercio.localidad
+        );
+
+        establecerTexto(
+            'footer-provincia',
             comercio.provincia
         );
 
@@ -133,7 +165,6 @@
         aplicarHorarios(
             comercio.horarios
         );
-
 
         aplicarMapa(
             comercio.mapaUrl
@@ -147,7 +178,6 @@
             comercio.telefono
         );
 
-
         establecerTexto(
             'correo-comercio',
             comercio.correo
@@ -158,16 +188,13 @@
             comercio.telefono
         );
 
-
         aplicarCorreo(
             comercio.correo
         );
 
-
         aplicarWhatsapp(
             comercio.whatsapp
         );
-
 
         aplicarInstagram(
             comercio.instagram
@@ -177,16 +204,24 @@
         /* Imágenes */
 
         aplicarImagen(
+            logoHeader,
+            comercio.logo
+        );
+
+        aplicarImagen(
+            logoFooter,
+            comercio.logo
+        );
+
+        aplicarImagen(
             portada,
             comercio.portada
         );
-
 
         aplicarImagen(
             imagenNosotros,
             comercio.imagenNosotros
         );
-
 
         aplicarImagen(
             imagenHistoria,
@@ -201,6 +236,13 @@
         );
 
 
+        /* Galería */
+
+        renderizarGaleria(
+            comercio.imagenesSecundarias
+        );
+
+
         /* Catálogo */
 
         aplicarRutaCatalogo(
@@ -208,7 +250,7 @@
         );
 
 
-        /* Título */
+        /* Título navegador */
 
         if (
             typeof comercio.nombre === 'string'
@@ -359,9 +401,7 @@
             !Array.isArray(integrantes)
             || integrantes.length === 0
         ) {
-
             return;
-
         }
 
 
@@ -398,14 +438,10 @@
                     'team-card__fallback';
 
 
-                const inicial =
+                fallback.textContent =
                     obtenerInicial(
                         integrante.nombre
                     );
-
-
-                fallback.textContent =
-                    inicial;
 
 
                 imagenContenedor.appendChild(
@@ -530,9 +566,7 @@
             typeof nombre !== 'string'
             || nombre.trim() === ''
         ) {
-
             return '?';
-
         }
 
 
@@ -540,6 +574,132 @@
             .trim()
             .charAt(0)
             .toUpperCase();
+
+    }
+
+
+    /* =====================================================
+       GALERÍA
+       ===================================================== */
+
+    function renderizarGaleria(
+        imagenes
+    ) {
+
+        const contenedor =
+            document.getElementById(
+                'galeria-comercio'
+            );
+
+
+        if (!contenedor) {
+            return;
+        }
+
+
+        contenedor.innerHTML = '';
+
+
+        if (
+            !Array.isArray(imagenes)
+            || imagenes.length === 0
+        ) {
+
+            const seccion =
+                document.getElementById(
+                    'galeria'
+                );
+
+
+            if (seccion) {
+                seccion.hidden = true;
+            }
+
+
+            return;
+
+        }
+
+
+        imagenes.forEach(
+            item => {
+
+                const figura =
+                    document.createElement(
+                        'figure'
+                    );
+
+
+                figura.className =
+                    'gallery-item';
+
+
+                const fallback =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                fallback.className =
+                    'gallery-item__fallback';
+
+
+                fallback.textContent =
+                    item.descripcion
+                    || 'Todo Descartables';
+
+
+                figura.appendChild(
+                    fallback
+                );
+
+
+                if (
+                    typeof item.imagen === 'string'
+                    && item.imagen.trim() !== ''
+                ) {
+
+                    const imagen =
+                        document.createElement(
+                            'img'
+                        );
+
+
+                    imagen.className =
+                        'gallery-item__image';
+
+
+                    imagen.src =
+                        item.imagen.trim();
+
+
+                    imagen.alt =
+                        item.descripcion
+                        || 'Imagen del comercio';
+
+
+                    imagen.loading =
+                        'lazy';
+
+
+                    configurarImagen(
+                        imagen
+                    );
+
+
+                    figura.appendChild(
+                        imagen
+                    );
+
+                }
+
+
+                contenedor.appendChild(
+                    figura
+                );
+
+            }
+        );
 
     }
 
@@ -637,15 +797,8 @@
         telefono
     ) {
 
-        const enlace =
-            document.getElementById(
-                'telefono-link'
-            );
-
-
         if (
-            !enlace
-            || typeof telefono !== 'string'
+            typeof telefono !== 'string'
             || telefono.trim() === ''
         ) {
             return;
@@ -659,8 +812,43 @@
             );
 
 
-        enlace.href =
-            `tel:+54${numero}`;
+        const enlaces = [
+
+            document.getElementById(
+                'telefono-link'
+            ),
+
+            document.getElementById(
+                'footer-telefono-link'
+            )
+
+        ];
+
+
+        enlaces.forEach(
+            enlace => {
+
+                if (!enlace) {
+                    return;
+                }
+
+
+                enlace.href =
+                    `tel:+54${numero}`;
+
+
+                if (
+                    enlace.id ===
+                    'footer-telefono-link'
+                ) {
+
+                    enlace.textContent =
+                        telefono.trim();
+
+                }
+
+            }
+        );
 
     }
 
@@ -673,23 +861,51 @@
         correo
     ) {
 
-        const enlace =
-            document.getElementById(
-                'correo-link'
-            );
-
-
         if (
-            !enlace
-            || typeof correo !== 'string'
+            typeof correo !== 'string'
             || correo.trim() === ''
         ) {
             return;
         }
 
 
-        enlace.href =
-            `mailto:${correo.trim()}`;
+        const enlaces = [
+
+            document.getElementById(
+                'correo-link'
+            ),
+
+            document.getElementById(
+                'footer-correo-link'
+            )
+
+        ];
+
+
+        enlaces.forEach(
+            enlace => {
+
+                if (!enlace) {
+                    return;
+                }
+
+
+                enlace.href =
+                    `mailto:${correo.trim()}`;
+
+
+                if (
+                    enlace.id ===
+                    'footer-correo-link'
+                ) {
+
+                    enlace.textContent =
+                        correo.trim();
+
+                }
+
+            }
+        );
 
     }
 
@@ -702,15 +918,8 @@
         numero
     ) {
 
-        const enlace =
-            document.getElementById(
-                'whatsapp-link'
-            );
-
-
         if (
-            !enlace
-            || typeof numero !== 'string'
+            typeof numero !== 'string'
             || numero.trim() === ''
         ) {
             return;
@@ -724,8 +933,31 @@
             );
 
 
-        enlace.href =
-            `https://wa.me/${numeroLimpio}`;
+        const enlaces = [
+
+            document.getElementById(
+                'whatsapp-link'
+            ),
+
+            document.getElementById(
+                'footer-whatsapp-link'
+            )
+
+        ];
+
+
+        enlaces.forEach(
+            enlace => {
+
+                if (enlace) {
+
+                    enlace.href =
+                        `https://wa.me/${numeroLimpio}`;
+
+                }
+
+            }
+        );
 
     }
 
@@ -738,23 +970,39 @@
         ruta
     ) {
 
-        const enlace =
-            document.getElementById(
-                'instagram-link'
-            );
-
-
         if (
-            !enlace
-            || typeof ruta !== 'string'
+            typeof ruta !== 'string'
             || ruta.trim() === ''
         ) {
             return;
         }
 
 
-        enlace.href =
-            ruta.trim();
+        const enlaces = [
+
+            document.getElementById(
+                'instagram-link'
+            ),
+
+            document.getElementById(
+                'footer-instagram-link'
+            )
+
+        ];
+
+
+        enlaces.forEach(
+            enlace => {
+
+                if (enlace) {
+
+                    enlace.href =
+                        ruta.trim();
+
+                }
+
+            }
+        );
 
     }
 
@@ -783,6 +1031,10 @@
 
             document.getElementById(
                 'shop-link-hero'
+            ),
+
+            document.getElementById(
+                'shop-link-footer'
             )
 
         ];
@@ -893,13 +1145,11 @@
         }
 
 
-        const abierto =
+        if (
             mainNav.classList.contains(
                 'is-open'
-            );
-
-
-        if (abierto) {
+            )
+        ) {
 
             cerrarMenu();
 
@@ -1006,18 +1256,14 @@
     configurarNavbar();
 
 
-    configurarImagen(
-        portada
-    );
-
-
-    configurarImagen(
-        imagenNosotros
-    );
-
-
-    configurarImagen(
+    [
+        logoHeader,
+        logoFooter,
+        portada,
+        imagenNosotros,
         imagenHistoria
+    ].forEach(
+        configurarImagen
     );
 
 

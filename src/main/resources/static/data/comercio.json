@@ -24,9 +24,25 @@
 
   "mapaUrl": "https://www.google.com/maps?q=Bv.%20V%C3%A9lez%20Sarsfield%201475%2C%20Villa%20Mar%C3%ADa%2C%20C%C3%B3rdoba%2C%20Argentina&output=embed",
 
+  "logo": "/img/comercio/logo.png",
   "portada": "/img/comercio/portada.jpg",
   "imagenNosotros": "/img/comercio/nosotros.jpg",
   "imagenHistoria": "/img/comercio/historia.jpg",
+
+  "imagenesSecundarias": [
+    {
+      "imagen": "/img/comercio/galeria/comercio-1.jpg",
+      "descripcion": "Nuestro comercio"
+    },
+    {
+      "imagen": "/img/comercio/galeria/comercio-2.jpg",
+      "descripcion": "Nuestros productos"
+    },
+    {
+      "imagen": "/img/comercio/galeria/comercio-3.jpg",
+      "descripcion": "Atención a nuestros clientes"
+    }
+  ],
 
   "equipo": [
     {
