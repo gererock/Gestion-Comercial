@@ -45,7 +45,18 @@
                     class="brand__mark"
                     aria-hidden="true"
             >
-                TD
+
+                <span class="brand__fallback">
+                    TD
+                </span>
+
+                <img
+                        class="brand__logo"
+                        id="logo-header"
+                        src="/img/comercio/logo.png"
+                        alt=""
+                >
+
             </span>
 
             <span
@@ -443,6 +454,45 @@
     </section>
 
 
+            <!-- =================================================
+            GALERÍA
+            ================================================= -->
+
+        <section
+                class="gallery-section"
+                id="galeria"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-label">
+                        Nuestro espacio
+                    </span>
+
+                    <h2 class="section-title">
+                        Conocé nuestro comercio
+                    </h2>
+
+                    <p class="section-heading__description">
+                        Algunos espacios, productos y momentos de nuestro comercio.
+                    </p>
+
+                </div>
+
+
+                <div
+                        class="gallery-grid"
+                        id="galeria-comercio"
+                >
+                </div>
+
+            </div>
+
+        </section>
+
+
     <!-- =================================================
         UBICACIÓN + CONTACTO
         ================================================= -->
@@ -725,29 +775,215 @@
 </main>
 
 
-<!-- =====================================================
-     FOOTER TEMPORAL
-     ===================================================== -->
+        <!-- =====================================================
+            FOOTER
+            ===================================================== -->
 
-<footer class="site-footer">
+        <footer class="site-footer">
 
-    <div class="container site-footer__content">
+            <div class="container">
 
-        <p>
 
-            ©
+                <div class="footer-grid">
 
-            <span id="anio-actual"></span>
 
-            <span id="nombre-comercio-footer">
-                Comercio
-            </span>
+                    <!-- MARCA -->
 
-        </p>
+                    <div class="footer-brand">
 
-    </div>
+                        <a
+                                class="footer-brand__identity"
+                                href="#inicio"
+                                aria-label="Volver al inicio"
+                        >
 
-</footer>
+                            <span class="footer-brand__logo-wrapper">
+
+                                <span
+                                        class="footer-brand__fallback"
+                                        aria-hidden="true"
+                                >
+                                    TD
+                                </span>
+
+                                <img
+                                        class="footer-brand__logo"
+                                        id="logo-footer"
+                                        src="/img/comercio/logo.png"
+                                        alt=""
+                                >
+
+                            </span>
+
+
+                            <span
+                                    class="footer-brand__name"
+                                    id="nombre-comercio-footer"
+                            >
+                                Comercio
+                            </span>
+
+                        </a>
+
+
+                        <p
+                                class="footer-brand__description"
+                                id="descripcion-comercio-footer"
+                        >
+                            Productos descartables para comercios,
+                            emprendimientos y particulares.
+                        </p>
+
+                    </div>
+
+
+                    <!-- LINKS -->
+
+                    <div class="footer-column">
+
+                        <h3>
+                            Navegación
+                        </h3>
+
+                        <nav class="footer-links">
+
+                            <a href="#inicio">
+                                Inicio
+                            </a>
+
+                            <a href="#nosotros">
+                                Sobre nosotros
+                            </a>
+
+                            <a href="#historia">
+                                Nuestra historia
+                            </a>
+
+                            <a href="#equipo">
+                                Nuestro equipo
+                            </a>
+
+                            <a href="#ubicacion">
+                                Dónde encontrarnos
+                            </a>
+
+                            <a
+                                    id="shop-link-footer"
+                                    href="/catalogo/index.html"
+                            >
+                                Shop
+                            </a>
+
+                        </nav>
+
+                    </div>
+
+
+                    <!-- CONTACTO -->
+
+                    <div class="footer-column">
+
+                        <h3>
+                            Contacto
+                        </h3>
+
+                        <div class="footer-links">
+
+                            <a
+                                    id="footer-telefono-link"
+                                    href="tel:+543534762157"
+                            >
+                                3534762157
+                            </a>
+
+                            <a
+                                    id="footer-correo-link"
+                                    href="mailto:marcelobrondolo@hotmail.com"
+                            >
+                                marcelobrondolo@hotmail.com
+                            </a>
+
+                            <a
+                                    id="footer-whatsapp-link"
+                                    href="https://wa.me/5493534762157"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                            >
+                                WhatsApp
+                            </a>
+
+                            <a
+                                    id="footer-instagram-link"
+                                    href="https://www.instagram.com/tododescartables_/?hl=es-la"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                            >
+                                Instagram
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- UBICACIÓN -->
+
+                    <div class="footer-column">
+
+                        <h3>
+                            Encontranos
+                        </h3>
+
+                        <address class="footer-address">
+
+                            <span id="footer-direccion">
+                                Bv. Vélez Sarsfield 1475
+                            </span>
+
+                            <span>
+
+                                <span id="footer-localidad">
+                                    Villa María
+                                </span>,
+
+                                <span id="footer-provincia">
+                                    Córdoba
+                                </span>
+
+                            </span>
+
+                        </address>
+
+                    </div>
+
+                </div>
+
+
+                <div class="footer-bottom">
+
+                    <p>
+
+                        ©
+                        <span id="anio-actual"></span>
+
+                        <span id="footer-copyright-nombre">
+                            Todo Descartables
+                        </span>.
+
+                        Todos los derechos reservados.
+
+                    </p>
+
+
+                    <a href="#inicio">
+                        Volver arriba ↑
+                    </a>
+
+                </div>
+
+            </div>
+
+        </footer>
 
 
 <script
