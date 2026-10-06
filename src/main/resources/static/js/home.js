@@ -3,15 +3,34 @@
     'use strict';
 
 
+    /* =====================================================
+       ELEMENTOS GENERALES
+       ===================================================== */
+
     const navToggle =
         document.getElementById('nav-toggle');
 
     const mainNav =
         document.getElementById('main-nav');
 
+
+    /* =====================================================
+       IMÁGENES
+       ===================================================== */
+
     const portada =
         document.getElementById('imagen-portada');
 
+    const imagenNosotros =
+        document.getElementById('imagen-nosotros');
+
+    const imagenHistoria =
+        document.getElementById('imagen-historia');
+
+
+    /* =====================================================
+       CARGAR DATOS DEL COMERCIO
+       ===================================================== */
 
     async function cargarDatosComercio() {
 
@@ -26,6 +45,7 @@
                 throw new Error(
                     'No se pudieron cargar los datos del comercio.'
                 );
+
             }
 
 
@@ -48,7 +68,13 @@
     }
 
 
+    /* =====================================================
+       APLICAR DATOS A LA PÁGINA
+       ===================================================== */
+
     function aplicarDatosComercio(comercio) {
+
+        /* Nombre */
 
         establecerTexto(
             'nombre-comercio',
@@ -68,21 +94,58 @@
         );
 
 
+        /* Descripción principal */
+
         establecerTexto(
             'descripcion-comercio',
             comercio.descripcion
         );
 
 
-        aplicarPortada(
+        /* Sobre nosotros */
+
+        establecerTexto(
+            'texto-nosotros',
+            comercio.sobreNosotros
+        );
+
+
+        /* Historia */
+
+        establecerTexto(
+            'texto-historia',
+            comercio.historia
+        );
+
+
+        /* Imágenes */
+
+        aplicarImagen(
+            portada,
             comercio.portada
         );
 
+
+        aplicarImagen(
+            imagenNosotros,
+            comercio.imagenNosotros
+        );
+
+
+        aplicarImagen(
+            imagenHistoria,
+            comercio.imagenHistoria
+        );
+
+
+        /* Catálogo */
 
         aplicarRutaCatalogo(
             comercio.catalogoUrl
         );
 
+
+        /* Título del navegador */
 
         if (
             typeof comercio.nombre === 'string'
@@ -96,6 +159,10 @@
 
     }
 
+
+    /* =====================================================
+       COLOCAR TEXTO
+       ===================================================== */
 
     function establecerTexto(
         id,
@@ -125,9 +192,16 @@
     }
 
 
-    function aplicarPortada(ruta) {
+    /* =====================================================
+       IMÁGENES
+       ===================================================== */
 
-        if (!portada) {
+    function aplicarImagen(
+        elemento,
+        ruta
+    ) {
+
+        if (!elemento) {
             return;
         }
 
@@ -137,17 +211,73 @@
             || ruta.trim() === ''
         ) {
 
-            portada.remove();
+            elemento.remove();
 
             return;
         }
 
 
-        portada.src =
+        elemento.src =
             ruta.trim();
 
     }
 
+
+    function configurarImagen(
+        elemento
+    ) {
+
+        if (!elemento) {
+            return;
+        }
+
+
+        elemento.addEventListener(
+            'load',
+            () => {
+
+                elemento.classList.add(
+                    'is-loaded'
+                );
+
+            }
+        );
+
+
+        elemento.addEventListener(
+            'error',
+            () => {
+
+                elemento.classList.remove(
+                    'is-loaded'
+                );
+
+            }
+        );
+
+
+        /*
+         * Si la imagen ya estaba cargada
+         * antes de registrar el evento.
+         */
+
+        if (
+            elemento.complete
+            && elemento.naturalWidth > 0
+        ) {
+
+            elemento.classList.add(
+                'is-loaded'
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CATÁLOGO
+       ===================================================== */
 
     function aplicarRutaCatalogo(ruta) {
 
@@ -186,58 +316,41 @@
     }
 
 
-    function configurarPortada() {
+    /* =====================================================
+       NAVBAR MOBILE
+       ===================================================== */
 
-        if (!portada) {
+    function abrirMenu() {
+
+        if (
+            !mainNav
+            || !navToggle
+        ) {
             return;
         }
 
-
-        portada.addEventListener(
-            'load',
-            () => {
-
-                portada.classList.add(
-                    'is-loaded'
-                );
-
-            }
-        );
-
-
-        portada.addEventListener(
-            'error',
-            () => {
-
-                portada.classList.remove(
-                    'is-loaded'
-                );
-
-            }
-        );
-
-    }
-
-
-    function abrirMenu() {
 
         mainNav.classList.add(
             'is-open'
         );
 
+
         navToggle.classList.add(
             'is-active'
         );
+
 
         navToggle.setAttribute(
             'aria-expanded',
             'true'
         );
 
+
         navToggle.setAttribute(
             'aria-label',
             'Cerrar menú'
         );
+
 
         document.body.classList.add(
             'nav-open'
@@ -248,23 +361,35 @@
 
     function cerrarMenu() {
 
+        if (
+            !mainNav
+            || !navToggle
+        ) {
+            return;
+        }
+
+
         mainNav.classList.remove(
             'is-open'
         );
 
+
         navToggle.classList.remove(
             'is-active'
         );
+
 
         navToggle.setAttribute(
             'aria-expanded',
             'false'
         );
 
+
         navToggle.setAttribute(
             'aria-label',
             'Abrir menú'
         );
+
 
         document.body.classList.remove(
             'nav-open'
@@ -274,6 +399,11 @@
 
 
     function alternarMenu() {
+
+        if (!mainNav) {
+            return;
+        }
+
 
         const abierto =
             mainNav.classList.contains(
@@ -304,11 +434,15 @@
         }
 
 
+        /* Abrir / cerrar menú */
+
         navToggle.addEventListener(
             'click',
             alternarMenu
         );
 
+
+        /* Cerrar al seleccionar una opción */
 
         mainNav
             .querySelectorAll('a')
@@ -321,6 +455,8 @@
 
             });
 
+
+        /* Cerrar con Escape */
 
         document.addEventListener(
             'keydown',
@@ -337,6 +473,8 @@
             }
         );
 
+
+        /* Cerrar si vuelve a escritorio */
 
         window.addEventListener(
             'resize',
@@ -355,6 +493,10 @@
 
     }
 
+
+    /* =====================================================
+       AÑO DEL FOOTER
+       ===================================================== */
 
     function cargarAnioActual() {
 
@@ -375,11 +517,30 @@
     }
 
 
+    /* =====================================================
+       INICIALIZACIÓN
+       ===================================================== */
+
     configurarNavbar();
 
-    configurarPortada();
+
+    configurarImagen(
+        portada
+    );
+
+
+    configurarImagen(
+        imagenNosotros
+    );
+
+
+    configurarImagen(
+        imagenHistoria
+    );
+
 
     cargarDatosComercio();
+
 
     cargarAnioActual();
 

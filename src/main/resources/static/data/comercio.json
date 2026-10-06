@@ -1,13 +1,39 @@
 {
   "nombre": "Todo Descartables",
   "descripcion": "Productos descartables para comercios, emprendimientos y particulares.",
-  "sobreNosotros": "Próximamente incorporaremos aquí la información institucional del comercio.",
-  "historia": "Próximamente incorporaremos aquí la historia del comercio.",
+
+  "sobreNosotros": "Próximamente incorporaremos aquí la información institucional del comercio. Este texto podrá reemplazarse directamente desde el archivo de datos cuando se disponga de la información definitiva.",
+
+  "historia": "Próximamente incorporaremos aquí la historia del comercio. En este espacio se podrá contar cómo comenzó el negocio, su crecimiento y su trayectoria.",
+
   "telefono": "",
   "correo": "",
   "direccion": "",
   "localidad": "Villa María",
   "provincia": "Córdoba",
+
   "portada": "/img/comercio/portada.jpg",
+  "imagenNosotros": "/img/comercio/nosotros.jpg",
+  "imagenHistoria": "/img/comercio/historia.jpg",
+
+  "catalogoUrl": "/catalogo/index.html"
+}{
+  "nombre": "Todo Descartables",
+  "descripcion": "Productos descartables para comercios, emprendimientos y particulares.",
+
+  "sobreNosotros": "Próximamente incorporaremos aquí la información institucional del comercio. Este texto podrá reemplazarse directamente desde el archivo de datos cuando se disponga de la información definitiva.",
+
+  "historia": "Próximamente incorporaremos aquí la historia del comercio. En este espacio se podrá contar cómo comenzó el negocio, su crecimiento y su trayectoria.",
+
+  "telefono": "",
+  "correo": "",
+  "direccion": "",
+  "localidad": "Villa María",
+  "provincia": "Córdoba",
+
+  "portada": "/img/comercio/portada.jpg",
+  "imagenNosotros": "/img/comercio/nosotros.jpg",
+  "imagenHistoria": "/img/comercio/historia.jpg",
+
   "catalogoUrl": "/catalogo/index.html"
 }
