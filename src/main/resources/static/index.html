@@ -37,7 +37,7 @@
 
         <a
                 class="brand"
-                href="#inicio"
+                href="/"
                 aria-label="Ir al inicio"
         >
 
@@ -94,51 +94,72 @@
             <a
                     class="main-nav__link"
                     href="#inicio"
+                    data-section="inicio"
             >
                 Inicio
             </a>
 
+
             <a
                     class="main-nav__link"
                     href="#nosotros"
+                    data-section="nosotros"
             >
                 Sobre nosotros
             </a>
 
+
             <a
                     class="main-nav__link"
                     href="#historia"
+                    data-section="historia"
             >
                 Historia
             </a>
 
+
             <a
                     class="main-nav__link"
                     href="#equipo"
+                    data-section="equipo"
             >
                 Equipo
             </a>
 
-            <a
-                    class="main-nav__link"
-                    href="#contacto"
-            >
-                Contacto
-            </a>
 
             <a
                     class="main-nav__link"
                     href="#ubicacion"
+                    data-section="ubicacion"
             >
                 Dónde encontrarnos
             </a>
+
+
+            <a
+                    class="main-nav__link"
+                    href="#contacto"
+                    data-section="contacto"
+            >
+                Contacto
+            </a>
+
+
+            <a
+                    class="main-nav__account"
+                    id="account-link"
+                    href="/login/index.html"
+            >
+                Ingresar
+            </a>
+
 
             <a
                     class="main-nav__shop"
                     id="shop-link-header"
                     href="/catalogo/index.html"
             >
-                Shop
+                Catálogo
             </a>
 
         </nav>
@@ -867,17 +888,56 @@
                                 Dónde encontrarnos
                             </a>
 
+                            <a href="#contacto">
+                                Contacto
+                            </a>
+
+                            <a
+                                    id="footer-account-link"
+                                    href="/login/index.html"
+                            >
+                                Ingresar
+                            </a>
+
                             <a
                                     id="shop-link-footer"
                                     href="/catalogo/index.html"
                             >
-                                Shop
+                                Catálogo
                             </a>
 
                         </nav>
 
                     </div>
+                     <!-- UBICACIÓN -->
 
+                    <div class="footer-column">
+
+                        <h3>
+                            Encontranos
+                        </h3>
+
+                        <address class="footer-address">
+
+                            <span id="footer-direccion">
+                                Bv. Vélez Sarsfield 1475
+                            </span>
+
+                            <span>
+
+                                <span id="footer-localidad">
+                                    Villa María
+                                </span>,
+
+                                <span id="footer-provincia">
+                                    Córdoba
+                                </span>
+
+                            </span>
+
+                        </address>
+
+                    </div>
 
                     <!-- CONTACTO -->
 
@@ -926,35 +986,7 @@
                     </div>
 
 
-                    <!-- UBICACIÓN -->
-
-                    <div class="footer-column">
-
-                        <h3>
-                            Encontranos
-                        </h3>
-
-                        <address class="footer-address">
-
-                            <span id="footer-direccion">
-                                Bv. Vélez Sarsfield 1475
-                            </span>
-
-                            <span>
-
-                                <span id="footer-localidad">
-                                    Villa María
-                                </span>,
-
-                                <span id="footer-provincia">
-                                    Córdoba
-                                </span>
-
-                            </span>
-
-                        </address>
-
-                    </div>
+                   
 
                 </div>
 
@@ -985,6 +1017,11 @@
 
         </footer>
 
+
+<script
+        src="/js/auth.js"
+        defer
+></script>
 
 <script
         src="/js/home.js"

@@ -72,7 +72,8 @@ public class SecurityConfig {
                                 "/login/**",
                                 "/admin/**",
                                 "/vendedor/**",
-                                "/cliente/**"
+                                "/cliente/**",
+                                "/catalogo/**"
                         ).permitAll()
 
                         // Endpoint de error

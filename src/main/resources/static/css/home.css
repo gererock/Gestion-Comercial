@@ -91,7 +91,22 @@ textarea,
 select {
     font: inherit;
 }
+/* =========================================================
+   ACCESIBILIDAD - FOCO
+   ========================================================= */
 
+a:focus-visible,
+button:focus-visible {
+
+    outline:
+            3px solid rgba(37, 99, 235, 0.38);
+
+    outline-offset:
+            4px;
+
+    border-radius:
+            6px;
+}
 
 /* =========================================================
    CONTENEDOR
@@ -2021,13 +2036,96 @@ select {
     font-weight:
             600;
 }
+/* =========================================================
+   CUENTA
+   ========================================================= */
 
+.main-nav__account {
+
+    min-height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+            0 16px;
+
+    border:
+            1px solid var(--color-border);
+
+    border-radius:
+            var(--radius-small);
+
+    color:
+            var(--color-text);
+
+    background:
+            #ffffff;
+
+    font-size:
+            14px;
+
+    font-weight:
+            600;
+
+    white-space:
+            nowrap;
+
+    transition:
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+
+.main-nav__account:hover {
+
+    transform:
+            translateY(-2px);
+
+    border-color:
+            rgba(37, 99, 235, 0.3);
+
+    background:
+            var(--color-background-soft);
+}
+
+
+/* =========================================================
+   LINK ACTIVO
+   ========================================================= */
+
+.main-nav__link.is-active {
+
+    color:
+            var(--color-primary);
+
+    font-weight:
+            700;
+}
+
+
+.main-nav__link.is-active::after {
+
+    width: 100%;
+}
 
 /* =========================================================
    RESPONSIVE
    ========================================================= */
 
 @media (max-width: 1100px) {
+        .main-nav__account {
+
+        width: 100%;
+
+        min-height: 46px;
+
+        margin-top: 18px;
+        }
 
     .main-nav {
 
@@ -2508,5 +2606,136 @@ select {
         justify-content:
                 center;
         }
+
+}
+
+/* =========================================================
+   CATÁLOGO PROVISIONAL
+   ========================================================= */
+
+.catalog-page {
+
+    min-height:
+            100vh;
+
+    background:
+
+            radial-gradient(
+                    circle at 80% 15%,
+                    rgba(237, 58, 58, 0.08),
+                    transparent 30%
+            ),
+
+            radial-gradient(
+                    circle at 10% 90%,
+                    rgba(37, 99, 235, 0.1),
+                    transparent 32%
+            );
+}
+
+
+.catalog-placeholder {
+
+    min-height:
+            100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+            70px 0;
+}
+
+
+.catalog-placeholder__content {
+
+    max-width:
+            800px;
+}
+
+
+.catalog-placeholder__brand {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom:
+            70px;
+
+    font-size:
+            18px;
+
+    font-weight:
+            700;
+}
+
+
+.catalog-placeholder h1 {
+
+    margin-bottom:
+            25px;
+
+    font-size:
+            clamp(
+                    48px,
+                    8vw,
+                    84px
+            );
+
+    line-height:
+            1;
+
+    letter-spacing:
+            -0.05em;
+}
+
+
+.catalog-placeholder p {
+
+    max-width:
+            650px;
+
+    margin-bottom:
+            38px;
+
+    color:
+            var(--color-text-soft);
+
+    font-size:
+            19px;
+
+    line-height:
+            1.8;
+}
+
+
+.catalog-placeholder__actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 14px;
+}
+
+
+@media (max-width: 600px) {
+
+    .catalog-placeholder__brand {
+
+        margin-bottom:
+                50px;
+    }
+
+
+    .catalog-placeholder__actions {
+
+        flex-direction:
+                column;
+    }
 
 }
