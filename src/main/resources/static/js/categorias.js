@@ -116,8 +116,7 @@ let accionConfirmacion = null;
 // ==========================================
 
 function obtenerToken() {
-
-    return localStorage.getItem("token");
+    return Auth.obtenerToken();
 }
 
 
@@ -151,6 +150,10 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        if (!Auth.requerirRol("ADMINISTRADOR")) {
+            return;
+        }
+
         cargarDatosUsuario();
 
         cargarCategorias();
@@ -164,18 +167,14 @@ document.addEventListener(
 
 function cargarDatosUsuario() {
 
-    const nombreGuardado =
-        localStorage.getItem("nombre");
+    const usuario = Auth.obtenerUsuario();
 
-    const apellidoGuardado =
-        localStorage.getItem("apellido");
-
-    if (nombreGuardado) {
+    if (usuario) {
 
         nombreUsuario.textContent =
-            apellidoGuardado
-                ? `${nombreGuardado} ${apellidoGuardado}`
-                : nombreGuardado;
+            usuario.apellido
+                ? `${usuario.nombre} ${usuario.apellido}`
+                : usuario.nombre;
     }
 }
 
@@ -313,10 +312,9 @@ function mostrarCategorias() {
 
 
     cantidadCategorias.textContent =
-        `${categorias.length} categoría${
-            categorias.length !== 1
-                ? "s"
-                : ""
+        `${categorias.length} categoría${categorias.length !== 1
+            ? "s"
+            : ""
         }`;
 
 
@@ -381,8 +379,8 @@ function mostrarCategorias() {
                                 ${categoria.id},
                                 false,
                                 '${escaparComillas(
-                                    categoria.nombre
-                                )}'
+                        categoria.nombre
+                    )}'
                             )"
                         >
                             Desactivar
@@ -395,8 +393,8 @@ function mostrarCategorias() {
                                 ${categoria.id},
                                 true,
                                 '${escaparComillas(
-                                    categoria.nombre
-                                )}'
+                        categoria.nombre
+                    )}'
                             )"
                         >
                             Activar
@@ -408,8 +406,8 @@ function mostrarCategorias() {
                 <td>
                     <span class="nombre-categoria">
                         ${escaparHtml(
-                            categoria.nombre
-                        )}
+                categoria.nombre
+            )}
                     </span>
                 </td>
 
@@ -592,7 +590,7 @@ formCategoria.addEventListener(
 
             await cargarCategorias();
 
-    } catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -1203,32 +1201,14 @@ function bloquearFormulario(
 // CERRAR SESIÓN
 // ==========================================
 
+// ==========================================
+// CERRAR SESIÓN
+// ==========================================
+
 btnCerrarSesion.addEventListener(
     "click",
     () => {
-
-        localStorage.removeItem("token");
-
-        localStorage.removeItem("nombre");
-
-        localStorage.removeItem("apellido");
-
-        localStorage.removeItem("email");
-
-        localStorage.removeItem("rol");
-
-
-        /*
-         Cuando tengamos el login del frontend,
-         acá redirigimos a:
-
-         window.location.href = "/login.html";
-        */
-
-        mostrarMensaje(
-            "Sesión cerrada.",
-            "info"
-        );
+        Auth.cerrarSesion();
     }
 );
 

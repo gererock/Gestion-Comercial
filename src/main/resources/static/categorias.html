@@ -4,22 +4,18 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Categorías | Todo Descartable</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/categorias.css"
-    >
+    <link rel="stylesheet" href="/css/categorias.css">
 </head>
 
 <body>
 
- 
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
 
     <header class="header">
 
@@ -44,11 +40,7 @@
                     Administrador
                 </span>
 
-                <button
-                    id="btnCerrarSesion"
-                    class="btn btn-outline"
-                    type="button"
-                >
+                <button id="btnCerrarSesion" class="btn btn-outline" type="button">
                     Cerrar sesión
                 </button>
 
@@ -59,7 +51,7 @@
     </header>
 
 
-   
+
 
     <main class="contenedor">
 
@@ -82,11 +74,7 @@
 
             </div>
 
-            <button
-                id="btnNuevaCategoria"
-                class="btn btn-primary"
-                type="button"
-            >
+            <button id="btnNuevaCategoria" class="btn btn-primary" type="button">
                 + Nueva categoría
             </button>
 
@@ -94,10 +82,7 @@
 
 
 
-        <div
-            id="mensaje"
-            class="mensaje oculto"
-        ></div>
+        <div id="mensaje" class="mensaje oculto"></div>
 
 
         <!-- =========================
@@ -127,12 +112,7 @@
                         Nombre
                     </label>
 
-                    <input
-                        type="text"
-                        id="busqueda"
-                        placeholder="Ej: Vasos"
-                        autocomplete="off"
-                    >
+                    <input type="text" id="busqueda" placeholder="Ej: Vasos" autocomplete="off">
 
                 </div>
 
@@ -164,19 +144,11 @@
 
                 <div class="acciones-filtros">
 
-                    <button
-                        id="btnBuscar"
-                        class="btn btn-secondary"
-                        type="button"
-                    >
+                    <button id="btnBuscar" class="btn btn-secondary" type="button">
                         Buscar
                     </button>
 
-                    <button
-                        id="btnLimpiar"
-                        class="btn btn-light"
-                        type="button"
-                    >
+                    <button id="btnLimpiar" class="btn btn-light" type="button">
                         Limpiar
                     </button>
 
@@ -188,10 +160,7 @@
 
 
 
-        <section
-            id="seccionFormulario"
-            class="card formulario-card oculto"
-        >
+        <section id="seccionFormulario" class="card formulario-card oculto">
 
             <div class="card-header">
 
@@ -207,12 +176,7 @@
 
                 </div>
 
-                <button
-                    id="btnCerrarFormulario"
-                    class="btn-cerrar"
-                    type="button"
-                    aria-label="Cerrar formulario"
-                >
+                <button id="btnCerrarFormulario" class="btn-cerrar" type="button" aria-label="Cerrar formulario">
                     ×
                 </button>
 
@@ -221,10 +185,7 @@
 
             <form id="formCategoria">
 
-                <input
-                    type="hidden"
-                    id="categoriaId"
-                >
+                <input type="hidden" id="categoriaId">
 
 
                 <div class="form-grid">
@@ -236,14 +197,8 @@
                             <span class="requerido">*</span>
                         </label>
 
-                        <input
-                            type="text"
-                            id="nombre"
-                            maxlength="100"
-                            placeholder="Ej: Vasos"
-                            autocomplete="off"
-                            required
-                        >
+                        <input type="text" id="nombre" maxlength="100" placeholder="Ej: Vasos" autocomplete="off"
+                            required>
 
                         <small>
                             Máximo 100 caracteres.
@@ -258,12 +213,8 @@
                             Descripción
                         </label>
 
-                        <textarea
-                            id="descripcion"
-                            maxlength="500"
-                            rows="4"
-                            placeholder="Descripción opcional de la categoría"
-                        ></textarea>
+                        <textarea id="descripcion" maxlength="500" rows="4"
+                            placeholder="Descripción opcional de la categoría"></textarea>
 
                         <div class="contador">
 
@@ -282,19 +233,11 @@
 
                 <div class="acciones-formulario">
 
-                    <button
-                        type="button"
-                        id="btnCancelar"
-                        class="btn btn-light"
-                    >
+                    <button type="button" id="btnCancelar" class="btn btn-light">
                         Cancelar
                     </button>
 
-                    <button
-                        type="submit"
-                        id="btnGuardar"
-                        class="btn btn-primary"
-                    >
+                    <button type="submit" id="btnGuardar" class="btn btn-primary">
                         Guardar categoría
                     </button>
 
@@ -305,7 +248,7 @@
         </section>
 
 
-      
+
 
         <section class="card">
 
@@ -324,12 +267,9 @@
             </div>
 
 
-            
 
-            <div
-                id="cargando"
-                class="estado-contenedor oculto"
-            >
+
+            <div id="cargando" class="estado-contenedor oculto">
 
                 <div class="spinner"></div>
 
@@ -340,12 +280,9 @@
             </div>
 
 
-          
 
-            <div
-                id="sinResultados"
-                class="estado-contenedor oculto"
-            >
+
+            <div id="sinResultados" class="estado-contenedor oculto">
 
                 <div class="estado-icono">
                     🔎
@@ -364,10 +301,7 @@
 
             <!-- TABLA -->
 
-            <div
-                id="contenedorTabla"
-                class="tabla-responsive"
-            >
+            <div id="contenedorTabla" class="tabla-responsive">
 
                 <table>
 
@@ -409,10 +343,7 @@
 
 
 
-    <div
-        id="modalConfirmacion"
-        class="modal oculto"
-    >
+    <div id="modalConfirmacion" class="modal oculto">
 
         <div class="modal-fondo"></div>
 
@@ -432,19 +363,11 @@
 
             <div class="modal-acciones">
 
-                <button
-                    id="btnModalCancelar"
-                    class="btn btn-light"
-                    type="button"
-                >
+                <button id="btnModalCancelar" class="btn btn-light" type="button">
                     Cancelar
                 </button>
 
-                <button
-                    id="btnModalConfirmar"
-                    class="btn btn-danger"
-                    type="button"
-                >
+                <button id="btnModalConfirmar" class="btn btn-danger" type="button">
                     Confirmar
                 </button>
 
@@ -455,6 +378,7 @@
     </div>
 
 
+    <script src="/js/auth.js"></script>
     <script src="/js/categorias.js"></script>
 
 </body>
