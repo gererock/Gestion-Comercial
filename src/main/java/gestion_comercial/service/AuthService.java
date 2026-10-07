@@ -13,6 +13,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 
 @Service
 public class AuthService {
@@ -37,19 +39,31 @@ public class AuthService {
 
         try {
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            request.password()
-                    )
-            );
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                request.password()
+                        )
+                );
 
-        } catch (AuthenticationException exception) {
+                } catch (DisabledException exception) {
 
-            throw new BadCredentialsException(
-                    "Correo o contraseña incorrectos"
-            );
-        }
+                throw new UsuarioNoHabilitadoException(
+                        "El usuario se encuentra inactivo"
+                );
+
+                } catch (LockedException exception) {
+
+                throw new UsuarioNoHabilitadoException(
+                        "El usuario se encuentra bloqueado"
+                );
+
+                } catch (AuthenticationException exception) {
+
+                throw new BadCredentialsException(
+                        "Correo o contraseña incorrectos"
+                );
+                }
 
         Usuario usuario = usuarioRepository
                 .findByEmailIgnoreCase(email)

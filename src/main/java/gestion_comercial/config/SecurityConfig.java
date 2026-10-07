@@ -1,14 +1,16 @@
 package gestion_comercial.config;
 
-
 import gestion_comercial.exception.RestAccessDeniedHandler;
 import gestion_comercial.exception.RestAuthenticationEntryPoint;
 import gestion_comercial.security.JwtAuthenticationFilter;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,119 +19,198 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-        private final JwtAuthenticationFilter jwtAuthenticationFilter;
-        private final RestAuthenticationEntryPoint authenticationEntryPoint;
-        private final RestAccessDeniedHandler accessDeniedHandler;
 
-        // Lee el valor definido en application.properties
-        @Value("${app.cors.allowed-origins}")
-        private String allowedOrigins;
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
+    private final RestAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-        public SecurityConfig(
-                        RestAuthenticationEntryPoint authenticationEntryPoint,
-                        RestAccessDeniedHandler accessDeniedHandler,
-                        JwtAuthenticationFilter jwtAuthenticationFilter) {
-                this.authenticationEntryPoint = authenticationEntryPoint;
-                this.accessDeniedHandler = accessDeniedHandler;
-                this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        }
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOrigins;
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityConfig(
+            RestAuthenticationEntryPoint authenticationEntryPoint,
+            RestAccessDeniedHandler accessDeniedHandler,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
 
-                http
-                                .csrf(csrf -> csrf.disable())
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
-                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        http
+                .csrf(csrf -> csrf.disable())
 
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/error").permitAll()
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
-                                                .requestMatchers("/api/auth/**").permitAll()
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
 
-                                                .requestMatchers(
-                                                                "/categorias.html",
-                                                                "/css/**",
-                                                                "/js/**",
-                                                                "/images/**")
-                                                .permitAll()
+                .authorizeHttpRequests(auth -> auth
 
-                                                .requestMatchers("/api/public/**").permitAll()
+                        // Archivos públicos del frontend
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/categorias.html",
+                                "/css/**",
+                                "/js/**",
+                                "/data/**",
+                                "/img/**",
+                                "/images/**",
+                                "/login/**",
+                                "/admin/**",
+                                "/vendedor/**",
+                                "/cliente/**",
+                                "/catalogo/**"
+                        )
+                        .permitAll()
 
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/api/categorias",
-                                                                "/api/categorias/**")
-                                                .hasAnyRole("ADMINISTRADOR", "VENDEDOR")
+                        // Endpoint de errores
+                        .requestMatchers("/error")
+                        .permitAll()
 
-                                                .requestMatchers(
-                                                                "/api/categorias",
-                                                                "/api/categorias/**")
-                                                .hasRole("ADMINISTRADOR")
+                        // Login / autenticación
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
 
-                                                .anyRequest().authenticated())
+                        // Endpoints públicos
+                        .requestMatchers("/api/public/**")
+                        .permitAll()
 
-                                .addFilterBefore(
-                                                jwtAuthenticationFilter,
-                                                UsernamePasswordAuthenticationFilter.class);
+                        // ADMINISTRADOR y VENDEDOR pueden consultar categorías
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/categorias",
+                                "/api/categorias/**"
+                        )
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "VENDEDOR"
+                        )
 
-                return http.build();
-        }
+                        // Solo ADMINISTRADOR puede modificar categorías
+                        .requestMatchers(
+                                "/api/categorias",
+                                "/api/categorias/**"
+                        )
+                        .hasRole("ADMINISTRADOR")
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+                        // Endpoints solo para administrador
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMINISTRADOR")
 
-        @Bean
-        public AuthenticationManager authenticationManager(
-                        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+                        // Vendedor y administrador
+                        .requestMatchers("/api/vendedor/**")
+                        .hasAnyRole(
+                                "VENDEDOR",
+                                "ADMINISTRADOR"
+                        )
 
-                return authenticationConfiguration.getAuthenticationManager();
-        }
+                        // Solo cliente
+                        .requestMatchers("/api/cliente/**")
+                        .hasRole("CLIENTE")
 
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
+                        // Todo lo demás requiere autenticación
+                        .anyRequest()
+                        .authenticated()
+                )
 
-                CorsConfiguration configuration = new CorsConfiguration();
+                .exceptionHandling(exception ->
+                        exception
+                                .authenticationEntryPoint(
+                                        authenticationEntryPoint
+                                )
+                                .accessDeniedHandler(
+                                        accessDeniedHandler
+                                )
+                )
 
-                configuration.setAllowedOrigins(
-                                Arrays.stream(allowedOrigins.split(","))
-                                                .map(String::trim)
-                                                .toList());
+                .formLogin(form -> form.disable())
 
-                configuration.setAllowedMethods(List.of(
-                                "GET",
-                                "POST",
-                                "PUT",
-                                "PATCH",
-                                "DELETE",
-                                "OPTIONS"));
+                .httpBasic(basic -> basic.disable())
 
-                configuration.setAllowedHeaders(List.of(
-                                "Authorization",
-                                "Content-Type",
-                                "Accept"));
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
-                configuration.setAllowCredentials(true);
+        return http.build();
+    }
 
-                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-                source.registerCorsConfiguration("/**", configuration);
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
 
-                return source;
-        }
+        return authenticationConfiguration
+                .getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+                Arrays.stream(
+                                allowedOrigins.split(",")
+                        )
+                        .map(String::trim)
+                        .toList()
+        );
+
+        configuration.setAllowedMethods(
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS"
+                )
+        );
+
+        configuration.setAllowedHeaders(
+                List.of(
+                        "Authorization",
+                        "Content-Type",
+                        "Accept"
+                )
+        );
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
+
+        return source;
+    }
 }

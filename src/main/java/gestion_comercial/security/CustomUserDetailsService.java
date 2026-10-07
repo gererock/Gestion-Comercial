@@ -1,5 +1,6 @@
 package gestion_comercial.security;
 
+import gestion_comercial.entity.EstadoUsuario;
 import gestion_comercial.entity.Usuario;
 import gestion_comercial.repository.UsuarioRepository;
 
@@ -32,6 +33,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(usuario.getEmail())
                 .password(usuario.getPasswordHash())
                 .roles(usuario.getRol().getNombre())
+                .disabled(usuario.getEstado() == EstadoUsuario.INACTIVO)
+                .accountLocked(usuario.getEstado() == EstadoUsuario.BLOQUEADO)
                 .build();
     }
 }
