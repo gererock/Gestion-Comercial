@@ -22,4 +22,9 @@ public interface IGrupoCatalogoService {
             Integer id,
             GrupoCatalogoUpdateRequest request
     );
+
+    GrupoCatalogoResponse cambiarEstado(
+            Integer id,
+            Boolean activo
+    );
 }
