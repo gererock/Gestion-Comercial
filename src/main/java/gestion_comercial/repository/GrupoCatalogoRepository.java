@@ -6,4 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GrupoCatalogoRepository
         extends JpaRepository<GrupoCatalogo, Integer> {
+
+    boolean existsByNombreVisibleIgnoreCase(
+            String nombreVisible
+    );
+
+    boolean existsByNombreVisibleIgnoreCaseAndIdGrupoCatalogoNot(
+            String nombreVisible,
+            Integer idGrupoCatalogo
+    );
 }
