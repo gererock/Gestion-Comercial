@@ -1065,17 +1065,13 @@ async function obtenerMensajeError(
             await response.json();
 
 
-        if (data.error) {
-
-            return data.error;
-        }
-
-
         if (data.message) {
-
             return data.message;
         }
 
+        if (data.error) {
+            return data.error;
+        }
 
         /*
          Puede pasar que Spring devuelva
