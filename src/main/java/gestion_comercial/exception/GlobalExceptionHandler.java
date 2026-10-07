@@ -145,4 +145,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(body);
     }
+    @ExceptionHandler(
+                GrupoCatalogoDuplicadoException.class
+        )
+        public ResponseEntity<ApiErrorResponse>
+        handleGrupoCatalogoDuplicado(
+                GrupoCatalogoDuplicadoException exception,
+                HttpServletRequest request
+        ) {
+
+        ApiErrorResponse body =
+                ApiErrorResponse.simple(
+                        HttpStatus.CONFLICT.value(),
+                        "Conflict",
+                        exception.getMessage(),
+                        request.getRequestURI()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(body);
+        }
 }

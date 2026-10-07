@@ -4,11 +4,13 @@ import gestion_comercial.dto.request.GrupoCatalogoCreateRequest;
 import gestion_comercial.dto.request.GrupoCatalogoUpdateRequest;
 import gestion_comercial.dto.response.GrupoCatalogoResponse;
 import gestion_comercial.entity.GrupoCatalogo;
+import gestion_comercial.exception.GrupoCatalogoDuplicadoException;
 import gestion_comercial.exception.GrupoCatalogoNoEncontradoException;
 import gestion_comercial.mapper.GrupoCatalogoMapper;
 import gestion_comercial.repository.GrupoCatalogoRepository;
 import gestion_comercial.service.interfaces.IGrupoCatalogoService;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,15 +36,44 @@ public class GrupoCatalogoService
             GrupoCatalogoCreateRequest request
     ) {
 
+        String nombreVisible =
+                request.nombreVisible().trim();
+
+        if (
+                grupoCatalogoRepository
+                        .existsByNombreVisibleIgnoreCase(
+                                nombreVisible
+                        )
+        ) {
+            throw new GrupoCatalogoDuplicadoException(
+                    "Ya existe un grupo de catálogo con ese nombre"
+            );
+        }
+
+
         GrupoCatalogo grupo =
                 GrupoCatalogoMapper.toEntity(request);
 
-        GrupoCatalogo grupoGuardado =
-                grupoCatalogoRepository.save(grupo);
-
-        return GrupoCatalogoMapper.toResponse(
-                grupoGuardado
+        grupo.setNombreVisible(
+                nombreVisible
         );
+
+
+        try {
+
+            GrupoCatalogo grupoGuardado =
+                    grupoCatalogoRepository.save(grupo);
+
+            return GrupoCatalogoMapper.toResponse(
+                    grupoGuardado
+            );
+
+        } catch (DataIntegrityViolationException exception) {
+
+            throw new GrupoCatalogoDuplicadoException(
+                    "Ya existe un grupo de catálogo con ese nombre"
+            );
+        }
     }
 
 
@@ -82,17 +113,49 @@ public class GrupoCatalogoService
         GrupoCatalogo grupo =
                 buscarEntidadPorId(id);
 
+
+        String nombreVisible =
+                request.nombreVisible().trim();
+
+
+        if (
+                grupoCatalogoRepository
+                        .existsByNombreVisibleIgnoreCaseAndIdGrupoCatalogoNot(
+                                nombreVisible,
+                                id
+                        )
+        ) {
+            throw new GrupoCatalogoDuplicadoException(
+                    "Ya existe un grupo de catálogo con ese nombre"
+            );
+        }
+
+
         GrupoCatalogoMapper.updateEntity(
                 grupo,
                 request
         );
 
-        GrupoCatalogo grupoActualizado =
-                grupoCatalogoRepository.save(grupo);
-
-        return GrupoCatalogoMapper.toResponse(
-                grupoActualizado
+        grupo.setNombreVisible(
+                nombreVisible
         );
+
+
+        try {
+
+            GrupoCatalogo grupoActualizado =
+                    grupoCatalogoRepository.save(grupo);
+
+            return GrupoCatalogoMapper.toResponse(
+                    grupoActualizado
+            );
+
+        } catch (DataIntegrityViolationException exception) {
+
+            throw new GrupoCatalogoDuplicadoException(
+                    "Ya existe un grupo de catálogo con ese nombre"
+            );
+        }
     }
 
 
