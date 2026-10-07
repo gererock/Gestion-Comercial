@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.List;
 
@@ -91,4 +92,32 @@ public class GrupoCatalogoController {
                 )
         );
     }
+    @PatchMapping("/{id}/activar")
+        public ResponseEntity<GrupoCatalogoResponse>
+        activar(
+                @PathVariable Integer id
+        ) {
+
+        return ResponseEntity.ok(
+                grupoCatalogoService.cambiarEstado(
+                        id,
+                        true
+                )
+        );
+        }
+
+
+        @PatchMapping("/{id}/desactivar")
+        public ResponseEntity<GrupoCatalogoResponse>
+        desactivar(
+                @PathVariable Integer id
+        ) {
+
+        return ResponseEntity.ok(
+                grupoCatalogoService.cambiarEstado(
+                        id,
+                        false
+                )
+        );
+        }
 }

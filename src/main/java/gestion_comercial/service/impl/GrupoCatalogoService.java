@@ -157,6 +157,24 @@ public class GrupoCatalogoService
             );
         }
     }
+    @Override
+        public GrupoCatalogoResponse cambiarEstado(
+                Integer id,
+                Boolean activo
+        ) {
+
+        GrupoCatalogo grupo =
+                buscarEntidadPorId(id);
+
+        grupo.setActivo(activo);
+
+        GrupoCatalogo grupoActualizado =
+                grupoCatalogoRepository.save(grupo);
+
+        return GrupoCatalogoMapper.toResponse(
+                grupoActualizado
+        );
+        }
 
 
     private GrupoCatalogo buscarEntidadPorId(
