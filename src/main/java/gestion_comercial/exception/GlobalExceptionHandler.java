@@ -100,4 +100,33 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .body(body);
         }
+
+        @ExceptionHandler(CategoriaNoEncontradaException.class)
+        public ResponseEntity<Map<String, String>> mensajeCategoriaNoencontrada(CategoriaNoEncontradaException ex) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of(
+                                "error", ex.getMessage()
+                        ));
+        }
+
+        @ExceptionHandler(CategoriaDuplicadaException.class)
+        public ResponseEntity<Map<String, String>> mensajeCategoriaDuplicada(CategoriaDuplicadaException ex) {
+                return  ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(Map.of(
+                                "error", ex.getMessage()
+                        ));
+        }
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<Map<String, String>> manejarArgumentoInvalido(
+                IllegalArgumentException ex) {
+
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of(
+                                "error", ex.getMessage()
+                ));
+}
 }

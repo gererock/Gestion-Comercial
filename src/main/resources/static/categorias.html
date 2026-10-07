@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Categorías | Todo Descartable</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/categorias.css"
+    >
+</head>
+
+<body>
+
+ 
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo-simbolo">
+                    TD
+                </div>
+
+                <div>
+                    <h1>Todo Descartable</h1>
+                    <p>Panel de administración</p>
+                </div>
+
+            </div>
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                    type="button"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+   
+
+    <main class="contenedor">
+
+        <!-- CABECERA -->
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Categorías
+                </p>
+
+                <h2>Gestión de categorías</h2>
+
+                <p class="subtitulo">
+                    Administrá las categorías utilizadas
+                    para organizar los productos.
+                </p>
+
+            </div>
+
+            <button
+                id="btnNuevaCategoria"
+                class="btn btn-primary"
+                type="button"
+            >
+                + Nueva categoría
+            </button>
+
+        </section>
+
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+        ></div>
+
+
+        <!-- =========================
+             FILTROS
+        ========================== -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <h3>Buscar y filtrar</h3>
+
+                    <p>
+                        Encontrá rápidamente una categoría.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="filtros">
+
+                <div class="campo campo-busqueda">
+
+                    <label for="busqueda">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="busqueda"
+                        placeholder="Ej: Vasos"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="filtroEstado">
+                        Estado
+                    </label>
+
+                    <select id="filtroEstado">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                        <option value="true">
+                            Activas
+                        </option>
+
+                        <option value="false">
+                            Inactivas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="acciones-filtros">
+
+                    <button
+                        id="btnBuscar"
+                        class="btn btn-secondary"
+                        type="button"
+                    >
+                        Buscar
+                    </button>
+
+                    <button
+                        id="btnLimpiar"
+                        class="btn btn-light"
+                        type="button"
+                    >
+                        Limpiar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section
+            id="seccionFormulario"
+            class="card formulario-card oculto"
+        >
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3 id="tituloFormulario">
+                        Nueva categoría
+                    </h3>
+
+                    <p id="textoFormulario">
+                        Completá los datos de la categoría.
+                    </p>
+
+                </div>
+
+                <button
+                    id="btnCerrarFormulario"
+                    class="btn-cerrar"
+                    type="button"
+                    aria-label="Cerrar formulario"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="formCategoria">
+
+                <input
+                    type="hidden"
+                    id="categoriaId"
+                >
+
+
+                <div class="form-grid">
+
+                    <div class="campo">
+
+                        <label for="nombre">
+                            Nombre
+                            <span class="requerido">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nombre"
+                            maxlength="100"
+                            placeholder="Ej: Vasos"
+                            autocomplete="off"
+                            required
+                        >
+
+                        <small>
+                            Máximo 100 caracteres.
+                        </small>
+
+                    </div>
+
+
+                    <div class="campo campo-descripcion">
+
+                        <label for="descripcion">
+                            Descripción
+                        </label>
+
+                        <textarea
+                            id="descripcion"
+                            maxlength="500"
+                            rows="4"
+                            placeholder="Descripción opcional de la categoría"
+                        ></textarea>
+
+                        <div class="contador">
+
+                            <span id="contadorDescripcion">
+                                0
+                            </span>
+
+                            / 500
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="acciones-formulario">
+
+                    <button
+                        type="button"
+                        id="btnCancelar"
+                        class="btn btn-light"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btnGuardar"
+                        class="btn btn-primary"
+                    >
+                        Guardar categoría
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+      
+
+        <section class="card">
+
+            <div class="card-header listado-header">
+
+                <div>
+
+                    <h3>Categorías</h3>
+
+                    <p id="cantidadCategorias">
+                        Cargando categorías...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            
+
+            <div
+                id="cargando"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner"></div>
+
+                <p>
+                    Cargando categorías...
+                </p>
+
+            </div>
+
+
+          
+
+            <div
+                id="sinResultados"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    🔎
+                </div>
+
+                <h4>
+                    No se encontraron categorías
+                </h4>
+
+                <p>
+                    Probá cambiando la búsqueda o los filtros.
+                </p>
+
+            </div>
+
+
+            <!-- TABLA -->
+
+            <div
+                id="contenedorTabla"
+                class="tabla-responsive"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Descripción
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="columna-acciones">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tablaCategorias">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+
+    <div
+        id="modalConfirmacion"
+        class="modal oculto"
+    >
+
+        <div class="modal-fondo"></div>
+
+        <div class="modal-contenido">
+
+            <div class="modal-icono">
+                !
+            </div>
+
+            <h3 id="modalTitulo">
+                Confirmar acción
+            </h3>
+
+            <p id="modalTexto">
+                ¿Estás seguro?
+            </p>
+
+            <div class="modal-acciones">
+
+                <button
+                    id="btnModalCancelar"
+                    class="btn btn-light"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    id="btnModalConfirmar"
+                    class="btn btn-danger"
+                    type="button"
+                >
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="/js/categorias.js"></script>
+
+</body>
+
+</html>
