@@ -4,9 +4,13 @@ import gestion_comercial.exception.RestAccessDeniedHandler;
 import gestion_comercial.exception.RestAuthenticationEntryPoint;
 import gestion_comercial.security.JwtAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,9 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -37,8 +38,8 @@ public class SecurityConfig {
     public SecurityConfig(
             RestAuthenticationEntryPoint authenticationEntryPoint,
             RestAccessDeniedHandler accessDeniedHandler,
-            JwtAuthenticationFilter jwtAuthenticationFilter
-    ) {
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
+
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -62,30 +63,56 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Archivos públicos del frontend
                         .requestMatchers(
                                 "/",
                                 "/index.html",
+                                "/categorias.html",
                                 "/css/**",
                                 "/js/**",
                                 "/data/**",
                                 "/img/**",
+                                "/images/**",
                                 "/login/**",
                                 "/admin/**",
                                 "/vendedor/**",
                                 "/cliente/**",
                                 "/catalogo/**"
-                        ).permitAll()
+                        )
+                        .permitAll()
 
-                        // Endpoint de error
-                        .requestMatchers("/error").permitAll()
+                        // Endpoint de errores
+                        .requestMatchers("/error")
+                        .permitAll()
 
-                        // Login, registro y autenticación
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Login / autenticación
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
 
-                        // Recursos públicos
-                        .requestMatchers("/api/public/**").permitAll()
+                        // Endpoints públicos
+                        .requestMatchers("/api/public/**")
+                        .permitAll()
 
-                        // Solo administrador
+                        // ADMINISTRADOR y VENDEDOR pueden consultar categorías
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/categorias",
+                                "/api/categorias/**"
+                        )
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "VENDEDOR"
+                        )
+
+                        // Solo ADMINISTRADOR puede modificar categorías
+                        .requestMatchers(
+                                "/api/categorias",
+                                "/api/categorias/**"
+                        )
+                        .hasRole("ADMINISTRADOR")
+
+                        // Endpoints solo para administrador
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMINISTRADOR")
 
@@ -100,8 +127,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/cliente/**")
                         .hasRole("CLIENTE")
 
-                        // Cualquier otro endpoint requiere autenticación
-                        .anyRequest().authenticated()
+                        // Todo lo demás requiere autenticación
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .exceptionHandling(exception ->
@@ -114,14 +142,14 @@ public class SecurityConfig {
                                 )
                 )
 
+                .formLogin(form -> form.disable())
+
+                .httpBasic(basic -> basic.disable())
+
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
-                )
-
-                .formLogin(form -> form.disable())
-
-                .httpBasic(basic -> basic.disable());
+                );
 
         return http.build();
     }
@@ -133,8 +161,8 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
+            AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
 
         return authenticationConfiguration
                 .getAuthenticationManager();

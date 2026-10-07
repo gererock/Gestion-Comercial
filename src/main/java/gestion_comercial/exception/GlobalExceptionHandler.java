@@ -18,152 +18,157 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(
-            MethodArgumentNotValidException.class
-    )
-    public ResponseEntity<ApiErrorResponse>
-    handleValidationException(
-            MethodArgumentNotValidException exception,
-            HttpServletRequest request
-    ) {
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiErrorResponse> handleValidationException(
+                        MethodArgumentNotValidException exception,
+                        HttpServletRequest request) {
 
-        Map<String, String> fieldErrors =
-                new LinkedHashMap<>();
+                Map<String, String> fieldErrors = new LinkedHashMap<>();
 
-        exception.getBindingResult()
-                .getFieldErrors()
-                .forEach(
-                        error ->
-                                fieldErrors.put(
-                                        error.getField(),
-                                        error.getDefaultMessage()
-                                )
-                );
+                exception.getBindingResult()
+                                .getFieldErrors()
+                                .forEach(
+                                                error -> fieldErrors.put(
+                                                                error.getField(),
+                                                                error.getDefaultMessage()));
 
-        ApiErrorResponse body =
-                ApiErrorResponse.validation(
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Bad Request",
-                        "Existen datos inválidos",
-                        request.getRequestURI(),
-                        fieldErrors
-                );
+                ApiErrorResponse body = ApiErrorResponse.validation(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                "Existen datos inválidos",
+                                request.getRequestURI(),
+                                fieldErrors);
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(body);
-    }
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(body);
+        }
 
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<ApiErrorResponse> handleInvalidJson(
+                        HttpMessageNotReadableException exception,
+                        HttpServletRequest request) {
 
-    @ExceptionHandler(
-            HttpMessageNotReadableException.class
-    )
-    public ResponseEntity<ApiErrorResponse>
-    handleInvalidJson(
-            HttpMessageNotReadableException exception,
-            HttpServletRequest request
-    ) {
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                "El cuerpo de la solicitud contiene datos inválidos",
+                                request.getRequestURI());
 
-        ApiErrorResponse body =
-                ApiErrorResponse.simple(
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Bad Request",
-                        "El cuerpo de la solicitud contiene datos inválidos",
-                        request.getRequestURI()
-                );
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(body);
+        }
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(body);
-    }
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ApiErrorResponse> handleBadCredentials(
+                        BadCredentialsException exception,
+                        HttpServletRequest request) {
 
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.UNAUTHORIZED.value(),
+                                "Unauthorized",
+                                "Correo o contraseña incorrectos",
+                                request.getRequestURI());
 
-    @ExceptionHandler(
-            BadCredentialsException.class
-    )
-    public ResponseEntity<ApiErrorResponse>
-    handleBadCredentials(
-            BadCredentialsException exception,
-            HttpServletRequest request
-    ) {
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(body);
+        }
 
-        ApiErrorResponse body =
-                ApiErrorResponse.simple(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        "Correo o contraseña incorrectos",
-                        request.getRequestURI()
-                );
+        @ExceptionHandler(UsuarioNoHabilitadoException.class)
+        public ResponseEntity<ApiErrorResponse> handleUsuarioNoHabilitado(
+                        UsuarioNoHabilitadoException exception,
+                        HttpServletRequest request) {
 
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(body);
-    }
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.FORBIDDEN.value(),
+                                "Forbidden",
+                                exception.getMessage(),
+                                request.getRequestURI());
 
+                return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body(body);
+        }
 
-    @ExceptionHandler(
-            UsuarioNoHabilitadoException.class
-    )
-    public ResponseEntity<ApiErrorResponse>
-    handleUsuarioNoHabilitado(
-            UsuarioNoHabilitadoException exception,
-            HttpServletRequest request
-    ) {
+        @ExceptionHandler(GrupoCatalogoNoEncontradoException.class)
+        public ResponseEntity<ApiErrorResponse> handleGrupoCatalogoNoEncontrado(
+                        GrupoCatalogoNoEncontradoException exception,
+                        HttpServletRequest request) {
 
-        ApiErrorResponse body =
-                ApiErrorResponse.simple(
-                        HttpStatus.FORBIDDEN.value(),
-                        "Forbidden",
-                        exception.getMessage(),
-                        request.getRequestURI()
-                );
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(body);
-    }
+                return ResponseEntity
+                                .status(HttpStatus.NOT_FOUND)
+                                .body(body);
+        }
 
+        @ExceptionHandler(GrupoCatalogoDuplicadoException.class)
+        public ResponseEntity<ApiErrorResponse> handleGrupoCatalogoDuplicado(
+                        GrupoCatalogoDuplicadoException exception,
+                        HttpServletRequest request) {
 
-    @ExceptionHandler(
-            GrupoCatalogoNoEncontradoException.class
-    )
-    public ResponseEntity<ApiErrorResponse>
-    handleGrupoCatalogoNoEncontrado(
-            GrupoCatalogoNoEncontradoException exception,
-            HttpServletRequest request
-    ) {
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                exception.getMessage(),
+                                request.getRequestURI());
 
-        ApiErrorResponse body =
-                ApiErrorResponse.simple(
-                        HttpStatus.NOT_FOUND.value(),
-                        "Not Found",
-                        exception.getMessage(),
-                        request.getRequestURI()
-                );
+                return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(body);
+        }
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(body);
-    }
-    @ExceptionHandler(
-                GrupoCatalogoDuplicadoException.class
-        )
-        public ResponseEntity<ApiErrorResponse>
-        handleGrupoCatalogoDuplicado(
-                GrupoCatalogoDuplicadoException exception,
-                HttpServletRequest request
-        ) {
+        @ExceptionHandler(CategoriaNoEncontradaException.class)
+        public ResponseEntity<ApiErrorResponse> handleCategoriaNoEncontrada(
+                        CategoriaNoEncontradaException exception,
+                        HttpServletRequest request) {
 
-        ApiErrorResponse body =
-                ApiErrorResponse.simple(
-                        HttpStatus.CONFLICT.value(),
-                        "Conflict",
-                        exception.getMessage(),
-                        request.getRequestURI()
-                );
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(body);
+                return ResponseEntity
+                                .status(HttpStatus.NOT_FOUND)
+                                .body(body);
+        }
+
+        @ExceptionHandler(CategoriaDuplicadaException.class)
+        public ResponseEntity<ApiErrorResponse> handleCategoriaDuplicada(
+                        CategoriaDuplicadaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(body);
+        }
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ApiErrorResponse> handleIllegalArgument(
+                        IllegalArgumentException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(body);
         }
 }

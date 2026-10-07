@@ -3,46 +3,49 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Panel administrador</title>
 </head>
 
 <body>
 
-<h1>Panel administrador</h1>
+    <h1>Panel administrador</h1>
 
-<p id="usuario"></p>
+    <p id="usuario"></p>
 
-<button id="logout">
-    Cerrar sesión
-</button>
+    <a href="/categorias.html">
+        Gestionar categorías
+    </a>
+
+    <button id="logout">
+        Cerrar sesión
+    </button>
 
 
-<script src="../js/auth.js"></script>
+    <script src="../js/auth.js"></script>
 
-<script>
+    <script>
 
-    if (Auth.requerirRol('ADMINISTRADOR')) {
+        if (Auth.requerirRol('ADMINISTRADOR')) {
 
-        const usuario =
-            Auth.obtenerUsuario();
+            const usuario =
+                Auth.obtenerUsuario();
+
+            document.getElementById(
+                'usuario'
+            ).textContent =
+                `Bienvenido, ${usuario.nombre}`;
+        }
 
         document.getElementById(
-            'usuario'
-        ).textContent =
-            `Bienvenido, ${usuario.nombre}`;
-    }
+            'logout'
+        ).addEventListener(
+            'click',
+            Auth.cerrarSesion
+        );
 
-    document.getElementById(
-        'logout'
-    ).addEventListener(
-        'click',
-        Auth.cerrarSesion
-    );
-
-</script>
+    </script>
 
 </body>
 
