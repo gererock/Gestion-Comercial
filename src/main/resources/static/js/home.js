@@ -37,8 +37,36 @@
     const imagenNosotros =
         document.getElementById('imagen-nosotros');
 
-    const imagenHistoria =
-        document.getElementById('imagen-historia');
+
+    /* =====================================================
+       MUESTRARIO - NUESTRA HISTORIA
+       ===================================================== */
+
+    const historiaImagenPrincipal =
+        document.getElementById(
+            'historia-imagen-principal'
+        );
+
+    const historiaMiniaturas =
+        document.getElementById(
+            'historia-miniaturas'
+        );
+
+    const historiaMuestrario =
+        document.getElementById(
+            'historia-muestrario'
+        );
+
+
+    let historiaImagenes = [];
+
+    let historiaIndiceActual = 0;
+
+    let historiaIntervalo = null;
+
+
+    const HISTORIA_TIEMPO_ROTACION =
+        5000;
 
 
     /* =====================================================
@@ -244,9 +272,10 @@
         );
 
 
-        aplicarImagen(
-            imagenHistoria,
-            comercio.imagenHistoria
+        /* Muestrario Historia */
+
+        configurarMuestrarioHistoria(
+            comercio.imagenesHistoria
         );
 
 
@@ -392,6 +421,482 @@
             );
 
         }
+
+    }
+
+
+    /* =====================================================
+       MUESTRARIO - NUESTRA HISTORIA
+       ===================================================== */
+
+    function configurarMuestrarioHistoria(
+        imagenes
+    ) {
+
+        if (
+            !historiaImagenPrincipal
+            || !historiaMiniaturas
+        ) {
+            return;
+        }
+
+
+        detenerRotacionHistoria();
+
+
+        historiaImagenes =
+            Array.isArray(imagenes)
+                ? imagenes.filter(
+                    item => {
+
+                        return (
+                            item
+                            && typeof item.imagen === 'string'
+                            && item.imagen.trim() !== ''
+                        );
+
+                    }
+                )
+                : [];
+
+
+        historiaIndiceActual =
+            0;
+
+
+        historiaMiniaturas.innerHTML =
+            '';
+
+
+        /* Sin imágenes */
+
+        if (
+            historiaImagenes.length === 0
+        ) {
+
+            historiaImagenPrincipal.classList.remove(
+                'is-loaded'
+            );
+
+
+            historiaImagenPrincipal.removeAttribute(
+                'src'
+            );
+
+
+            historiaImagenPrincipal.alt =
+                'Nuestra historia';
+
+
+            return;
+
+        }
+
+
+        /* Crear miniaturas */
+
+        historiaImagenes.forEach(
+            (item, indice) => {
+
+                const boton =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                boton.type =
+                    'button';
+
+
+                boton.className =
+                    'history-thumbnail';
+
+
+                boton.setAttribute(
+                    'aria-label',
+                    `Mostrar imagen ${indice + 1} de nuestra historia`
+                );
+
+
+                boton.setAttribute(
+                    'aria-pressed',
+                    'false'
+                );
+
+
+                /* Fallback de miniatura */
+
+                const fallback =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                fallback.className =
+                    'history-thumbnail__fallback';
+
+
+                fallback.textContent =
+                    indice + 1;
+
+
+                boton.appendChild(
+                    fallback
+                );
+
+
+                /* Imagen de miniatura */
+
+                const imagen =
+                    document.createElement(
+                        'img'
+                    );
+
+
+                imagen.className =
+                    'history-thumbnail__image';
+
+
+                imagen.alt =
+                    item.descripcion
+                    || `Nuestra historia - Foto ${indice + 1}`;
+
+
+                imagen.loading =
+                    'lazy';
+
+
+                configurarImagen(
+                    imagen
+                );
+
+
+                imagen.src =
+                    item.imagen.trim();
+
+
+                boton.appendChild(
+                    imagen
+                );
+
+
+                /* Click manual */
+
+                boton.addEventListener(
+                    'click',
+                    () => {
+
+                        mostrarImagenHistoria(
+                            indice
+                        );
+
+
+                        reiniciarRotacionHistoria();
+
+                    }
+                );
+
+
+                historiaMiniaturas.appendChild(
+                    boton
+                );
+
+            }
+        );
+
+
+        /* Primera imagen */
+
+        mostrarImagenHistoria(
+            0
+        );
+
+
+        /* Iniciar rotación automática */
+
+        iniciarRotacionHistoria();
+
+    }
+
+
+    function mostrarImagenHistoria(
+        indice
+    ) {
+
+        if (
+            historiaImagenes.length === 0
+            || !historiaImagenPrincipal
+        ) {
+            return;
+        }
+
+
+        if (
+            indice < 0
+            || indice >= historiaImagenes.length
+        ) {
+            return;
+        }
+
+
+        historiaIndiceActual =
+            indice;
+
+
+        const item =
+            historiaImagenes[
+                historiaIndiceActual
+            ];
+
+
+        historiaImagenPrincipal.classList.remove(
+            'is-loaded'
+        );
+
+
+        historiaImagenPrincipal.alt =
+            item.descripcion
+            || `Nuestra historia - Foto ${historiaIndiceActual + 1}`;
+
+
+        /*
+         * Primero configuramos los eventos
+         * y después asignamos la imagen.
+         */
+
+        historiaImagenPrincipal.onload =
+            () => {
+
+                historiaImagenPrincipal.classList.add(
+                    'is-loaded'
+                );
+
+            };
+
+
+        historiaImagenPrincipal.onerror =
+            () => {
+
+                historiaImagenPrincipal.classList.remove(
+                    'is-loaded'
+                );
+
+            };
+
+
+        historiaImagenPrincipal.src =
+            item.imagen.trim();
+
+
+        /*
+         * Por si el navegador ya tenía
+         * la imagen guardada en caché.
+         */
+
+        if (
+            historiaImagenPrincipal.complete
+            && historiaImagenPrincipal.naturalWidth > 0
+        ) {
+
+            historiaImagenPrincipal.classList.add(
+                'is-loaded'
+            );
+
+        }
+
+
+        actualizarMiniaturasHistoria();
+
+    }
+
+
+    function actualizarMiniaturasHistoria() {
+
+        if (!historiaMiniaturas) {
+            return;
+        }
+
+
+        const botones =
+            historiaMiniaturas.querySelectorAll(
+                '.history-thumbnail'
+            );
+
+
+        botones.forEach(
+            (boton, indice) => {
+
+                const activo =
+                    indice === historiaIndiceActual;
+
+
+                boton.classList.toggle(
+                    'is-active',
+                    activo
+                );
+
+
+                boton.setAttribute(
+                    'aria-pressed',
+                    activo
+                        ? 'true'
+                        : 'false'
+                );
+
+            }
+        );
+
+    }
+
+
+    function iniciarRotacionHistoria() {
+
+        detenerRotacionHistoria();
+
+
+        if (
+            historiaImagenes.length <= 1
+        ) {
+            return;
+        }
+
+
+        historiaIntervalo =
+            window.setInterval(
+                () => {
+
+                    const siguiente =
+                        (
+                            historiaIndiceActual
+                            + 1
+                        )
+                        % historiaImagenes.length;
+
+
+                    mostrarImagenHistoria(
+                        siguiente
+                    );
+
+                },
+                HISTORIA_TIEMPO_ROTACION
+            );
+
+    }
+
+
+    function detenerRotacionHistoria() {
+
+        if (
+            historiaIntervalo === null
+        ) {
+            return;
+        }
+
+
+        window.clearInterval(
+            historiaIntervalo
+        );
+
+
+        historiaIntervalo =
+            null;
+
+    }
+
+
+    function reiniciarRotacionHistoria() {
+
+        detenerRotacionHistoria();
+
+
+        iniciarRotacionHistoria();
+
+    }
+
+
+    function configurarInteraccionHistoria() {
+
+        if (!historiaMuestrario) {
+            return;
+        }
+
+
+        /*
+         * Si el usuario pasa el mouse por
+         * las imágenes, pausamos el cambio.
+         */
+
+        historiaMuestrario.addEventListener(
+            'mouseenter',
+            detenerRotacionHistoria
+        );
+
+
+        historiaMuestrario.addEventListener(
+            'mouseleave',
+            iniciarRotacionHistoria
+        );
+
+
+        /*
+         * También pausamos si el usuario
+         * navega por las miniaturas usando teclado.
+         */
+
+        historiaMuestrario.addEventListener(
+            'focusin',
+            detenerRotacionHistoria
+        );
+
+
+        historiaMuestrario.addEventListener(
+            'focusout',
+            () => {
+
+                window.setTimeout(
+                    () => {
+
+                        if (
+                            !historiaMuestrario.contains(
+                                document.activeElement
+                            )
+                        ) {
+
+                            iniciarRotacionHistoria();
+
+                        }
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+
+        /*
+         * Si el usuario cambia de pestaña,
+         * detenemos temporalmente la rotación.
+         */
+
+        document.addEventListener(
+            'visibilitychange',
+            () => {
+
+                if (
+                    document.hidden
+                ) {
+
+                    detenerRotacionHistoria();
+
+                } else {
+
+                    iniciarRotacionHistoria();
+
+                }
+
+            }
+        );
 
     }
 
@@ -1517,12 +2022,14 @@
     configurarSeccionActiva();
 
 
+    configurarInteraccionHistoria();
+
+
     [
         logoHeader,
         logoFooter,
         portada,
-        imagenNosotros,
-        imagenHistoria
+        imagenNosotros
     ].forEach(
         configurarImagen
     );
