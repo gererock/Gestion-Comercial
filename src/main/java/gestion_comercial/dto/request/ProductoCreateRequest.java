@@ -2,11 +2,13 @@ package gestion_comercial.dto.request;
 
 import gestion_comercial.entity.EstadoProducto;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -83,12 +85,48 @@ public record ProductoCreateRequest(
         Integer stockMinimo,
 
 
+        @Positive(
+                message = "La cantidad mínima mayorista debe ser mayor a cero"
+        )
         Integer cantidadMinimaMayorista,
 
+
+        @DecimalMin(
+                value = "0.01",
+                inclusive = true,
+                message = "El porcentaje de descuento mayorista debe ser mayor a cero"
+        )
+        @DecimalMax(
+                value = "100.00",
+                inclusive = true,
+                message = "El porcentaje de descuento mayorista no puede superar el 100%"
+        )
+        @Digits(
+                integer = 3,
+                fraction = 2,
+                message = "El porcentaje de descuento mayorista debe tener como máximo 2 decimales"
+        )
         BigDecimal porcentajeDescuentoMayorista,
+
 
         Boolean enOferta,
 
+
+        @DecimalMin(
+                value = "0.01",
+                inclusive = true,
+                message = "El porcentaje de oferta debe ser mayor a cero"
+        )
+        @DecimalMax(
+                value = "100.00",
+                inclusive = true,
+                message = "El porcentaje de oferta no puede superar el 100%"
+        )
+        @Digits(
+                integer = 3,
+                fraction = 2,
+                message = "El porcentaje de oferta debe tener como máximo 2 decimales"
+        )
         BigDecimal porcentajeDescuentoOferta,
 
 

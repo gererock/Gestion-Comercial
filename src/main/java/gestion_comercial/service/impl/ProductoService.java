@@ -68,6 +68,11 @@ public class ProductoService
             ProductoCreateRequest request
     ) {
 
+        validarMayorista(request);
+
+        validarOferta(request);
+
+
         Producto producto =
                 ProductoMapper.toEntity(
                         request
@@ -125,6 +130,65 @@ public class ProductoService
         return ProductoMapper.toResponse(
                 productoGuardado
         );
+    }
+
+
+    private void validarMayorista(
+            ProductoCreateRequest request
+    ) {
+
+        boolean tieneCantidad =
+                request.cantidadMinimaMayorista()
+                        != null;
+
+        boolean tienePorcentaje =
+                request.porcentajeDescuentoMayorista()
+                        != null;
+
+
+        if (tieneCantidad != tienePorcentaje) {
+
+            throw new IllegalArgumentException(
+                    "Para configurar descuento mayorista debe indicar cantidad mínima y porcentaje de descuento"
+            );
+        }
+    }
+
+
+    private void validarOferta(
+            ProductoCreateRequest request
+    ) {
+
+        boolean enOferta =
+                Boolean.TRUE.equals(
+                        request.enOferta()
+                );
+
+        boolean tienePorcentaje =
+                request.porcentajeDescuentoOferta()
+                        != null;
+
+
+        if (
+                enOferta
+                        && !tienePorcentaje
+        ) {
+
+            throw new IllegalArgumentException(
+                    "Debe indicar el porcentaje de descuento de la oferta"
+            );
+        }
+
+
+        if (
+                !enOferta
+                        && tienePorcentaje
+        ) {
+
+            throw new IllegalArgumentException(
+                    "No puede indicar un porcentaje de oferta si el producto no está en oferta"
+            );
+        }
     }
 
 
