@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Grupos de catálogo | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/grupos-catalogo.css"
+    >
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo-simbolo">
+                    TD
+                </div>
+
+                <div>
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                    type="button"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Grupos de catálogo
+                </p>
+
+                <h2>
+                    Grupos de catálogo
+                </h2>
+
+                <p class="subtitulo">
+                    Administrá las familias utilizadas
+                    para agrupar productos relacionados.
+                </p>
+
+            </div>
+
+
+            <button
+                id="btnNuevoGrupo"
+                class="btn btn-primary"
+                type="button"
+            >
+                + Nuevo grupo
+            </button>
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+        ></div>
+
+
+        <!-- =========================
+             BÚSQUEDA Y FILTROS
+        ========================== -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Buscar y filtrar
+                    </h3>
+
+                    <p>
+                        Encontrá rápidamente un grupo de catálogo.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filtros">
+
+                <div class="campo campo-busqueda">
+
+                    <label for="busqueda">
+                        Nombre visible
+                    </label>
+
+                    <input
+                        type="text"
+                        id="busqueda"
+                        placeholder="Ej: Bandejas"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="filtroEstado">
+                        Estado
+                    </label>
+
+                    <select id="filtroEstado">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="true">
+                            Activos
+                        </option>
+
+                        <option value="false">
+                            Inactivos
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="acciones-filtros">
+
+                    <button
+                        id="btnBuscar"
+                        class="btn btn-secondary"
+                        type="button"
+                    >
+                        Buscar
+                    </button>
+
+                    <button
+                        id="btnLimpiar"
+                        class="btn btn-light"
+                        type="button"
+                    >
+                        Limpiar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FORMULARIO
+        ========================== -->
+
+        <section
+            id="seccionFormulario"
+            class="card formulario-card oculto"
+        >
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3 id="tituloFormulario">
+                        Nuevo grupo
+                    </h3>
+
+                    <p id="textoFormulario">
+                        Completá los datos del grupo de catálogo.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="btnCerrarFormulario"
+                    class="btn-cerrar"
+                    type="button"
+                    aria-label="Cerrar formulario"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="formGrupo">
+
+                <input
+                    type="hidden"
+                    id="grupoId"
+                >
+
+
+                <div class="form-grid">
+
+                    <div class="form-datos">
+
+                        <div class="campo">
+
+                            <label for="nombreVisible">
+                                Nombre visible
+                                <span class="requerido">
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombreVisible"
+                                maxlength="120"
+                                placeholder="Ej: Bandejas descartables"
+                                autocomplete="off"
+                                required
+                            >
+
+                            <small>
+                                Máximo 120 caracteres.
+                            </small>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="descripcion">
+                                Descripción
+                            </label>
+
+                            <textarea
+                                id="descripcion"
+                                maxlength="500"
+                                rows="5"
+                                placeholder="Ej: Elegí entre diferentes tamaños de bandejas."
+                            ></textarea>
+
+                            <div class="contador">
+                                <span id="contadorDescripcion">
+                                    0
+                                </span>
+                                / 500
+                            </div>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="imagenUrl">
+                                Imagen representativa
+                            </label>
+
+                            <input
+                                type="text"
+                                id="imagenUrl"
+                                maxlength="255"
+                                placeholder="/img/grupos/bandejas.jpg"
+                                autocomplete="off"
+                            >
+
+                            <small>
+                                Podés ingresar una ruta interna o una URL.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="campo-imagen">
+
+                        <span class="label-imagen">
+                            Vista previa
+                        </span>
+
+
+                        <div
+                            id="previewContenedor"
+                            class="preview-imagen"
+                        >
+
+                            <div
+                                id="previewPlaceholder"
+                                class="preview-placeholder"
+                            >
+                                <span class="preview-icono">
+                                    ▧
+                                </span>
+
+                                <span>
+                                    Sin imagen
+                                </span>
+                            </div>
+
+
+                            <img
+                                id="previewImagen"
+                                class="oculto"
+                                alt="Vista previa del grupo"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="acciones-formulario">
+
+                    <button
+                        type="button"
+                        id="btnCancelar"
+                        class="btn btn-light"
+                    >
+                        Cancelar
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        id="btnGuardar"
+                        class="btn btn-primary"
+                    >
+                        Guardar grupo
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =========================
+             LISTADO
+        ========================== -->
+
+        <section class="card">
+
+            <div class="card-header listado-header">
+
+                <div>
+
+                    <h3>
+                        Grupos registrados
+                    </h3>
+
+                    <p id="cantidadGrupos">
+                        Cargando grupos...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="cargando"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner"></div>
+
+                <p>
+                    Cargando grupos...
+                </p>
+
+            </div>
+
+
+            <div
+                id="sinResultados"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    🔎
+                </div>
+
+                <h4>
+                    No se encontraron grupos
+                </h4>
+
+                <p>
+                    Probá cambiando la búsqueda o los filtros.
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenedorTabla"
+                class="tabla-responsive"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Imagen
+                            </th>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Descripción
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="columna-acciones">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tablaGrupos">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         MODAL
+    ========================== -->
+
+    <div
+        id="modalConfirmacion"
+        class="modal oculto"
+    >
+
+        <div class="modal-fondo"></div>
+
+
+        <div class="modal-contenido">
+
+            <div class="modal-icono">
+                !
+            </div>
+
+            <h3 id="modalTitulo">
+                Confirmar acción
+            </h3>
+
+            <p id="modalTexto">
+                ¿Estás seguro?
+            </p>
+
+
+            <div class="modal-acciones">
+
+                <button
+                    id="btnModalCancelar"
+                    class="btn btn-light"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+
+                <button
+                    id="btnModalConfirmar"
+                    class="btn btn-danger"
+                    type="button"
+                >
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/grupos-catalogo.js"></script>
+
+</body>
+
+</html>
