@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/grupos-catalogo")
+@RequestMapping("/api/grupos-catalogo")
 public class GrupoCatalogoController {
 
     private final IGrupoCatalogoService

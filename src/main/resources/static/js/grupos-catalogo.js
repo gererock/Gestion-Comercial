@@ -4,7 +4,7 @@
 
 
     const API_URL =
-        "/api/admin/grupos-catalogo";
+        "/api/grupos-catalogo";
 
 
     const tablaGrupos =

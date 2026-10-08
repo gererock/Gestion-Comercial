@@ -123,6 +123,23 @@ public class SecurityConfig {
                                 "VENDEDOR",
                                 "ADMINISTRADOR"
                         )
+                        // ADMINISTRADOR y VENDEDOR pueden consultar grupos de catálogo
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/grupos-catalogo",
+                                "/api/grupos-catalogo/**"
+                        )
+                        .hasAnyRole(
+                                "ADMINISTRADOR",
+                                "VENDEDOR"
+                        )
+
+                        // Solo ADMINISTRADOR puede modificar grupos de catálogo
+                        .requestMatchers(
+                                "/api/grupos-catalogo",
+                                "/api/grupos-catalogo/**"
+                        )
+                        .hasRole("ADMINISTRADOR")
 
                         // Solo cliente
                         .requestMatchers("/api/cliente/**")
