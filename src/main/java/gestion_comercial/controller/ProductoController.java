@@ -2,8 +2,9 @@ package gestion_comercial.controller;
 
 import gestion_comercial.dto.request.ProductoCreateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
-
 import gestion_comercial.service.interfaces.IProductoService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoResponse> crear(
+            @Valid
             @RequestBody
             ProductoCreateRequest request
     ) {

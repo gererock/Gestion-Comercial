@@ -66,6 +66,30 @@ public class ProductoService
                 );
 
 
+        producto.setNombre(
+                request.nombre().trim()
+        );
+
+
+        if (
+                request.descripcion() == null
+                        || request.descripcion()
+                                .trim()
+                                .isEmpty()
+        ) {
+
+            producto.setDescripcion(
+                    null
+            );
+
+        } else {
+
+            producto.setDescripcion(
+                    request.descripcion().trim()
+            );
+        }
+
+
         if (request.idCategoria() != null) {
 
             producto.setCategoria(
