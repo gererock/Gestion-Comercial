@@ -171,4 +171,36 @@ public class GlobalExceptionHandler {
                                 .status(HttpStatus.BAD_REQUEST)
                                 .body(body);
         }
+
+        @ExceptionHandler(MarcaNoEncontradaException.class)
+        public ResponseEntity<ApiErrorResponse> handleMarcaNoEncontrada(
+                        MarcaNoEncontradaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.NOT_FOUND)
+                                .body(body);
+        }
+
+        @ExceptionHandler(MarcaDuplicadaException.class)
+        public ResponseEntity<ApiErrorResponse> handleMarcaDuplicada(
+                        MarcaDuplicadaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(body);
+        }
 }

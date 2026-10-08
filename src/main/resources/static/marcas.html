@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Marcas | Todo Descartable</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/marcas.css"
+    >
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo-simbolo">
+                    TD
+                </div>
+
+                <div>
+                    <h1>Todo Descartable</h1>
+                    <p>Panel de administración</p>
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                    type="button"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+        <!-- TÍTULO -->
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Marcas
+                </p>
+
+                <h2>
+                    Gestión de marcas
+                </h2>
+
+                <p class="subtitulo">
+                    Administrá las marcas utilizadas
+                    en los productos.
+                </p>
+
+            </div>
+
+
+            <button
+                id="btnNuevaMarca"
+                class="btn btn-primary"
+                type="button"
+            >
+                + Nueva marca
+            </button>
+
+        </section>
+
+
+        <!-- MENSAJES -->
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+        ></div>
+
+
+        <!-- BUSCAR Y FILTRAR -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div>
+                    <h3>Buscar y filtrar</h3>
+
+                    <p>
+                        Encontrá rápidamente una marca.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="filtros">
+
+                <div class="campo">
+
+                    <label for="busqueda">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="busqueda"
+                        placeholder="Ej: Maped"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="filtroEstado">
+                        Estado
+                    </label>
+
+                    <select id="filtroEstado">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                        <option value="true">
+                            Activas
+                        </option>
+
+                        <option value="false">
+                            Inactivas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="acciones-filtros">
+
+                    <button
+                        id="btnBuscar"
+                        class="btn btn-secondary"
+                        type="button"
+                    >
+                        Buscar
+                    </button>
+
+                    <button
+                        id="btnLimpiar"
+                        class="btn btn-light"
+                        type="button"
+                    >
+                        Limpiar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FORMULARIO -->
+
+        <section
+            id="seccionFormulario"
+            class="card formulario-card oculto"
+        >
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3 id="tituloFormulario">
+                        Nueva marca
+                    </h3>
+
+                    <p id="textoFormulario">
+                        Completá los datos de la marca.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="btnCerrarFormulario"
+                    class="btn-cerrar"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="formMarca">
+
+                <input
+                    type="hidden"
+                    id="marcaId"
+                >
+
+
+                <div class="campo">
+
+                    <label for="nombre">
+                        Nombre
+                        <span class="requerido">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre"
+                        maxlength="100"
+                        placeholder="Ej: Maped"
+                        autocomplete="off"
+                        required
+                    >
+
+                    <small>
+                        Máximo 100 caracteres.
+                    </small>
+
+                </div>
+
+
+                <div class="acciones-formulario">
+
+                    <button
+                        type="button"
+                        id="btnCancelar"
+                        class="btn btn-light"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btnGuardar"
+                        class="btn btn-primary"
+                    >
+                        Guardar marca
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- LISTADO -->
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>Marcas</h3>
+
+                    <p id="cantidadMarcas">
+                        Cargando marcas...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="cargando"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner"></div>
+
+                <p>
+                    Cargando marcas...
+                </p>
+
+            </div>
+
+
+            <div
+                id="sinResultados"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    🔎
+                </div>
+
+                <h4>
+                    No se encontraron marcas
+                </h4>
+
+                <p>
+                    Probá cambiando la búsqueda
+                    o los filtros.
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenedorTabla"
+                class="tabla-responsive"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th class="columna-acciones">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tablaMarcas">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- MODAL -->
+
+    <div
+        id="modalConfirmacion"
+        class="modal oculto"
+    >
+
+        <div class="modal-fondo"></div>
+
+
+        <div class="modal-contenido">
+
+            <div class="modal-icono">
+                !
+            </div>
+
+            <h3 id="modalTitulo">
+                Confirmar acción
+            </h3>
+
+            <p id="modalTexto">
+                ¿Estás seguro?
+            </p>
+
+
+            <div class="modal-acciones">
+
+                <button
+                    id="btnModalCancelar"
+                    class="btn btn-light"
+                    type="button"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    id="btnModalConfirmar"
+                    class="btn btn-danger"
+                    type="button"
+                >
+                    Confirmar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/marcas.js"></script>
+
+</body>
+
+</html>
