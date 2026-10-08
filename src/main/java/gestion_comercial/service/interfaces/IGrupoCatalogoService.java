@@ -12,7 +12,10 @@ public interface IGrupoCatalogoService {
             GrupoCatalogoCreateRequest request
     );
 
-    List<GrupoCatalogoResponse> listar();
+    List<GrupoCatalogoResponse> buscar(
+            String nombre,
+            Boolean activo
+    );
 
     GrupoCatalogoResponse buscarPorId(
             Integer id
