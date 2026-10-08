@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 import lombok.Getter;
@@ -137,8 +138,18 @@ public class Producto {
     @Column(
             name = "fecha_alta",
             nullable = false,
-            insertable = false,
             updatable = false
     )
     private LocalDateTime fechaAlta;
+
+
+    @PrePersist
+    private void asignarFechaAlta() {
+
+        if (fechaAlta == null) {
+
+            fechaAlta =
+                    LocalDateTime.now();
+        }
+    }
 }
