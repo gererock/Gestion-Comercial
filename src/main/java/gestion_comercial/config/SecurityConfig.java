@@ -142,6 +142,15 @@ public class SecurityConfig {
                                                 .hasRole("ADMINISTRADOR")
 
                                                 // =========================
+                                                // PRODUCTOS - US27
+                                                // =========================
+
+                                                .requestMatchers(
+                                                                HttpMethod.POST,
+                                                                "/api/productos")
+                                                .hasRole("ADMINISTRADOR")
+
+                                                // =========================
                                                 // ROLES
                                                 // =========================
 
