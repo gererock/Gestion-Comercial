@@ -75,6 +75,7 @@ public class SecurityConfig {
                                                                 "/vendedor/**",
                                                                 "/cliente/**",
                                                                 "/catalogo/**",
+                                                                "/crear-producto.html",
                                                                 "/grupos-catalogo.html")
                                                 .permitAll()
 
