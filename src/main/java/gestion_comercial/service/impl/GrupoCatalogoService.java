@@ -78,10 +78,80 @@ public class GrupoCatalogoService
 
 
     @Override
-    public List<GrupoCatalogoResponse> listar() {
+    public List<GrupoCatalogoResponse> buscar(
+            String nombre,
+            Boolean activo
+    ) {
 
-        return grupoCatalogoRepository
-                .findAll()
+        if (nombre != null) {
+
+            if (
+                    !nombre.isEmpty()
+                            && nombre.trim().isEmpty()
+            ) {
+                throw new IllegalArgumentException(
+                        "El nombre de búsqueda no puede contener solo espacios"
+                );
+            }
+
+
+            if (
+                    !nombre.isEmpty()
+                            && !nombre.matches(
+                            ".*\\p{L}.*"
+                    )
+            ) {
+                throw new IllegalArgumentException(
+                        "El nombre de búsqueda debe contener al menos una letra"
+                );
+            }
+        }
+
+
+        List<GrupoCatalogo> grupos;
+
+
+        if (
+                nombre == null
+                        && activo == null
+        ) {
+
+            grupos =
+                    grupoCatalogoRepository.findAll();
+
+        } else if (
+                nombre != null
+                        && activo == null
+        ) {
+
+            grupos =
+                    grupoCatalogoRepository
+                            .findByNombreVisibleContainingIgnoreCase(
+                                    nombre.trim()
+                            );
+
+        } else if (
+                nombre == null
+        ) {
+
+            grupos =
+                    grupoCatalogoRepository
+                            .findByActivo(
+                                    activo
+                            );
+
+        } else {
+
+            grupos =
+                    grupoCatalogoRepository
+                            .findByNombreVisibleContainingIgnoreCaseAndActivo(
+                                    nombre.trim(),
+                                    activo
+                            );
+        }
+
+
+        return grupos
                 .stream()
                 .map(
                         GrupoCatalogoMapper::toResponse
@@ -157,16 +227,20 @@ public class GrupoCatalogoService
             );
         }
     }
+
+
     @Override
-        public GrupoCatalogoResponse cambiarEstado(
-                Integer id,
-                Boolean activo
-        ) {
+    public GrupoCatalogoResponse cambiarEstado(
+            Integer id,
+            Boolean activo
+    ) {
 
         GrupoCatalogo grupo =
                 buscarEntidadPorId(id);
 
-        grupo.setActivo(activo);
+        grupo.setActivo(
+                activo
+        );
 
         GrupoCatalogo grupoActualizado =
                 grupoCatalogoRepository.save(grupo);
@@ -174,7 +248,7 @@ public class GrupoCatalogoService
         return GrupoCatalogoMapper.toResponse(
                 grupoActualizado
         );
-        }
+    }
 
 
     private GrupoCatalogo buscarEntidadPorId(

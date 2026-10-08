@@ -94,7 +94,6 @@ public class SecurityConfig {
                                                 // CATEGORÍAS
                                                 // =========================
 
-                                                // ADMINISTRADOR y VENDEDOR pueden consultar categorías
                                                 .requestMatchers(
                                                                 HttpMethod.GET,
                                                                 "/api/categorias",
@@ -103,7 +102,6 @@ public class SecurityConfig {
                                                                 "ADMINISTRADOR",
                                                                 "VENDEDOR")
 
-                                                // Solo ADMINISTRADOR puede modificar categorías
                                                 .requestMatchers(
                                                                 "/api/categorias",
                                                                 "/api/categorias/**")
@@ -113,7 +111,6 @@ public class SecurityConfig {
                                                 // GRUPOS DE CATÁLOGO
                                                 // =========================
 
-                                                // ADMINISTRADOR y VENDEDOR pueden consultar grupos
                                                 .requestMatchers(
                                                                 HttpMethod.GET,
                                                                 "/api/grupos-catalogo",
@@ -122,7 +119,6 @@ public class SecurityConfig {
                                                                 "ADMINISTRADOR",
                                                                 "VENDEDOR")
 
-                                                // Solo ADMINISTRADOR puede modificar grupos
                                                 .requestMatchers(
                                                                 "/api/grupos-catalogo",
                                                                 "/api/grupos-catalogo/**")
@@ -132,7 +128,6 @@ public class SecurityConfig {
                                                 // MARCAS
                                                 // =========================
 
-                                                // ADMINISTRADOR y VENDEDOR pueden consultar marcas
                                                 .requestMatchers(
                                                                 HttpMethod.GET,
                                                                 "/api/marcas",
@@ -141,27 +136,23 @@ public class SecurityConfig {
                                                                 "ADMINISTRADOR",
                                                                 "VENDEDOR")
 
-                                                // Solo ADMINISTRADOR puede modificar marcas
                                                 .requestMatchers(
                                                                 "/api/marcas",
                                                                 "/api/marcas/**")
                                                 .hasRole("ADMINISTRADOR")
 
                                                 // =========================
-                                                // ROLES GENERALES
+                                                // ROLES
                                                 // =========================
 
-                                                // Solo administrador
                                                 .requestMatchers("/api/admin/**")
                                                 .hasRole("ADMINISTRADOR")
 
-                                                // Vendedor y administrador
                                                 .requestMatchers("/api/vendedor/**")
                                                 .hasAnyRole(
                                                                 "VENDEDOR",
                                                                 "ADMINISTRADOR")
 
-                                                // Solo cliente
                                                 .requestMatchers("/api/cliente/**")
                                                 .hasRole("CLIENTE")
 
