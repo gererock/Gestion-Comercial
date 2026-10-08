@@ -4,6 +4,8 @@ import gestion_comercial.entity.GrupoCatalogo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface GrupoCatalogoRepository
         extends JpaRepository<GrupoCatalogo, Integer> {
 
@@ -14,5 +16,24 @@ public interface GrupoCatalogoRepository
     boolean existsByNombreVisibleIgnoreCaseAndIdGrupoCatalogoNot(
             String nombreVisible,
             Integer idGrupoCatalogo
+    );
+
+
+    List<GrupoCatalogo>
+    findByNombreVisibleContainingIgnoreCase(
+            String nombreVisible
+    );
+
+
+    List<GrupoCatalogo>
+    findByActivo(
+            Boolean activo
+    );
+
+
+    List<GrupoCatalogo>
+    findByNombreVisibleContainingIgnoreCaseAndActivo(
+            String nombreVisible,
+            Boolean activo
     );
 }
