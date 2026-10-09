@@ -1,31 +1,69 @@
 <!doctype html>
 <html lang="es">
+
 <head>
+
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Iniciar sesión | Gestión Comercial</title>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
+    <title>
+        Iniciar sesión | Gestión Comercial
+    </title>
+
+    <link
+            rel="stylesheet"
+            href="/login/css/style.css"
+    >
+
 </head>
+
 
 <body>
 
+
 <main class="cl-login02-demo">
 
-    <section class="cl-login02" aria-labelledby="login-title">
+
+    <section
+            class="cl-login02"
+            aria-labelledby="login-title"
+    >
+
 
         <div class="cl-login02__card">
 
-            <span class="cl-login02__mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="22" height="22">
+
+            <span
+                    class="cl-login02__mark"
+                    aria-hidden="true"
+            >
+
+                <svg
+                        viewBox="0 0 24 24"
+                        width="22"
+                        height="22"
+                >
+
                     <path
                             d="M12 3c5 0 9 3.6 9 8.5S17 20 12 20c-4.6 0-9-2.8-9-7.5S7 3 12 3Z"
                             fill="#fff"
                     />
-                    <circle cx="15" cy="10" r="2" fill="currentColor"/>
+
+                    <circle
+                            cx="15"
+                            cy="10"
+                            r="2"
+                            fill="currentColor"
+                    />
+
                 </svg>
+
             </span>
+
 
             <h1
                     class="cl-login02__title"
@@ -34,9 +72,11 @@
                 Iniciar sesión
             </h1>
 
+
             <p class="cl-login02__sub">
                 Ingresá con tu correo electrónico y contraseña.
             </p>
+
 
             <form
                     class="cl-login02__form"
@@ -44,7 +84,8 @@
                     novalidate
             >
 
-                <!-- Correo -->
+
+                <!-- CORREO -->
                 <div
                         class="cl-login02__field"
                         data-field
@@ -78,7 +119,7 @@
                 </div>
 
 
-                <!-- Contraseña -->
+                <!-- CONTRASEÑA -->
                 <div
                         class="cl-login02__field"
                         data-field
@@ -90,6 +131,7 @@
                     >
                         Contraseña
                     </label>
+
 
                     <div class="cl-login02__pw">
 
@@ -103,6 +145,7 @@
                                 aria-describedby="password-error"
                         >
 
+
                         <button
                                 class="cl-login02__eye"
                                 type="button"
@@ -112,7 +155,6 @@
                                 aria-controls="password"
                         >
 
-                            <!-- Mostrar -->
                             <svg
                                     class="cl-login02__eye-on"
                                     viewBox="0 0 24 24"
@@ -129,7 +171,7 @@
                                 <circle cx="12" cy="12" r="3"/>
                             </svg>
 
-                            <!-- Ocultar -->
+
                             <svg
                                     class="cl-login02__eye-off"
                                     viewBox="0 0 24 24"
@@ -152,6 +194,7 @@
 
                     </div>
 
+
                     <p
                             class="cl-login02__error"
                             id="password-error"
@@ -161,7 +204,7 @@
                 </div>
 
 
-                <!-- Mensaje general -->
+                <!-- MENSAJE GENERAL -->
                 <div
                         class="cl-login02__message"
                         id="login-message"
@@ -177,27 +220,35 @@
                     Iniciar sesión
                 </button>
 
+
             </form>
 
         </div>
 
 
         <p class="cl-login02__foot">
+
             ¿Todavía no tenés una cuenta?
+
             <a
                     class="cl-login02__link"
-                    href="../registro/"
+                    href="/registro/index.html"
             >
                 Crear una cuenta
             </a>
+
         </p>
+
 
     </section>
 
 </main>
 
-<script src="../js/auth.js"></script>
-<script src="js/login.js"></script>
+
+<script src="/js/auth.js"></script>
+<script src="/login/js/login.js"></script>
+
 
 </body>
+
 </html>

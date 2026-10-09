@@ -203,4 +203,20 @@ public class GlobalExceptionHandler {
                                 .status(HttpStatus.CONFLICT)
                                 .body(body);
         }
+
+        @ExceptionHandler(EmailYaRegistradoException.class)
+        public ResponseEntity<ApiErrorResponse> handleRegistradoDuplicada(
+                        EmailYaRegistradoException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.CONFLICT)
+                                .body(body);
+        }
 }
