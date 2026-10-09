@@ -1,7 +1,9 @@
 package gestion_comercial.controller;
 
 import gestion_comercial.dto.request.LoginRequest;
+import gestion_comercial.dto.request.RegistroRequest;
 import gestion_comercial.dto.response.LoginResponse;
+import gestion_comercial.dto.response.RegistroResponse;
 import gestion_comercial.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -27,5 +29,10 @@ public class AuthController {
         return ResponseEntity.ok(
                 authService.login(request)
         );
+    }
+
+    @PostMapping("/registro")
+    public ResponseEntity<RegistroResponse> registrar(@Valid @RequestBody RegistroRequest request) {
+        return ResponseEntity.ok(authService.registra(request));
     }
 }

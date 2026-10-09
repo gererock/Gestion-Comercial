@@ -71,6 +71,7 @@ public class SecurityConfig {
                                                                 "/img/**",
                                                                 "/images/**",
                                                                 "/login/**",
+                                                                "/registro/**",
                                                                 "/admin/**",
                                                                 "/vendedor/**",
                                                                 "/cliente/**",

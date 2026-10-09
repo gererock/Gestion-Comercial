@@ -2,26 +2,58 @@
 
     'use strict';
 
-    const form = document.getElementById('login-form');
 
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
+    const form =
+        document.getElementById(
+            'login-form'
+        );
 
-    const emailError = document.getElementById('email-error');
-    const passwordError = document.getElementById('password-error');
+
+    const emailInput =
+        document.getElementById(
+            'email'
+        );
+
+
+    const passwordInput =
+        document.getElementById(
+            'password'
+        );
+
+
+    const emailError =
+        document.getElementById(
+            'email-error'
+        );
+
+
+    const passwordError =
+        document.getElementById(
+            'password-error'
+        );
+
 
     const togglePassword =
-        document.getElementById('toggle-password');
+        document.getElementById(
+            'toggle-password'
+        );
+
 
     const loginMessage =
-        document.getElementById('login-message');
+        document.getElementById(
+            'login-message'
+        );
+
 
     const submitButton =
-        form.querySelector('button[type="submit"]');
+        form.querySelector(
+            'button[type="submit"]'
+        );
 
 
     const EMAIL_REGEX =
         /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
 
 
     function mostrarError(
@@ -30,11 +62,15 @@
         mensaje
     ) {
 
-        errorElement.textContent = mensaje;
+        errorElement.textContent =
+            mensaje;
+
 
         input
             .closest('[data-field]')
-            .classList.add('is-error');
+            .classList
+            .add('is-error');
+
 
         input.setAttribute(
             'aria-invalid',
@@ -43,16 +79,21 @@
     }
 
 
+
     function limpiarError(
         input,
         errorElement
     ) {
 
-        errorElement.textContent = '';
+        errorElement.textContent =
+            '';
+
 
         input
             .closest('[data-field]')
-            .classList.remove('is-error');
+            .classList
+            .remove('is-error');
+
 
         input.removeAttribute(
             'aria-invalid'
@@ -60,31 +101,80 @@
     }
 
 
+
     function mostrarMensaje(
         mensaje,
         tipo = 'error'
     ) {
 
-        loginMessage.textContent = mensaje;
+        loginMessage.textContent =
+            mensaje;
+
 
         loginMessage.className =
             `cl-login02__message is-${tipo}`;
 
-        loginMessage.hidden = false;
+
+        loginMessage.hidden =
+            false;
     }
+
 
 
     function ocultarMensaje() {
 
-        loginMessage.hidden = true;
-        loginMessage.textContent = '';
+        loginMessage.hidden =
+            true;
+
+        loginMessage.textContent =
+            '';
     }
+
+
+
+    /*
+     * Si el usuario viene desde el registro,
+     * mostramos un mensaje indicando que
+     * la cuenta fue creada correctamente.
+     */
+
+    const parametros =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    if (
+        parametros.get('registro') ===
+        'exitoso'
+    ) {
+
+        mostrarMensaje(
+            'Tu cuenta fue creada correctamente. Ya podés iniciar sesión.',
+            'success'
+        );
+
+
+        /*
+         * Quitamos ?registro=exitoso de la URL
+         * para que al actualizar la página
+         * no vuelva a aparecer el mensaje.
+         */
+
+        window.history.replaceState(
+            {},
+            document.title,
+            '/login/index.html'
+        );
+    }
+
 
 
     function validarEmail() {
 
         const email =
             emailInput.value.trim();
+
 
         if (email === '') {
 
@@ -97,6 +187,7 @@
             return false;
         }
 
+
         if (/\s/.test(email)) {
 
             mostrarError(
@@ -108,7 +199,10 @@
             return false;
         }
 
-        if (!EMAIL_REGEX.test(email)) {
+
+        if (
+            !EMAIL_REGEX.test(email)
+        ) {
 
             mostrarError(
                 emailInput,
@@ -119,6 +213,7 @@
             return false;
         }
 
+
         limpiarError(
             emailInput,
             emailError
@@ -128,12 +223,16 @@
     }
 
 
+
     function validarPassword() {
 
         const password =
             passwordInput.value;
 
-        if (password.trim() === '') {
+
+        if (
+            password.trim() === ''
+        ) {
 
             mostrarError(
                 passwordInput,
@@ -144,6 +243,7 @@
             return false;
         }
 
+
         limpiarError(
             passwordInput,
             passwordError
@@ -151,6 +251,7 @@
 
         return true;
     }
+
 
 
     emailInput.addEventListener(
@@ -165,26 +266,35 @@
     );
 
 
+
     emailInput.addEventListener(
         'input',
         () => {
 
-            if (emailError.textContent !== '') {
+            if (
+                emailError.textContent !== ''
+            ) {
+
                 validarEmail();
             }
         }
     );
 
 
+
     passwordInput.addEventListener(
         'input',
         () => {
 
-            if (passwordError.textContent !== '') {
+            if (
+                passwordError.textContent !== ''
+            ) {
+
                 validarPassword();
             }
         }
     );
+
 
 
     togglePassword.addEventListener(
@@ -192,17 +302,21 @@
         () => {
 
             const mostrar =
-                passwordInput.type === 'password';
+                passwordInput.type ===
+                'password';
+
 
             passwordInput.type =
                 mostrar
                     ? 'text'
                     : 'password';
 
+
             togglePassword.setAttribute(
                 'aria-pressed',
                 String(mostrar)
             );
+
 
             togglePassword.setAttribute(
                 'aria-label',
@@ -214,6 +328,7 @@
     );
 
 
+
     form.addEventListener(
         'submit',
         async (event) => {
@@ -222,49 +337,66 @@
 
             ocultarMensaje();
 
+
             const emailValido =
                 validarEmail();
+
 
             const passwordValida =
                 validarPassword();
 
+
             if (!emailValido) {
+
                 emailInput.focus();
+
                 return;
             }
+
 
             if (!passwordValida) {
+
                 passwordInput.focus();
+
                 return;
             }
 
 
-            submitButton.disabled = true;
+            submitButton.disabled =
+                true;
+
+
             submitButton.textContent =
                 'Iniciando sesión...';
 
 
             try {
 
-                const response = await fetch(
-                    '/api/auth/login',
-                    {
-                        method: 'POST',
+                const response =
+                    await fetch(
+                        '/api/auth/login',
+                        {
+                            method: 'POST',
 
-                        headers: {
-                            'Content-Type':
-                                'application/json'
-                        },
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
 
-                        body: JSON.stringify({
-                            email:
-                                emailInput.value.trim(),
+                            body:
+                                JSON.stringify({
 
-                            password:
-                                passwordInput.value
-                        })
-                    }
-                );
+                                    email:
+                                        emailInput
+                                            .value
+                                            .trim(),
+
+                                    password:
+                                        passwordInput
+                                            .value
+                                })
+                        }
+                    );
 
 
                 const data =
@@ -273,7 +405,9 @@
 
                 if (!response.ok) {
 
-                    if (data.errors?.email) {
+                    if (
+                        data.errors?.email
+                    ) {
 
                         mostrarError(
                             emailInput,
@@ -282,7 +416,10 @@
                         );
                     }
 
-                    if (data.errors?.password) {
+
+                    if (
+                        data.errors?.password
+                    ) {
 
                         mostrarError(
                             passwordInput,
@@ -290,6 +427,7 @@
                             data.errors.password
                         );
                     }
+
 
                     mostrarMensaje(
                         data.message ||
@@ -300,13 +438,10 @@
                 }
 
 
-                Auth.guardarSesion(data);
+                Auth.guardarSesion(
+                    data
+                );
 
-                /*
-                 * No se elimina localStorage.
-                 * Si existe un carrito previo,
-                 * continúa guardado después del login.
-                 */
 
                 mostrarMensaje(
                     'Inicio de sesión correcto.',
@@ -318,15 +453,20 @@
                     data.rol
                 );
 
+
             } catch (error) {
 
                 mostrarMensaje(
                     'No se pudo conectar con el servidor.'
                 );
 
+
             } finally {
 
-                submitButton.disabled = false;
+                submitButton.disabled =
+                    false;
+
+
                 submitButton.textContent =
                     'Iniciar sesión';
             }
