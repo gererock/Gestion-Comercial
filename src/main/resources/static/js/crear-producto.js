@@ -272,7 +272,7 @@
             cargarSelect(
                 marca,
                 marcas,
-                "id",
+                "id_marca",
                 "nombre",
                 "Sin marca"
             );
@@ -1041,10 +1041,7 @@
 
         return valor === ""
             ? null
-            : Number.parseInt(
-                valor,
-                10
-            );
+            : Number(valor);
     }
 
 
