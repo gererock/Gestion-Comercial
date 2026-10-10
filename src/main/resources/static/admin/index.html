@@ -35,9 +35,22 @@
         Crear producto
     </a>
 
-    
+    <br>
+    <br>
 
-        <br>
+    <label for="productoEditar">
+        ID del producto a modificar:
+    </label>
+
+    <input type="number" id="productoEditar" min="1" step="1">
+
+    <button type="button" id="btnEditarProducto">
+        Modificar producto
+    </button>
+
+
+
+    <br>
 
     <button id="logout">
         Cerrar sesión
@@ -64,6 +77,43 @@
         ).addEventListener(
             'click',
             Auth.cerrarSesion
+        );
+
+        document.getElementById(
+            'btnEditarProducto'
+        ).addEventListener(
+            'click',
+            () => {
+
+                const input =
+                    document.getElementById(
+                        'productoEditar'
+                    );
+
+
+                const id =
+                    Number(
+                        input.value
+                    );
+
+
+                if (
+                    !Number.isInteger(id)
+                    ||
+                    id <= 0
+                ) {
+
+                    alert(
+                        'Ingresá un ID de producto válido.'
+                    );
+
+                    return;
+                }
+
+
+                window.location.href =
+                    `/editar-producto.html?id=${id}`;
+            }
         );
 
     </script>
