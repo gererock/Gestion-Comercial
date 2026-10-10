@@ -1,6 +1,7 @@
 package gestion_comercial.service.impl;
 
 import gestion_comercial.dto.request.ProductoCreateRequest;
+import gestion_comercial.dto.request.ProductoUpdateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
 
 import gestion_comercial.entity.Categoria;
@@ -11,6 +12,7 @@ import gestion_comercial.entity.Producto;
 import gestion_comercial.exception.CategoriaNoEncontradaException;
 import gestion_comercial.exception.GrupoCatalogoNoEncontradoException;
 import gestion_comercial.exception.MarcaNoEncontradaException;
+import gestion_comercial.exception.ProductoNoEncontradoException;
 
 import gestion_comercial.mapper.ProductoMapper;
 
@@ -23,6 +25,7 @@ import gestion_comercial.service.interfaces.IProductoService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class ProductoService
@@ -62,15 +65,25 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // CREAR PRODUCTO - US27
+    // =========================================
+
     @Override
     @Transactional
     public ProductoResponse crear(
             ProductoCreateRequest request
     ) {
 
-        validarMayorista(request);
+        validarMayorista(
+                request.cantidadMinimaMayorista(),
+                request.porcentajeDescuentoMayorista()
+        );
 
-        validarOferta(request);
+        validarOferta(
+                request.enOferta(),
+                request.porcentajeDescuentoOferta()
+        );
 
 
         Producto producto =
@@ -84,23 +97,11 @@ public class ProductoService
         );
 
 
-        if (
-                request.descripcion() == null
-                        || request.descripcion()
-                                .trim()
-                                .isEmpty()
-        ) {
-
-            producto.setDescripcion(
-                    null
-            );
-
-        } else {
-
-            producto.setDescripcion(
-                    request.descripcion().trim()
-            );
-        }
+        producto.setDescripcion(
+                limpiarDescripcion(
+                        request.descripcion()
+                )
+        );
 
 
         asignarCategoria(
@@ -133,20 +134,191 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // OBTENER PRODUCTO POR ID - US28
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProductoResponse obtenerPorId(
+            Integer id
+    ) {
+
+        Producto producto =
+                buscarProducto(id);
+
+
+        return ProductoMapper.toResponse(
+                producto
+        );
+    }
+
+
+
+    @Override
+    @Transactional
+    public ProductoResponse modificar(
+            Integer id,
+            ProductoUpdateRequest request
+    ) {
+
+        Producto producto =
+                buscarProducto(id);
+
+
+        validarMayorista(
+                request.cantidadMinimaMayorista(),
+                request.porcentajeDescuentoMayorista()
+        );
+
+
+        validarOferta(
+                request.enOferta(),
+                request.porcentajeDescuentoOferta()
+        );
+
+        producto.setNombre(
+                request.nombre().trim()
+        );
+
+
+        producto.setDescripcion(
+                limpiarDescripcion(
+                        request.descripcion()
+                )
+        );
+
+
+        producto.setCategoria(
+                obtenerCategoria(
+                        request.idCategoria()
+                )
+        );
+
+
+        producto.setMarca(
+                obtenerMarca(
+                        request.idMarca()
+                )
+        );
+
+
+        producto.setGrupoCatalogo(
+                obtenerGrupoCatalogo(
+                        request.idGrupoCatalogo()
+                )
+        );
+
+
+        producto.setPrecioCosto(
+                request.precioCosto()
+        );
+
+
+        producto.setPrecioVenta(
+                request.precioVenta()
+        );
+
+
+        if (
+                request.stockMinimo()
+                        != null
+        ) {
+
+            producto.setStockMinimo(
+                    request.stockMinimo()
+            );
+        }
+
+        producto.setCantidadMinimaMayorista(
+                request.cantidadMinimaMayorista()
+        );
+
+
+        producto.setPorcentajeDescuentoMayorista(
+                request.porcentajeDescuentoMayorista()
+        );
+
+
+        producto.setEnOferta(
+                request.enOferta()
+        );
+
+
+        if (
+                Boolean.TRUE.equals(
+                        request.enOferta()
+                )
+        ) {
+
+            producto.setPorcentajeDescuentoOferta(
+                    request.porcentajeDescuentoOferta()
+            );
+
+        } else {
+
+            producto.setPorcentajeDescuentoOferta(
+                    null
+            );
+        }
+
+
+        producto.setEstado(
+                request.estado()
+        );
+
+
+        producto.setPublicadoOnline(
+                request.publicadoOnline()
+        );
+
+
+        Producto productoGuardado =
+                productoRepository.saveAndFlush(
+                        producto
+                );
+
+
+        return ProductoMapper.toResponse(
+                productoGuardado
+        );
+    }
+
+
+    private Producto buscarProducto(
+            Integer id
+    ) {
+
+        return productoRepository
+                .findById(id)
+                .orElseThrow(
+                        () ->
+                                new ProductoNoEncontradoException(
+                                        "No existe un producto con este ID"
+                                )
+                );
+    }
+
+
+
+
     private void validarMayorista(
-            ProductoCreateRequest request
+            Integer cantidadMinima,
+            java.math.BigDecimal porcentaje
     ) {
 
         boolean tieneCantidad =
-                request.cantidadMinimaMayorista()
-                        != null;
+                cantidadMinima != null;
 
         boolean tienePorcentaje =
-                request.porcentajeDescuentoMayorista()
-                        != null;
+                porcentaje != null;
 
 
-        if (tieneCantidad != tienePorcentaje) {
+        if (
+                tieneCantidad
+                        !=
+                tienePorcentaje
+        ) {
 
             throw new IllegalArgumentException(
                     "Para configurar descuento mayorista debe indicar cantidad mínima y porcentaje de descuento"
@@ -156,22 +328,24 @@ public class ProductoService
 
 
     private void validarOferta(
-            ProductoCreateRequest request
+            Boolean enOferta,
+            java.math.BigDecimal porcentaje
     ) {
 
-        boolean enOferta =
+        boolean ofertaActiva =
                 Boolean.TRUE.equals(
-                        request.enOferta()
+                        enOferta
                 );
 
+
         boolean tienePorcentaje =
-                request.porcentajeDescuentoOferta()
-                        != null;
+                porcentaje != null;
 
 
         if (
-                enOferta
-                        && !tienePorcentaje
+                ofertaActiva
+                        &&
+                !tienePorcentaje
         ) {
 
             throw new IllegalArgumentException(
@@ -181,8 +355,9 @@ public class ProductoService
 
 
         if (
-                !enOferta
-                        && tienePorcentaje
+                !ofertaActiva
+                        &&
+                tienePorcentaje
         ) {
 
             throw new IllegalArgumentException(
@@ -190,6 +365,7 @@ public class ProductoService
             );
         }
     }
+
 
 
     private void asignarCategoria(
@@ -202,29 +378,10 @@ public class ProductoService
         }
 
 
-        Categoria categoria =
-                categoriaRepository
-                        .findById(idCategoria)
-                        .orElseThrow(
-                                () ->
-                                        new CategoriaNoEncontradaException(
-                                                "No se encontró la categoría seleccionada"
-                                        )
-                        );
-
-
-        if (!Boolean.TRUE.equals(
-                categoria.getActiva()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "La categoría seleccionada está inactiva"
-            );
-        }
-
-
         producto.setCategoria(
-                categoria
+                obtenerCategoria(
+                        idCategoria
+                )
         );
     }
 
@@ -239,31 +396,13 @@ public class ProductoService
         }
 
 
-        Marca marca =
-                marcaRepository
-                        .findById(idMarca)
-                        .orElseThrow(
-                                () ->
-                                        new MarcaNoEncontradaException(
-                                                "No se encontró la marca seleccionada"
-                                        )
-                        );
-
-
-        if (!Boolean.TRUE.equals(
-                marca.getActiva()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "La marca seleccionada está inactiva"
-            );
-        }
-
-
         producto.setMarca(
-                marca
+                obtenerMarca(
+                        idMarca
+                )
         );
     }
+
 
 
     private void asignarGrupoCatalogo(
@@ -276,9 +415,107 @@ public class ProductoService
         }
 
 
+        producto.setGrupoCatalogo(
+                obtenerGrupoCatalogo(
+                        idGrupoCatalogo
+                )
+        );
+    }
+
+
+
+    private Categoria obtenerCategoria(
+            Integer idCategoria
+    ) {
+
+        if (idCategoria == null) {
+            return null;
+        }
+
+
+        Categoria categoria =
+                categoriaRepository
+                        .findById(
+                                idCategoria
+                        )
+                        .orElseThrow(
+                                () ->
+                                        new CategoriaNoEncontradaException(
+                                                "No se encontró la categoría seleccionada"
+                                        )
+                        );
+
+
+        if (
+                !Boolean.TRUE.equals(
+                        categoria.getActiva()
+                )
+        ) {
+
+            throw new IllegalArgumentException(
+                    "La categoría seleccionada está inactiva"
+            );
+        }
+
+
+        return categoria;
+    }
+
+
+    private Marca obtenerMarca(
+            Integer idMarca
+    ) {
+
+        if (idMarca == null) {
+            return null;
+        }
+
+
+        Marca marca =
+                marcaRepository
+                        .findById(
+                                idMarca
+                        )
+                        .orElseThrow(
+                                () ->
+                                        new MarcaNoEncontradaException(
+                                                "No se encontró la marca seleccionada"
+                                        )
+                        );
+
+
+        if (
+                !Boolean.TRUE.equals(
+                        marca.getActiva()
+                )
+        ) {
+
+            throw new IllegalArgumentException(
+                    "La marca seleccionada está inactiva"
+            );
+        }
+
+
+        return marca;
+    }
+
+    private GrupoCatalogo obtenerGrupoCatalogo(
+            Integer idGrupoCatalogo
+    ) {
+
+        if (
+                idGrupoCatalogo == null
+        ) {
+
+            return null;
+        }
+
+
         GrupoCatalogo grupoCatalogo =
                 grupoCatalogoRepository
-                        .findById(idGrupoCatalogo)
+                        .findById(
+                                idGrupoCatalogo
+                        )
                         .orElseThrow(
                                 () ->
                                         new GrupoCatalogoNoEncontradoException(
@@ -287,9 +524,11 @@ public class ProductoService
                         );
 
 
-        if (!Boolean.TRUE.equals(
-                grupoCatalogo.getActivo()
-        )) {
+        if (
+                !Boolean.TRUE.equals(
+                        grupoCatalogo.getActivo()
+                )
+        ) {
 
             throw new IllegalArgumentException(
                     "El grupo de catálogo seleccionado está inactivo"
@@ -297,8 +536,25 @@ public class ProductoService
         }
 
 
-        producto.setGrupoCatalogo(
-                grupoCatalogo
-        );
+        return grupoCatalogo;
+    }
+
+
+
+    private String limpiarDescripcion(
+            String descripcion
+    ) {
+
+        if (
+                descripcion == null
+                        ||
+                descripcion.trim().isEmpty()
+        ) {
+
+            return null;
+        }
+
+
+        return descripcion.trim();
     }
 }

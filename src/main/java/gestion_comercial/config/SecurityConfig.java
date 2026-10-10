@@ -77,6 +77,7 @@ public class SecurityConfig {
                                                                 "/cliente/**",
                                                                 "/catalogo/**",
                                                                 "/crear-producto.html",
+                                                                "/editar-producto.html",
                                                                 "/grupos-catalogo.html")
                                                 .permitAll()
 
@@ -151,6 +152,18 @@ public class SecurityConfig {
                                                                 HttpMethod.POST,
                                                                 "/api/productos")
                                                 .hasRole("ADMINISTRADOR")
+
+                                                .requestMatchers(
+                                                                HttpMethod.PUT,
+                                                                "/api/productos/**")
+                                                .hasRole("ADMINISTRADOR")
+
+                                                .requestMatchers(
+                                                                HttpMethod.GET,
+                                                                "/api/productos/**")
+                                                .hasAnyRole(
+                                                                "ADMINISTRADOR",
+                                                                "VENDEDOR")
 
                                                 // =========================
                                                 // ROLES

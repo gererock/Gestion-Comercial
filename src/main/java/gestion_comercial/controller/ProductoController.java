@@ -1,6 +1,7 @@
 package gestion_comercial.controller;
 
 import gestion_comercial.dto.request.ProductoCreateRequest;
+import gestion_comercial.dto.request.ProductoUpdateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
 import gestion_comercial.service.interfaces.IProductoService;
 
@@ -8,8 +9,10 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,38 +21,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/productos")
 public class ProductoController {
 
-    private final IProductoService
-            productoService;
+        private final IProductoService productoService;
 
+        public ProductoController(
+                        IProductoService productoService) {
 
-    public ProductoController(
-            IProductoService productoService
-    ) {
+                this.productoService = productoService;
+        }
 
-        this.productoService =
-                productoService;
-    }
+        @PostMapping
+        public ResponseEntity<ProductoResponse> crear(
+                        @Valid @RequestBody ProductoCreateRequest request) {
 
+                ProductoResponse producto = productoService.crear(
+                                request);
 
-    @PostMapping
-    public ResponseEntity<ProductoResponse> crear(
-            @Valid
-            @RequestBody
-            ProductoCreateRequest request
-    ) {
+                return ResponseEntity
+                                .status(
+                                                HttpStatus.CREATED)
+                                .body(
+                                                producto);
+        }
 
-        ProductoResponse producto =
-                productoService.crear(
-                        request
-                );
+        @PutMapping("/{id}")
+        public ResponseEntity<ProductoResponse> modificar(@Valid @RequestBody ProductoUpdateRequest request,
+                        @PathVariable Integer id) {
+                return ResponseEntity.ok(productoService.modificar(id, request));
+        }
 
+        @GetMapping("/{id}")
+        public ResponseEntity<ProductoResponse> obtenerPorId(
+                        @PathVariable Integer id) {
 
-        return ResponseEntity
-                .status(
-                        HttpStatus.CREATED
-                )
-                .body(
-                        producto
-                );
-    }
+                ProductoResponse producto = productoService.obtenerPorId(
+                                id);
+
+                return ResponseEntity.ok(
+                                producto);
+        }
 }

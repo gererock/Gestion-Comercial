@@ -219,4 +219,21 @@ public class GlobalExceptionHandler {
                                 .status(HttpStatus.CONFLICT)
                                 .body(body);
         }
+
+        @ExceptionHandler(ProductoNoEncontradoException.class)
+        public ResponseEntity<ApiErrorResponse> handleProductoNoEncontrado(
+                ProductoNoEncontradoException exception,
+                HttpServletRequest request
+        ) {
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        exception.getMessage(),
+                        request.getRequestURI()
+                );
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+        }
+
+
 }
