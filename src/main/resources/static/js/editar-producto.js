@@ -2,7 +2,6 @@
 
     "use strict";
 
-
     const API_PRODUCTOS =
         "/api/productos";
 
@@ -20,7 +19,6 @@
 
 
     let idProducto = null;
-
     let guardando = false;
 
 
@@ -31,17 +29,12 @@
 
 
     // =====================================
-    // INICIAR
+    // INICIO
     // =====================================
 
     async function iniciar() {
 
-        if (
-            !Auth.requerirRol(
-                "ADMINISTRADOR"
-            )
-        ) {
-
+        if (!Auth.requerirRol("ADMINISTRADOR")) {
             return;
         }
 
@@ -85,7 +78,6 @@
 
             console.error(error);
 
-
             mostrarMensaje(
                 error.message ||
                 "No se pudo cargar el producto.",
@@ -99,10 +91,6 @@
         }
     }
 
-
-    // =====================================
-    // OBTENER ID DESDE URL
-    // =====================================
 
     function obtenerIdProducto() {
 
@@ -459,7 +447,7 @@
 
 
     // =====================================
-    // CARGAR PRODUCTO ACTUAL
+    // PRODUCTO ACTUAL
     // =====================================
 
     async function cargarProducto() {
@@ -500,11 +488,15 @@
     }
 
 
+    // =====================================
+    // GRUPO DE CATÁLOGO - US63
+    // =====================================
+
     async function prepararGrupoCatalogoActual(
         idGrupoCatalogo
     ) {
 
-        eliminarGrupoInactivoActual();
+        eliminarGrupoActualEspecial();
 
 
         if (
@@ -517,7 +509,7 @@
         }
 
 
-        const existeEntreActivos =
+        const existeEntreOpciones =
             Array.from(
                 grupoCatalogo.options
             )
@@ -533,11 +525,20 @@
                 );
 
 
-        if (existeEntreActivos) {
+        /*
+         * Si ya está en el select significa que actualmente
+         * está entre los grupos activos disponibles.
+         */
+        if (existeEntreOpciones) {
             return;
         }
 
 
+        /*
+         * Si no está entre los activos, consultamos el grupo
+         * porque puede ser una asociación previa que luego
+         * fue desactivada.
+         */
         const response =
             await Auth.fetchAutenticado(
                 `${API_GRUPOS_BASE}/${idGrupoCatalogo}`
@@ -576,13 +577,24 @@
             grupo.idGrupoCatalogo;
 
 
-        option.textContent =
-            grupo.activo
-                ? grupo.nombreVisible
-                : `${grupo.nombreVisible} (inactivo - asociación actual)`;
+        if (grupo.activo) {
+
+            option.textContent =
+                grupo.nombreVisible;
+
+        } else {
+
+            option.textContent =
+                `${grupo.nombreVisible} (inactivo - asociación actual)`;
+        }
 
 
-        option.dataset.grupoActualInactivo =
+        /*
+         * Esta opción existe únicamente para representar
+         * la asociación actual que no estaba dentro del
+         * listado normal de grupos activos.
+         */
+        option.dataset.grupoActualEspecial =
             "true";
 
 
@@ -592,11 +604,11 @@
     }
 
 
-    function eliminarGrupoInactivoActual() {
+    function eliminarGrupoActualEspecial() {
 
         grupoCatalogo
             .querySelectorAll(
-                'option[data-grupo-actual-inactivo="true"]'
+                'option[data-grupo-actual-especial="true"]'
             )
             .forEach(
                 option =>
@@ -604,6 +616,10 @@
             );
     }
 
+
+    // =====================================
+    // CARGAR DATOS
+    // =====================================
 
     function cargarDatosProducto(
         producto
@@ -728,6 +744,10 @@
         }
 
 
+        /*
+         * Fallback usado para relaciones que por algún motivo
+         * no pudieron cargarse normalmente.
+         */
         const option =
             document.createElement(
                 "option"
@@ -753,7 +773,7 @@
 
 
     // =====================================
-    // GUARDAR CAMBIOS
+    // GUARDAR
     // =====================================
 
     async function guardarCambios(
@@ -802,7 +822,6 @@
                         method: "PUT",
 
                         headers: {
-
                             "Content-Type":
                                 "application/json"
                         },
@@ -834,6 +853,15 @@
                 await response.json();
 
 
+            /*
+             * Después de guardar reconstruimos las opciones.
+             *
+             * Si conserva el mismo grupo inactivo:
+             * vuelve a mostrarse como asociación actual.
+             *
+             * Si cambió a un grupo activo o lo quitó:
+             * el antiguo grupo inactivo desaparece.
+             */
             await prepararGrupoCatalogoActual(
                 productoActualizado.idGrupoCatalogo
             );
@@ -872,7 +900,7 @@
 
 
     // =====================================
-    // CONSTRUIR REQUEST
+    // REQUEST
     // =====================================
 
     function construirProducto() {
@@ -1087,9 +1115,7 @@
             tienePorcentajeMayorista
         ) {
 
-            if (
-                !tieneCantidadMayorista
-            ) {
+            if (!tieneCantidadMayorista) {
 
                 marcarError(
                     cantidadMinimaMayorista,
@@ -1099,9 +1125,7 @@
             }
 
 
-            if (
-                !tienePorcentajeMayorista
-            ) {
+            if (!tienePorcentajeMayorista) {
 
                 marcarError(
                     porcentajeMayorista,
@@ -1161,13 +1185,10 @@
         }
 
 
-        if (
-            enOferta.checked
-        ) {
+        if (enOferta.checked) {
 
             if (
-                porcentajeOferta.value
-                === ""
+                porcentajeOferta.value === ""
             ) {
 
                 marcarError(
@@ -1232,10 +1253,7 @@
         nombreCampo
     ) {
 
-        if (
-            input.value === ""
-        ) {
-
+        if (input.value === "") {
             return true;
         }
 
@@ -1247,9 +1265,7 @@
 
 
         if (
-            !Number.isInteger(
-                valor
-            )
+            !Number.isInteger(valor)
             ||
             valor < 0
         ) {
@@ -1280,9 +1296,7 @@
 
 
         return (
-            Number.isFinite(
-                numero
-            )
+            Number.isFinite(numero)
             &&
             numero > 0
             &&
@@ -1297,9 +1311,7 @@
 
     function actualizarOferta() {
 
-        if (
-            enOferta.checked
-        ) {
+        if (enOferta.checked) {
 
             contenedorPorcentajeOferta
                 .classList.remove(
@@ -1319,8 +1331,7 @@
                 );
 
 
-            porcentajeOferta.value =
-                "";
+            porcentajeOferta.value = "";
 
 
             porcentajeOferta.disabled =
@@ -1336,7 +1347,7 @@
 
 
     // =====================================
-    // ERRORES DE CAMPOS
+    // ERRORES
     // =====================================
 
     function marcarError(
@@ -1409,9 +1420,7 @@
 
         return valor === ""
             ? null
-            : Number(
-                valor
-            );
+            : Number(valor);
     }
 
 
@@ -1421,9 +1430,7 @@
 
         return valor === ""
             ? null
-            : Number(
-                valor
-            );
+            : Number(valor);
     }
 
 
@@ -1526,18 +1533,14 @@
             "mensaje";
 
 
-        if (
-            tipo === "exito"
-        ) {
+        if (tipo === "exito") {
 
             mensaje.classList.add(
                 "mensaje-exito"
             );
 
 
-        } else if (
-            tipo === "error"
-        ) {
+        } else if (tipo === "error") {
 
             mensaje.classList.add(
                 "mensaje-error"
@@ -1575,7 +1578,7 @@
 
 
     // =====================================
-    // ERRORES DEL BACKEND
+    // ERRORES BACKEND
     // =====================================
 
     async function obtenerMensajeError(
@@ -1605,13 +1608,11 @@
 
 
             if (data.message) {
-
                 return data.message;
             }
 
 
             if (data.error) {
-
                 return data.error;
             }
 
@@ -1625,33 +1626,25 @@
         }
 
 
-        if (
-            response.status === 400
-        ) {
+        if (response.status === 400) {
 
             return "Los datos ingresados no son válidos.";
         }
 
 
-        if (
-            response.status === 401
-        ) {
+        if (response.status === 401) {
 
             return "Debés iniciar sesión.";
         }
 
 
-        if (
-            response.status === 403
-        ) {
+        if (response.status === 403) {
 
             return "No tenés permisos para modificar productos.";
         }
 
 
-        if (
-            response.status === 404
-        ) {
+        if (response.status === 404) {
 
             return "No se encontró el producto o una de las opciones seleccionadas.";
         }
