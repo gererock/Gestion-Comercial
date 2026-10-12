@@ -7,9 +7,17 @@
         '/api/public/catalogo';
 
 
+    const API_FILTROS =
+        '/api/public/catalogo/filtros';
+
+
     const DATA_COMERCIO =
         '/data/comercio.json';
 
+
+    /* =====================================================
+       ELEMENTOS DEL CATÁLOGO
+    ===================================================== */
 
     const grid =
         document.getElementById(
@@ -29,6 +37,12 @@
         );
 
 
+    const noResultsState =
+        document.getElementById(
+            'catalog-no-results'
+        );
+
+
     const errorState =
         document.getElementById(
             'catalog-error'
@@ -40,6 +54,68 @@
             'catalog-retry'
         );
 
+
+    /* =====================================================
+       FILTROS - US03
+    ===================================================== */
+
+    const filterForm =
+        document.getElementById(
+            'catalog-filter-form'
+        );
+
+
+    const searchInput =
+        document.getElementById(
+            'catalog-search'
+        );
+
+
+    const categorySelect =
+        document.getElementById(
+            'catalog-category'
+        );
+
+
+    const brandSelect =
+        document.getElementById(
+            'catalog-brand'
+        );
+
+
+    const categoryWrapper =
+        document.getElementById(
+            'catalog-category-wrapper'
+        );
+
+
+    const brandWrapper =
+        document.getElementById(
+            'catalog-brand-wrapper'
+        );
+
+
+    const clearFiltersButton =
+        document.getElementById(
+            'catalog-clear-filters'
+        );
+
+
+    const clearResultsButton =
+        document.getElementById(
+            'catalog-clear-results'
+        );
+
+
+    const filterError =
+        document.getElementById(
+            'catalog-filter-error'
+        );
+
+
+    /* =====================================================
+       DATOS DEL COMERCIO
+    ===================================================== */
 
     const catalogLogo =
         document.getElementById(
@@ -86,10 +162,16 @@
         cargarDatosComercio();
 
 
+        await cargarFiltros();
+
         await cargarCatalogo();
 
     }
 
+
+    /* =====================================================
+       EVENTOS
+    ===================================================== */
 
     function configurarEventos() {
 
@@ -103,32 +185,104 @@
             );
         }
 
-    }
+
+        if (
+            filterForm
+        ) {
+
+            filterForm.addEventListener(
+                'submit',
+                event => {
+
+                    event.preventDefault();
 
 
-    // =========================================
-    // CATÁLOGO
-    // =========================================
-
-    async function cargarCatalogo() {
-
-        ocultarEstados();
+                    ejecutarBusqueda();
+                }
+            );
+        }
 
 
         if (
-            resultCount
+            categorySelect
         ) {
 
-            resultCount.textContent =
-                'Cargando productos...';
+            categorySelect.addEventListener(
+                'change',
+                ejecutarBusqueda
+            );
         }
 
+
+        if (
+            brandSelect
+        ) {
+
+            brandSelect.addEventListener(
+                'change',
+                ejecutarBusqueda
+            );
+        }
+
+
+        if (
+            clearFiltersButton
+        ) {
+
+            clearFiltersButton.addEventListener(
+                'click',
+                limpiarFiltros
+            );
+        }
+
+
+        if (
+            clearResultsButton
+        ) {
+
+            clearResultsButton.addEventListener(
+                'click',
+                limpiarFiltros
+            );
+        }
+
+
+        if (
+            searchInput
+        ) {
+
+            searchInput.addEventListener(
+                'input',
+                () => {
+
+                    ocultarErrorFiltro();
+
+
+                    if (
+                        searchInput.value.trim() === ''
+                    ) {
+
+                        searchInput.value =
+                            '';
+                    }
+                }
+            );
+        }
+
+    }
+
+
+    /* =====================================================
+       FILTROS DISPONIBLES
+    ===================================================== */
+
+    async function cargarFiltros() {
 
         try {
 
             const response =
                 await fetch(
-                    API_CATALOGO,
+                    API_FILTROS,
                     {
                         headers: {
                             'Accept':
@@ -143,7 +297,294 @@
             ) {
 
                 throw new Error(
-                    'No se pudo cargar el catálogo.'
+                    'No se pudieron cargar los filtros.'
+                );
+            }
+
+
+            const filtros =
+                await response.json();
+
+
+            cargarOpcionesSelect(
+                categorySelect,
+                filtros.categorias,
+                'Todas las categorías'
+            );
+
+
+            cargarOpcionesSelect(
+                brandSelect,
+                filtros.marcas,
+                'Todas las marcas'
+            );
+
+
+            actualizarVisibilidadFiltro(
+                categoryWrapper,
+                filtros.categorias
+            );
+
+
+            actualizarVisibilidadFiltro(
+                brandWrapper,
+                filtros.marcas
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                'Error al cargar filtros:',
+                error
+            );
+
+
+            if (
+                categoryWrapper
+            ) {
+
+                categoryWrapper.hidden =
+                    true;
+            }
+
+
+            if (
+                brandWrapper
+            ) {
+
+                brandWrapper.hidden =
+                    true;
+            }
+        }
+
+    }
+
+
+    function cargarOpcionesSelect(
+        select,
+        opciones,
+        textoInicial
+    ) {
+
+        if (
+            !select
+        ) {
+
+            return;
+        }
+
+
+        select.innerHTML =
+            '';
+
+
+        const optionInicial =
+            document.createElement(
+                'option'
+            );
+
+
+        optionInicial.value =
+            '';
+
+
+        optionInicial.textContent =
+            textoInicial;
+
+
+        select.appendChild(
+            optionInicial
+        );
+
+
+        if (
+            !Array.isArray(
+                opciones
+            )
+        ) {
+
+            return;
+        }
+
+
+        opciones.forEach(
+            opcion => {
+
+                const option =
+                    document.createElement(
+                        'option'
+                    );
+
+
+                option.value =
+                    opcion.id;
+
+
+                option.textContent =
+                    opcion.nombre;
+
+
+                select.appendChild(
+                    option
+                );
+            }
+        );
+
+    }
+
+
+    function actualizarVisibilidadFiltro(
+        wrapper,
+        opciones
+    ) {
+
+        if (
+            !wrapper
+        ) {
+
+            return;
+        }
+
+
+        wrapper.hidden =
+            !Array.isArray(
+                opciones
+            )
+            ||
+            opciones.length === 0;
+
+    }
+
+
+    /* =====================================================
+       EJECUTAR BÚSQUEDA
+    ===================================================== */
+
+    async function ejecutarBusqueda() {
+
+        ocultarErrorFiltro();
+
+
+        const nombre =
+            searchInput
+                ? searchInput.value.trim()
+                : '';
+
+
+        if (
+            !validarBusqueda(
+                nombre
+            )
+        ) {
+
+            return;
+        }
+
+
+        if (
+            searchInput
+        ) {
+
+            searchInput.value =
+                nombre;
+        }
+
+
+        await cargarCatalogo();
+
+    }
+
+
+    function validarBusqueda(
+        nombre
+    ) {
+
+        if (
+            nombre.length > 120
+        ) {
+
+            mostrarErrorFiltro(
+                'La búsqueda no puede superar los 120 caracteres.'
+            );
+
+
+            return false;
+        }
+
+
+        if (
+            nombre !== ''
+            &&
+            !/[\p{L}\p{N}]/u.test(
+                nombre
+            )
+        ) {
+
+            mostrarErrorFiltro(
+                'La búsqueda debe contener al menos una letra o un número.'
+            );
+
+
+            return false;
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =====================================================
+       CATÁLOGO
+    ===================================================== */
+
+    async function cargarCatalogo() {
+
+        ocultarEstados();
+
+        ocultarErrorFiltro();
+
+
+        if (
+            resultCount
+        ) {
+
+            resultCount.textContent =
+                'Cargando productos...';
+        }
+
+
+        try {
+
+            const url =
+                construirUrlCatalogo();
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        headers: {
+                            'Accept':
+                                'application/json'
+                        }
+                    }
+                );
+
+
+            if (
+                !response.ok
+            ) {
+
+                const mensaje =
+                    await obtenerMensajeError(
+                        response
+                    );
+
+
+                throw new Error(
+                    mensaje
                 );
             }
 
@@ -184,9 +625,118 @@
     }
 
 
-    // =========================================
-    // RENDER
-    // =========================================
+    function construirUrlCatalogo() {
+
+        const parametros =
+            new URLSearchParams();
+
+
+        const nombre =
+            searchInput
+                ? searchInput.value.trim()
+                : '';
+
+
+        const idCategoria =
+            categorySelect
+                ? categorySelect.value
+                : '';
+
+
+        const idMarca =
+            brandSelect
+                ? brandSelect.value
+                : '';
+
+
+        if (
+            nombre !== ''
+        ) {
+
+            parametros.set(
+                'nombre',
+                nombre
+            );
+        }
+
+
+        if (
+            idCategoria !== ''
+        ) {
+
+            parametros.set(
+                'idCategoria',
+                idCategoria
+            );
+        }
+
+
+        if (
+            idMarca !== ''
+        ) {
+
+            parametros.set(
+                'idMarca',
+                idMarca
+            );
+        }
+
+
+        const query =
+            parametros.toString();
+
+
+        return query
+            ? `${API_CATALOGO}?${query}`
+            : API_CATALOGO;
+
+    }
+
+
+    /* =====================================================
+       LIMPIAR FILTROS
+    ===================================================== */
+
+    async function limpiarFiltros() {
+
+        if (
+            searchInput
+        ) {
+
+            searchInput.value =
+                '';
+        }
+
+
+        if (
+            categorySelect
+        ) {
+
+            categorySelect.value =
+                '';
+        }
+
+
+        if (
+            brandSelect
+        ) {
+
+            brandSelect.value =
+                '';
+        }
+
+
+        ocultarErrorFiltro();
+
+
+        await cargarCatalogo();
+
+    }
+
+
+    /* =====================================================
+       RENDER
+    ===================================================== */
 
     function renderizarCatalogo(
         items
@@ -201,12 +751,24 @@
         ) {
 
             resultCount.textContent =
-                '0 productos disponibles';
+                '0 productos encontrados';
 
 
-            emptyState.classList.remove(
-                'hidden'
-            );
+            if (
+                hayFiltrosActivos()
+            ) {
+
+                noResultsState.classList.remove(
+                    'hidden'
+                );
+
+
+            } else {
+
+                emptyState.classList.remove(
+                    'hidden'
+                );
+            }
 
 
             return;
@@ -238,26 +800,61 @@
     }
 
 
+    function hayFiltrosActivos() {
+
+        const nombre =
+            searchInput
+                ? searchInput.value.trim()
+                : '';
+
+
+        const categoria =
+            categorySelect
+                ? categorySelect.value
+                : '';
+
+
+        const marca =
+            brandSelect
+                ? brandSelect.value
+                : '';
+
+
+        return (
+            nombre !== ''
+            ||
+            categoria !== ''
+            ||
+            marca !== ''
+        );
+
+    }
+
+
     function crearTextoCantidad(
         cantidad
     ) {
 
         if (
-            cantidad === 1
+            hayFiltrosActivos()
         ) {
 
-            return '1 producto disponible';
+            return cantidad === 1
+                ? '1 producto encontrado'
+                : `${cantidad} productos encontrados`;
         }
 
 
-        return `${cantidad} productos disponibles`;
+        return cantidad === 1
+            ? '1 producto disponible'
+            : `${cantidad} productos disponibles`;
 
     }
 
 
-    // =========================================
-    // CARD
-    // =========================================
+    /* =====================================================
+       CARD
+    ===================================================== */
 
     function crearCard(
         item
@@ -481,9 +1078,9 @@
     }
 
 
-    // =========================================
-    // IMAGEN
-    // =========================================
+    /* =====================================================
+       IMAGEN
+    ===================================================== */
 
     function crearFallbackImagen() {
 
@@ -608,9 +1205,9 @@
     }
 
 
-    // =========================================
-    // BADGE
-    // =========================================
+    /* =====================================================
+       BADGE
+    ===================================================== */
 
     function crearBadge(
         texto,
@@ -636,9 +1233,9 @@
     }
 
 
-    // =========================================
-    // PRECIO
-    // =========================================
+    /* =====================================================
+       PRECIO
+    ===================================================== */
 
     function crearTextoPrecio(
         item
@@ -705,9 +1302,9 @@
     }
 
 
-    // =========================================
-    // OPCIONES
-    // =========================================
+    /* =====================================================
+       OPCIONES
+    ===================================================== */
 
     function textoOpciones(
         cantidad
@@ -744,44 +1341,154 @@
     }
 
 
-    // =========================================
-    // ESTADOS
-    // =========================================
+    /* =====================================================
+       ESTADOS
+    ===================================================== */
 
     function ocultarEstados() {
 
-        errorState.classList.add(
-            'hidden'
-        );
+        if (
+            errorState
+        ) {
+
+            errorState.classList.add(
+                'hidden'
+            );
+        }
 
 
-        emptyState.classList.add(
-            'hidden'
-        );
+        if (
+            emptyState
+        ) {
+
+            emptyState.classList.add(
+                'hidden'
+            );
+        }
+
+
+        if (
+            noResultsState
+        ) {
+
+            noResultsState.classList.add(
+                'hidden'
+            );
+        }
 
     }
 
 
     function mostrarError() {
 
-        grid.innerHTML =
-            '';
+        if (
+            grid
+        ) {
+
+            grid.innerHTML =
+                '';
+        }
 
 
-        resultCount.textContent =
-            'No se pudo cargar el catálogo';
+        if (
+            resultCount
+        ) {
+
+            resultCount.textContent =
+                'No se pudo cargar el catálogo';
+        }
 
 
-        errorState.classList.remove(
+        if (
+            errorState
+        ) {
+
+            errorState.classList.remove(
+                'hidden'
+            );
+        }
+
+    }
+
+
+    function mostrarErrorFiltro(
+        mensaje
+    ) {
+
+        if (
+            !filterError
+        ) {
+
+            return;
+        }
+
+
+        filterError.textContent =
+            mensaje;
+
+
+        filterError.classList.remove(
             'hidden'
         );
 
     }
 
 
-    // =========================================
-    // DATOS DEL COMERCIO
-    // =========================================
+    function ocultarErrorFiltro() {
+
+        if (
+            !filterError
+        ) {
+
+            return;
+        }
+
+
+        filterError.textContent =
+            '';
+
+
+        filterError.classList.add(
+            'hidden'
+        );
+
+    }
+
+
+    async function obtenerMensajeError(
+        response
+    ) {
+
+        try {
+
+            const body =
+                await response.json();
+
+
+            if (
+                typeof body.message === 'string'
+                &&
+                body.message.trim() !== ''
+            ) {
+
+                return body.message.trim();
+            }
+
+
+        } catch (error) {
+
+            // Se usa el mensaje genérico.
+        }
+
+
+        return 'No se pudo cargar el catálogo.';
+
+    }
+
+
+    /* =====================================================
+       DATOS DEL COMERCIO
+    ===================================================== */
 
     async function cargarDatosComercio() {
 
@@ -835,12 +1542,22 @@
                 comercio.nombre.trim();
 
 
-            brandName.textContent =
-                nombre;
+            if (
+                brandName
+            ) {
+
+                brandName.textContent =
+                    nombre;
+            }
 
 
-            footerName.textContent =
-                nombre;
+            if (
+                footerName
+            ) {
+
+                footerName.textContent =
+                    nombre;
+            }
 
 
             document.title =
@@ -849,6 +1566,8 @@
 
 
         if (
+            catalogLogo
+            &&
             typeof comercio.logo === 'string'
             &&
             comercio.logo.trim() !== ''
@@ -861,9 +1580,9 @@
     }
 
 
-    // =========================================
-    // LOGO
-    // =========================================
+    /* =====================================================
+       LOGO
+    ===================================================== */
 
     function configurarLogo() {
 
@@ -911,9 +1630,9 @@
     }
 
 
-    // =========================================
-    // CUENTA
-    // =========================================
+    /* =====================================================
+       CUENTA
+    ===================================================== */
 
     function configurarCuenta() {
 

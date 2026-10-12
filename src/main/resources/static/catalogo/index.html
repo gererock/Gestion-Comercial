@@ -159,6 +159,118 @@
         <div class="container">
 
 
+            <!-- =============================================
+                 BÚSQUEDA Y FILTROS - US03
+            ============================================= -->
+
+            <form
+                id="catalog-filter-form"
+                class="catalog-filters"
+                novalidate
+            >
+
+                <div class="catalog-filter catalog-filter--search">
+
+                    <label for="catalog-search">
+                        Buscar productos
+                    </label>
+
+                    <div class="catalog-search">
+
+                        <input
+                            type="search"
+                            id="catalog-search"
+                            name="nombre"
+                            maxlength="120"
+                            placeholder="Buscar por nombre..."
+                            autocomplete="off"
+                        >
+
+                        <button
+                            type="submit"
+                            class="catalog-search__button"
+                        >
+                            Buscar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="catalog-filter"
+                    id="catalog-category-wrapper"
+                >
+
+                    <label for="catalog-category">
+                        Categoría
+                    </label>
+
+                    <select
+                        id="catalog-category"
+                        name="idCategoria"
+                    >
+
+                        <option value="">
+                            Todas las categorías
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="catalog-filter"
+                    id="catalog-brand-wrapper"
+                >
+
+                    <label for="catalog-brand">
+                        Marca
+                    </label>
+
+                    <select
+                        id="catalog-brand"
+                        name="idMarca"
+                    >
+
+                        <option value="">
+                            Todas las marcas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="catalog-filter__actions">
+
+                    <button
+                        type="button"
+                        id="catalog-clear-filters"
+                        class="catalog-clear-button"
+                    >
+                        Limpiar filtros
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <p
+                id="catalog-filter-error"
+                class="catalog-filter-error hidden"
+                role="alert"
+            >
+            </p>
+
+
+            <!-- =============================================
+                 RESULTADOS
+            ============================================= -->
+
             <div class="catalog-toolbar">
 
                 <div>
@@ -179,7 +291,9 @@
             </div>
 
 
-            <!-- ERROR -->
+            <!-- =============================================
+                 ERROR GENERAL
+            ============================================= -->
 
             <div
                 id="catalog-error"
@@ -206,7 +320,9 @@
             </div>
 
 
-            <!-- VACÍO -->
+            <!-- =============================================
+                 CATÁLOGO VACÍO
+            ============================================= -->
 
             <div
                 id="catalog-empty"
@@ -239,7 +355,45 @@
             </div>
 
 
-            <!-- GRILLA -->
+            <!-- =============================================
+                 SIN COINCIDENCIAS
+            ============================================= -->
+
+            <div
+                id="catalog-no-results"
+                class="catalog-message hidden"
+            >
+
+                <div
+                    class="catalog-message__icon"
+                    aria-hidden="true"
+                >
+                    🔎
+                </div>
+
+                <h2>
+                    No se encontraron productos
+                </h2>
+
+                <p>
+                    Probá cambiando la búsqueda
+                    o quitando alguno de los filtros.
+                </p>
+
+                <button
+                    type="button"
+                    id="catalog-clear-results"
+                    class="catalog-button"
+                >
+                    Limpiar filtros
+                </button>
+
+            </div>
+
+
+            <!-- =============================================
+                 GRILLA
+            ============================================= -->
 
             <div
                 id="catalog-grid"
@@ -257,7 +411,7 @@
 
 
 <!-- =====================================================
-     FOOTER SIMPLE
+     FOOTER
 ===================================================== -->
 
 <footer class="catalog-footer">
