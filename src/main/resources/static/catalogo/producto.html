@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <meta
+        name="description"
+        content="Detalle de producto"
+    >
+
+    <title>
+        Producto | Todo Descartables
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/home.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/producto-detalle.css"
+    >
+
+</head>
+
+
+<body class="product-detail-page">
+
+
+<header class="detail-header">
+
+    <div class="container detail-header__content">
+
+        <a
+            class="detail-brand"
+            href="/"
+        >
+            <span class="detail-brand__mark">
+                TD
+            </span>
+
+            <span>
+                Todo Descartables
+            </span>
+        </a>
+
+
+        <nav class="detail-nav">
+
+            <a href="/">
+                Inicio
+            </a>
+
+            <a href="/catalogo/index.html">
+                Catálogo
+            </a>
+
+            <a
+                id="detail-account-link"
+                href="/login/index.html"
+            >
+                Ingresar
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="product-detail">
+
+        <div class="container">
+
+
+            <a
+                class="product-detail__back"
+                href="/catalogo/index.html"
+            >
+                ← Volver al catálogo
+            </a>
+
+
+            <!-- CARGANDO -->
+
+            <div
+                id="detail-loading"
+                class="detail-state"
+            >
+                Cargando producto...
+            </div>
+
+
+            <!-- ERROR / NO ENCONTRADO -->
+
+            <div
+                id="detail-error"
+                class="detail-state hidden"
+            >
+
+                <h1>
+                    Producto no encontrado
+                </h1>
+
+                <p>
+                    El producto no existe o actualmente
+                    no se encuentra disponible.
+                </p>
+
+                <a
+                    href="/catalogo/index.html"
+                    class="detail-button"
+                >
+                    Volver al catálogo
+                </a>
+
+            </div>
+
+
+            <!-- DETALLE -->
+
+            <div
+                id="detail-content"
+                class="product-detail__grid hidden"
+            >
+
+
+                <!-- GALERÍA -->
+
+                <div class="product-gallery">
+
+                    <div class="product-gallery__main">
+
+                        <div class="product-gallery__fallback">
+
+                            <span>
+                                TD
+                            </span>
+
+                            <small>
+                                Sin imagen
+                            </small>
+
+                        </div>
+
+                        <img
+                            id="detail-main-image"
+                            class="product-gallery__main-image"
+                            alt=""
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="detail-thumbnails"
+                        class="product-gallery__thumbnails hidden"
+                    >
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMACIÓN -->
+
+                <div class="product-info">
+
+                    <div
+                        id="detail-meta"
+                        class="product-info__meta"
+                    >
+                    </div>
+
+
+                    <h1
+                        id="detail-name"
+                        class="product-info__name"
+                    >
+                    </h1>
+
+
+                    <div
+                        id="detail-offer-badge"
+                        class="product-info__offer hidden"
+                    >
+                    </div>
+
+
+                    <div class="product-info__price">
+
+                        <span
+                            id="detail-price-original"
+                            class="product-info__price-original hidden"
+                        >
+                        </span>
+
+                        <strong
+                            id="detail-price"
+                            class="product-info__price-current"
+                        >
+                        </strong>
+
+                    </div>
+
+
+                    <p
+                        id="detail-availability"
+                        class="product-info__availability"
+                    >
+                    </p>
+
+
+                    <div class="product-info__description">
+
+                        <h2>
+                            Descripción
+                        </h2>
+
+                        <p id="detail-description">
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        id="detail-wholesale"
+                        class="product-info__wholesale hidden"
+                    >
+
+                        <strong>
+                            Descuento mayorista
+                        </strong>
+
+                        <p id="detail-wholesale-text">
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        id="detail-group"
+                        class="product-info__group hidden"
+                    >
+
+                        <span>
+                            Pertenece al grupo
+                        </span>
+
+                        <strong id="detail-group-name">
+                        </strong>
+
+                    </div>
+
+
+                    <div class="product-info__cart-note">
+
+                        <p id="detail-stock-note">
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script
+    src="/js/auth.js"
+    defer
+></script>
+
+<script
+    src="/js/producto-detalle.js"
+    defer
+></script>
+
+</body>
+
+</html>

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ProductoRepository
@@ -168,5 +169,36 @@ public interface ProductoRepository
 
             @Param("idMarca")
             Integer idMarca
+    );
+
+
+    // =========================================
+    // DETALLE PÚBLICO DEL PRODUCTO - US04
+    // =========================================
+
+    @Query("""
+            SELECT p
+            FROM Producto p
+
+            LEFT JOIN FETCH p.categoria c
+            LEFT JOIN FETCH p.marca m
+            LEFT JOIN FETCH p.grupoCatalogo g
+
+            WHERE
+                p.idProducto = :idProducto
+
+            AND
+                p.estado = :estado
+
+            AND
+                p.publicadoOnline = true
+            """)
+    Optional<Producto> buscarDetallePublico(
+
+            @Param("idProducto")
+            Integer idProducto,
+
+            @Param("estado")
+            EstadoProducto estado
     );
 }

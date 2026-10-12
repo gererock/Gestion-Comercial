@@ -2,7 +2,9 @@ package gestion_comercial.service.impl;
 
 import gestion_comercial.dto.response.CatalogoFiltroOpcionResponse;
 import gestion_comercial.dto.response.CatalogoFiltrosResponse;
+import gestion_comercial.dto.response.CatalogoImagenResponse;
 import gestion_comercial.dto.response.CatalogoItemResponse;
+import gestion_comercial.dto.response.CatalogoProductoDetalleResponse;
 
 import gestion_comercial.entity.Categoria;
 import gestion_comercial.entity.EstadoProducto;
@@ -11,6 +13,8 @@ import gestion_comercial.entity.ImagenProducto;
 import gestion_comercial.entity.Marca;
 import gestion_comercial.entity.Producto;
 import gestion_comercial.entity.TipoItemCatalogo;
+
+import gestion_comercial.exception.ProductoNoEncontradoException;
 
 import gestion_comercial.repository.CategoriaRespository;
 import gestion_comercial.repository.ImagenProductoRepository;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -280,6 +285,221 @@ public class CatalogoPublicoService
 
                 marcas
         );
+    }
+
+
+    // =========================================
+    // DETALLE PÚBLICO DEL PRODUCTO - US04
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public CatalogoProductoDetalleResponse obtenerDetalle(
+            Integer idProducto
+    ) {
+
+        if (
+                idProducto == null
+                ||
+                idProducto <= 0
+        ) {
+
+            throw new ProductoNoEncontradoException(
+                    "El producto no existe o no está disponible"
+            );
+        }
+
+
+        Producto producto =
+                productoRepository
+                        .buscarDetallePublico(
+
+                                idProducto,
+
+                                EstadoProducto.ACTIVO
+                        )
+                        .orElseThrow(
+                                () ->
+                                        new ProductoNoEncontradoException(
+                                                "El producto no existe o no está disponible"
+                                        )
+                        );
+
+
+        List<CatalogoImagenResponse> imagenes =
+                imagenProductoRepository
+                        .findByProducto_IdProductoOrderByOrdenAscIdImagenAsc(
+                                idProducto
+                        )
+                        .stream()
+                        .sorted(
+                                Comparator
+                                        .comparing(
+                                                ImagenProducto::getPrincipal,
+                                                Comparator.nullsLast(
+                                                        Comparator.reverseOrder()
+                                                )
+                                        )
+                                        .thenComparing(
+                                                ImagenProducto::getOrden,
+                                                Comparator.nullsLast(
+                                                        Comparator.naturalOrder()
+                                                )
+                                        )
+                                        .thenComparing(
+                                                ImagenProducto::getIdImagen
+                                        )
+                        )
+                        .map(
+                                imagen ->
+                                        new CatalogoImagenResponse(
+
+                                                imagen.getUrlImagen(),
+
+                                                imagen.getPrincipal(),
+
+                                                imagen.getOrden()
+                                        )
+                        )
+                        .toList();
+
+
+        boolean disponible =
+                producto.getStockActual() != null
+                &&
+                producto.getStockActual() > 0;
+
+
+        boolean enOferta =
+                Boolean.TRUE.equals(
+                        producto.getEnOferta()
+                )
+                &&
+                producto.getPorcentajeDescuentoOferta()
+                        != null;
+
+
+        BigDecimal precioOferta =
+                calcularPrecioOferta(
+                        producto
+                );
+
+
+        boolean tieneDescuentoMayorista =
+                producto.getCantidadMinimaMayorista()
+                        != null
+                &&
+                producto.getPorcentajeDescuentoMayorista()
+                        != null;
+
+
+        return new CatalogoProductoDetalleResponse(
+
+                producto.getIdProducto(),
+
+                producto.getNombre(),
+
+                producto.getDescripcion(),
+
+                producto.getPrecioVenta(),
+
+                disponible,
+
+                enOferta,
+
+                enOferta
+                        ? producto.getPorcentajeDescuentoOferta()
+                        : null,
+
+                precioOferta,
+
+                tieneDescuentoMayorista,
+
+                tieneDescuentoMayorista
+                        ? producto.getCantidadMinimaMayorista()
+                        : null,
+
+                tieneDescuentoMayorista
+                        ? producto.getPorcentajeDescuentoMayorista()
+                        : null,
+
+                producto.getCategoria() != null
+                        ? producto.getCategoria().getId()
+                        : null,
+
+                producto.getCategoria() != null
+                        ? producto.getCategoria().getNombre()
+                        : null,
+
+                producto.getMarca() != null
+                        ? producto.getMarca().getId()
+                        : null,
+
+                producto.getMarca() != null
+                        ? producto.getMarca().getNombre()
+                        : null,
+
+                producto.getGrupoCatalogo() != null
+                        ? producto
+                                .getGrupoCatalogo()
+                                .getIdGrupoCatalogo()
+                        : null,
+
+                producto.getGrupoCatalogo() != null
+                        ? producto
+                                .getGrupoCatalogo()
+                                .getNombreVisible()
+                        : null,
+
+                imagenes
+        );
+    }
+
+
+    // =========================================
+    // PRECIO DE OFERTA - US04
+    // =========================================
+
+    private BigDecimal calcularPrecioOferta(
+            Producto producto
+    ) {
+
+        if (
+                !Boolean.TRUE.equals(
+                        producto.getEnOferta()
+                )
+                ||
+                producto.getPorcentajeDescuentoOferta()
+                        == null
+        ) {
+
+            return null;
+        }
+
+
+        BigDecimal porcentajeRestante =
+                BigDecimal
+                        .valueOf(
+                                100
+                        )
+                        .subtract(
+                                producto
+                                        .getPorcentajeDescuentoOferta()
+                        );
+
+
+        return producto
+                .getPrecioVenta()
+                .multiply(
+                        porcentajeRestante
+                )
+                .divide(
+                        BigDecimal.valueOf(
+                                100
+                        ),
+                        2,
+                        RoundingMode.HALF_UP
+                );
     }
 
 
