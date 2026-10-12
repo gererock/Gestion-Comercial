@@ -101,7 +101,8 @@ public class SecurityConfig {
                                                 "/catalogo/**",
                                                 "/crear-producto.html",
                                                 "/editar-producto.html",
-                                                "/grupos-catalogo.html"
+                                                "/grupos-catalogo.html",
+                                                "/productos-stock.html"
                                         )
                                         .permitAll()
 
