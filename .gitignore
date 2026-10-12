@@ -31,10 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
-    
-
-
 
 .env
 .env.*
 !.env.example
+
+# Imágenes cargadas por la aplicación
+/uploads/
