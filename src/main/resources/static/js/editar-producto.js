@@ -15,6 +15,9 @@
     const API_GRUPOS =
         "/api/grupos-catalogo?activo=true";
 
+    const API_GRUPOS_BASE =
+        "/api/grupos-catalogo";
+
 
     let idProducto = null;
 
@@ -486,9 +489,119 @@
             await response.json();
 
 
+        await prepararGrupoCatalogoActual(
+            producto.idGrupoCatalogo
+        );
+
+
         cargarDatosProducto(
             producto
         );
+    }
+
+
+    async function prepararGrupoCatalogoActual(
+        idGrupoCatalogo
+    ) {
+
+        eliminarGrupoInactivoActual();
+
+
+        if (
+            idGrupoCatalogo === null
+            ||
+            idGrupoCatalogo === undefined
+        ) {
+
+            return;
+        }
+
+
+        const existeEntreActivos =
+            Array.from(
+                grupoCatalogo.options
+            )
+                .some(
+                    option =>
+                        Number(
+                            option.value
+                        )
+                        ===
+                        Number(
+                            idGrupoCatalogo
+                        )
+                );
+
+
+        if (existeEntreActivos) {
+            return;
+        }
+
+
+        const response =
+            await Auth.fetchAutenticado(
+                `${API_GRUPOS_BASE}/${idGrupoCatalogo}`
+            );
+
+
+        if (!response) {
+
+            throw new Error(
+                "No se pudo consultar el grupo de catálogo actual."
+            );
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await obtenerMensajeError(
+                    response
+                )
+            );
+        }
+
+
+        const grupo =
+            await response.json();
+
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            grupo.idGrupoCatalogo;
+
+
+        option.textContent =
+            grupo.activo
+                ? grupo.nombreVisible
+                : `${grupo.nombreVisible} (inactivo - asociación actual)`;
+
+
+        option.dataset.grupoActualInactivo =
+            "true";
+
+
+        grupoCatalogo.appendChild(
+            option
+        );
+    }
+
+
+    function eliminarGrupoInactivoActual() {
+
+        grupoCatalogo
+            .querySelectorAll(
+                'option[data-grupo-actual-inactivo="true"]'
+            )
+            .forEach(
+                option =>
+                    option.remove()
+            );
     }
 
 
@@ -580,7 +693,11 @@
         valor
     ) {
 
-        if (valor === null || valor === undefined) {
+        if (
+            valor === null
+            ||
+            valor === undefined
+        ) {
 
             select.value = "";
 
@@ -596,7 +713,9 @@
                     option =>
                         Number(
                             option.value
-                        ) === Number(valor)
+                        )
+                        ===
+                        Number(valor)
                 );
 
 
@@ -618,8 +737,10 @@
         option.value =
             valor;
 
+
         option.textContent =
             `ID ${valor} - actualmente no disponible`;
+
 
         option.selected =
             true;
@@ -711,6 +832,11 @@
 
             const productoActualizado =
                 await response.json();
+
+
+            await prepararGrupoCatalogoActual(
+                productoActualizado.idGrupoCatalogo
+            );
 
 
             cargarDatosProducto(
