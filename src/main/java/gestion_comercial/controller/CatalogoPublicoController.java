@@ -4,6 +4,9 @@ import gestion_comercial.dto.response.CatalogoItemResponse;
 
 import gestion_comercial.service.interfaces.ICatalogoPublicoService;
 
+import gestion_comercial.dto.response.CatalogoFiltrosResponse;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +35,38 @@ public class CatalogoPublicoController {
 
     @GetMapping
     public ResponseEntity<List<CatalogoItemResponse>>
-    listar() {
+    listar(
+
+            @RequestParam(required = false)
+            String nombre,
+
+            @RequestParam(required = false)
+            Integer idCategoria,
+
+            @RequestParam(required = false)
+            Integer idMarca
+    ) {
 
         return ResponseEntity.ok(
-                catalogoPublicoService.listar()
+                catalogoPublicoService.listar(
+
+                        nombre,
+
+                        idCategoria,
+
+                        idMarca
+                )
         );
     }
-}
+
+    @GetMapping("/filtros")
+    public ResponseEntity<CatalogoFiltrosResponse>
+    obtenerFiltros() {
+
+        return ResponseEntity.ok(
+                catalogoPublicoService
+                        .obtenerFiltros()
+        );
+    }
+    }
+    

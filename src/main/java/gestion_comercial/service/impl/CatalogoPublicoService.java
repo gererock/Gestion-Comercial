@@ -1,14 +1,20 @@
 package gestion_comercial.service.impl;
 
+import gestion_comercial.dto.response.CatalogoFiltroOpcionResponse;
+import gestion_comercial.dto.response.CatalogoFiltrosResponse;
 import gestion_comercial.dto.response.CatalogoItemResponse;
 
+import gestion_comercial.entity.Categoria;
 import gestion_comercial.entity.EstadoProducto;
 import gestion_comercial.entity.GrupoCatalogo;
 import gestion_comercial.entity.ImagenProducto;
+import gestion_comercial.entity.Marca;
 import gestion_comercial.entity.Producto;
 import gestion_comercial.entity.TipoItemCatalogo;
 
+import gestion_comercial.repository.CategoriaRespository;
 import gestion_comercial.repository.ImagenProductoRepository;
+import gestion_comercial.repository.MarcaRespository;
 import gestion_comercial.repository.ProductoRepository;
 
 import gestion_comercial.service.interfaces.ICatalogoPublicoService;
@@ -35,10 +41,18 @@ public class CatalogoPublicoService
     private final ImagenProductoRepository
             imagenProductoRepository;
 
+    private final CategoriaRespository
+            categoriaRespository;
+
+    private final MarcaRespository
+            marcaRespository;
+
 
     public CatalogoPublicoService(
             ProductoRepository productoRepository,
-            ImagenProductoRepository imagenProductoRepository
+            ImagenProductoRepository imagenProductoRepository,
+            CategoriaRespository categoriaRespository,
+            MarcaRespository marcaRespository
     ) {
 
         this.productoRepository =
@@ -46,21 +60,60 @@ public class CatalogoPublicoService
 
         this.imagenProductoRepository =
                 imagenProductoRepository;
+
+        this.categoriaRespository =
+                categoriaRespository;
+
+        this.marcaRespository =
+                marcaRespository;
     }
 
 
     // =========================================
-    // LISTAR CATÁLOGO PÚBLICO - US02
+    // CATÁLOGO GENERAL
     // =========================================
 
     @Override
     @Transactional(readOnly = true)
     public List<CatalogoItemResponse> listar() {
 
+        return listar(
+                null,
+                null,
+                null
+        );
+    }
+
+
+    // =========================================
+    // CATÁLOGO PÚBLICO CON FILTROS - US03
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogoItemResponse> listar(
+            String nombre,
+            Integer idCategoria,
+            Integer idMarca
+    ) {
+
+        String nombreNormalizado =
+                normalizarNombreBusqueda(
+                        nombre
+                );
+
+
         List<Producto> productos =
                 productoRepository
-                        .buscarPublicablesParaCatalogo(
-                                EstadoProducto.ACTIVO
+                        .buscarPublicablesParaCatalogoFiltrado(
+
+                                EstadoProducto.ACTIVO,
+
+                                nombreNormalizado,
+
+                                idCategoria,
+
+                                idMarca
                         );
 
 
@@ -162,6 +215,123 @@ public class CatalogoPublicoService
 
 
         return items;
+    }
+
+
+    // =========================================
+    // FILTROS DISPONIBLES - US03
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public CatalogoFiltrosResponse obtenerFiltros() {
+
+        List<CatalogoFiltroOpcionResponse> categorias =
+                categoriaRespository
+                        .findByActiva(
+                                true
+                        )
+                        .stream()
+                        .sorted(
+                                Comparator.comparing(
+                                        Categoria::getNombre,
+                                        String.CASE_INSENSITIVE_ORDER
+                                )
+                        )
+                        .map(
+                                categoria ->
+                                        new CatalogoFiltroOpcionResponse(
+
+                                                categoria.getId(),
+
+                                                categoria.getNombre()
+                                        )
+                        )
+                        .toList();
+
+
+        List<CatalogoFiltroOpcionResponse> marcas =
+                marcaRespository
+                        .findByActiva(
+                                true
+                        )
+                        .stream()
+                        .sorted(
+                                Comparator.comparing(
+                                        Marca::getNombre,
+                                        String.CASE_INSENSITIVE_ORDER
+                                )
+                        )
+                        .map(
+                                marca ->
+                                        new CatalogoFiltroOpcionResponse(
+
+                                                marca.getId(),
+
+                                                marca.getNombre()
+                                        )
+                        )
+                        .toList();
+
+
+        return new CatalogoFiltrosResponse(
+
+                categorias,
+
+                marcas
+        );
+    }
+
+
+    // =========================================
+    // VALIDAR BÚSQUEDA - US03
+    // =========================================
+
+    private String normalizarNombreBusqueda(
+            String nombre
+    ) {
+
+        if (nombre == null) {
+
+            return null;
+        }
+
+
+        String nombreNormalizado =
+                nombre.trim();
+
+
+        if (
+                nombreNormalizado.isEmpty()
+        ) {
+
+            return null;
+        }
+
+
+        if (
+                nombreNormalizado.length() > 120
+        ) {
+
+            throw new IllegalArgumentException(
+                    "La búsqueda no puede superar los 120 caracteres"
+            );
+        }
+
+
+        if (
+                !nombreNormalizado.matches(
+                        ".*[\\p{L}\\p{N}].*"
+                )
+        ) {
+
+            throw new IllegalArgumentException(
+                    "La búsqueda debe contener al menos una letra o un número"
+            );
+        }
+
+
+        return nombreNormalizado;
     }
 
 
