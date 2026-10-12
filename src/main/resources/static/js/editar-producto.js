@@ -1779,6 +1779,11 @@
 
             stockActual.disabled =
                 true;
+
+
+            actualizarAccionesEstado(
+                estado.value
+            );
         }
     }
 
