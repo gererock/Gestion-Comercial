@@ -203,13 +203,18 @@ public class ProductoService
                         nombre
                 );
 
+        String nombreParaConsulta =
+        nombreBusqueda == null
+                ? ""
+                : nombreBusqueda;
+
 
         return productoRepository
                 .consultar(
 
                         idProducto,
 
-                        nombreBusqueda,
+                        nombreParaConsulta,
 
                         idCategoria,
 

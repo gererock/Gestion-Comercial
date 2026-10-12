@@ -35,748 +35,543 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 public class CatalogoPublicoService
-        implements ICatalogoPublicoService {
+                implements ICatalogoPublicoService {
 
-    private final ProductoRepository
-            productoRepository;
+        private final ProductoRepository productoRepository;
 
-    private final ImagenProductoRepository
-            imagenProductoRepository;
+        private final ImagenProductoRepository imagenProductoRepository;
 
-    private final CategoriaRespository
-            categoriaRespository;
+        private final CategoriaRespository categoriaRespository;
 
-    private final MarcaRespository
-            marcaRespository;
+        private final MarcaRespository marcaRespository;
 
+        public CatalogoPublicoService(
+                        ProductoRepository productoRepository,
+                        ImagenProductoRepository imagenProductoRepository,
+                        CategoriaRespository categoriaRespository,
+                        MarcaRespository marcaRespository) {
 
-    public CatalogoPublicoService(
-            ProductoRepository productoRepository,
-            ImagenProductoRepository imagenProductoRepository,
-            CategoriaRespository categoriaRespository,
-            MarcaRespository marcaRespository
-    ) {
+                this.productoRepository = productoRepository;
 
-        this.productoRepository =
-                productoRepository;
+                this.imagenProductoRepository = imagenProductoRepository;
 
-        this.imagenProductoRepository =
-                imagenProductoRepository;
+                this.categoriaRespository = categoriaRespository;
 
-        this.categoriaRespository =
-                categoriaRespository;
-
-        this.marcaRespository =
-                marcaRespository;
-    }
-
-
-    // =========================================
-    // CATÁLOGO GENERAL
-    // =========================================
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatalogoItemResponse> listar() {
-
-        return listar(
-                null,
-                null,
-                null
-        );
-    }
-
-
-    // =========================================
-    // CATÁLOGO PÚBLICO CON FILTROS - US03
-    // =========================================
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CatalogoItemResponse> listar(
-            String nombre,
-            Integer idCategoria,
-            Integer idMarca
-    ) {
-
-        String nombreNormalizado =
-                normalizarNombreBusqueda(
-                        nombre
-                );
-
-
-        List<Producto> productos =
-                productoRepository
-                        .buscarPublicablesParaCatalogoFiltrado(
-
-                                EstadoProducto.ACTIVO,
-
-                                nombreNormalizado,
-
-                                idCategoria,
-
-                                idMarca
-                        );
-
-
-        if (productos.isEmpty()) {
-
-            return List.of();
+                this.marcaRespository = marcaRespository;
         }
 
+        // =========================================
+        // CATÁLOGO GENERAL
+        // =========================================
 
-        Map<Integer, String> imagenesPrincipales =
-                obtenerImagenesPrincipales(
-                        productos
-                );
+        @Override
+        @Transactional(readOnly = true)
+        public List<CatalogoItemResponse> listar() {
 
-
-        List<Producto> productosIndividuales =
-                new ArrayList<>();
-
-
-        Map<Integer, List<Producto>> productosAgrupados =
-                new LinkedHashMap<>();
-
-
-        for (
-                Producto producto
-                : productos
-        ) {
-
-            GrupoCatalogo grupo =
-                    producto.getGrupoCatalogo();
-
-
-            if (
-                    grupo != null
-                    &&
-                    Boolean.TRUE.equals(
-                            grupo.getActivo()
-                    )
-            ) {
-
-                productosAgrupados
-                        .computeIfAbsent(
-                                grupo.getIdGrupoCatalogo(),
-                                id ->
-                                        new ArrayList<>()
-                        )
-                        .add(
-                                producto
-                        );
-
-
-            } else {
-
-                productosIndividuales.add(
-                        producto
-                );
-            }
+                return listar(
+                                null,
+                                null,
+                                null);
         }
 
+        // =========================================
+        // CATÁLOGO PÚBLICO CON FILTROS - US03
+        // =========================================
 
-        List<CatalogoItemResponse> items =
-                new ArrayList<>();
-
-
-        for (
-                Producto producto
-                : productosIndividuales
-        ) {
-
-            items.add(
-                    crearItemProducto(
-                            producto,
-                            imagenesPrincipales
-                    )
-            );
-        }
-
-
-        for (
-                List<Producto> opciones
-                : productosAgrupados.values()
-        ) {
-
-            items.add(
-                    crearItemGrupo(
-                            opciones,
-                            imagenesPrincipales
-                    )
-            );
-        }
-
-
-        items.sort(
-                Comparator.comparing(
-                        CatalogoItemResponse::nombre,
-                        String.CASE_INSENSITIVE_ORDER
-                )
-        );
-
-
-        return items;
-    }
-
-
-    // =========================================
-    // FILTROS DISPONIBLES - US03
-    // =========================================
-
-    @Override
-    @Transactional(readOnly = true)
-    public CatalogoFiltrosResponse obtenerFiltros() {
-
-        List<CatalogoFiltroOpcionResponse> categorias =
-                categoriaRespository
-                        .findByActiva(
-                                true
-                        )
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(
-                                        Categoria::getNombre,
-                                        String.CASE_INSENSITIVE_ORDER
-                                )
-                        )
-                        .map(
-                                categoria ->
-                                        new CatalogoFiltroOpcionResponse(
-
-                                                categoria.getId(),
-
-                                                categoria.getNombre()
-                                        )
-                        )
-                        .toList();
-
-
-        List<CatalogoFiltroOpcionResponse> marcas =
-                marcaRespository
-                        .findByActiva(
-                                true
-                        )
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(
-                                        Marca::getNombre,
-                                        String.CASE_INSENSITIVE_ORDER
-                                )
-                        )
-                        .map(
-                                marca ->
-                                        new CatalogoFiltroOpcionResponse(
-
-                                                marca.getId(),
-
-                                                marca.getNombre()
-                                        )
-                        )
-                        .toList();
-
-
-        return new CatalogoFiltrosResponse(
-
-                categorias,
-
-                marcas
-        );
-    }
-
-
-    // =========================================
-    // DETALLE PÚBLICO DEL PRODUCTO - US04
-    // =========================================
-
-    @Override
-    @Transactional(readOnly = true)
-    public CatalogoProductoDetalleResponse obtenerDetalle(
-            Integer idProducto
-    ) {
-
-        if (
-                idProducto == null
-                ||
-                idProducto <= 0
-        ) {
+        @Override
+        @Transactional(readOnly = true)
+        public List<CatalogoItemResponse> listar(
+                        String nombre,
+                        Integer idCategoria,
+                        Integer idMarca) {
 
-            throw new ProductoNoEncontradoException(
-                    "El producto no existe o no está disponible"
-            );
-        }
+                String nombreNormalizado = normalizarNombreBusqueda(
+                                nombre);
 
+                String nombreParaConsulta = nombreNormalizado == null
+                                ? ""
+                                : nombreNormalizado;
 
-        Producto producto =
-                productoRepository
-                        .buscarDetallePublico(
+                List<Producto> productos = productoRepository
+                                .buscarPublicablesParaCatalogoFiltrado(
 
-                                idProducto,
+                                                EstadoProducto.ACTIVO,
 
-                                EstadoProducto.ACTIVO
-                        )
-                        .orElseThrow(
-                                () ->
-                                        new ProductoNoEncontradoException(
-                                                "El producto no existe o no está disponible"
-                                        )
-                        );
+                                                nombreParaConsulta,
 
+                                                idCategoria,
 
-        List<CatalogoImagenResponse> imagenes =
-                imagenProductoRepository
-                        .findByProducto_IdProductoOrderByOrdenAscIdImagenAsc(
-                                idProducto
-                        )
-                        .stream()
-                        .sorted(
-                                Comparator
-                                        .comparing(
-                                                ImagenProducto::getPrincipal,
-                                                Comparator.nullsLast(
-                                                        Comparator.reverseOrder()
-                                                )
-                                        )
-                                        .thenComparing(
-                                                ImagenProducto::getOrden,
-                                                Comparator.nullsLast(
-                                                        Comparator.naturalOrder()
-                                                )
-                                        )
-                                        .thenComparing(
-                                                ImagenProducto::getIdImagen
-                                        )
-                        )
-                        .map(
-                                imagen ->
-                                        new CatalogoImagenResponse(
+                                                idMarca);
 
-                                                imagen.getUrlImagen(),
+                if (productos.isEmpty()) {
 
-                                                imagen.getPrincipal(),
+                        return List.of();
+                }
 
-                                                imagen.getOrden()
-                                        )
-                        )
-                        .toList();
+                Map<Integer, String> imagenesPrincipales = obtenerImagenesPrincipales(
+                                productos);
 
+                List<Producto> productosIndividuales = new ArrayList<>();
 
-        boolean disponible =
-                producto.getStockActual() != null
-                &&
-                producto.getStockActual() > 0;
+                Map<Integer, List<Producto>> productosAgrupados = new LinkedHashMap<>();
 
+                for (Producto producto : productos) {
 
-        boolean enOferta =
-                Boolean.TRUE.equals(
-                        producto.getEnOferta()
-                )
-                &&
-                producto.getPorcentajeDescuentoOferta()
-                        != null;
+                        GrupoCatalogo grupo = producto.getGrupoCatalogo();
 
-
-        BigDecimal precioOferta =
-                calcularPrecioOferta(
-                        producto
-                );
-
-
-        boolean tieneDescuentoMayorista =
-                producto.getCantidadMinimaMayorista()
-                        != null
-                &&
-                producto.getPorcentajeDescuentoMayorista()
-                        != null;
-
-
-        return new CatalogoProductoDetalleResponse(
-
-                producto.getIdProducto(),
-
-                producto.getNombre(),
-
-                producto.getDescripcion(),
-
-                producto.getPrecioVenta(),
-
-                disponible,
-
-                enOferta,
-
-                enOferta
-                        ? producto.getPorcentajeDescuentoOferta()
-                        : null,
-
-                precioOferta,
-
-                tieneDescuentoMayorista,
-
-                tieneDescuentoMayorista
-                        ? producto.getCantidadMinimaMayorista()
-                        : null,
-
-                tieneDescuentoMayorista
-                        ? producto.getPorcentajeDescuentoMayorista()
-                        : null,
-
-                producto.getCategoria() != null
-                        ? producto.getCategoria().getId()
-                        : null,
-
-                producto.getCategoria() != null
-                        ? producto.getCategoria().getNombre()
-                        : null,
-
-                producto.getMarca() != null
-                        ? producto.getMarca().getId()
-                        : null,
-
-                producto.getMarca() != null
-                        ? producto.getMarca().getNombre()
-                        : null,
-
-                producto.getGrupoCatalogo() != null
-                        ? producto
-                                .getGrupoCatalogo()
-                                .getIdGrupoCatalogo()
-                        : null,
-
-                producto.getGrupoCatalogo() != null
-                        ? producto
-                                .getGrupoCatalogo()
-                                .getNombreVisible()
-                        : null,
-
-                imagenes
-        );
-    }
-
-
-    // =========================================
-    // PRECIO DE OFERTA - US04
-    // =========================================
-
-    private BigDecimal calcularPrecioOferta(
-            Producto producto
-    ) {
-
-        if (
-                !Boolean.TRUE.equals(
-                        producto.getEnOferta()
-                )
-                ||
-                producto.getPorcentajeDescuentoOferta()
-                        == null
-        ) {
-
-            return null;
-        }
-
-
-        BigDecimal porcentajeRestante =
-                BigDecimal
-                        .valueOf(
-                                100
-                        )
-                        .subtract(
-                                producto
-                                        .getPorcentajeDescuentoOferta()
-                        );
-
-
-        return producto
-                .getPrecioVenta()
-                .multiply(
-                        porcentajeRestante
-                )
-                .divide(
-                        BigDecimal.valueOf(
-                                100
-                        ),
-                        2,
-                        RoundingMode.HALF_UP
-                );
-    }
-
-
-    // =========================================
-    // VALIDAR BÚSQUEDA - US03
-    // =========================================
-
-    private String normalizarNombreBusqueda(
-            String nombre
-    ) {
-
-        if (nombre == null) {
-
-            return null;
-        }
-
-
-        String nombreNormalizado =
-                nombre.trim();
-
-
-        if (
-                nombreNormalizado.isEmpty()
-        ) {
-
-            return null;
-        }
-
-
-        if (
-                nombreNormalizado.length() > 120
-        ) {
-
-            throw new IllegalArgumentException(
-                    "La búsqueda no puede superar los 120 caracteres"
-            );
-        }
-
-
-        if (
-                !nombreNormalizado.matches(
-                        ".*[\\p{L}\\p{N}].*"
-                )
-        ) {
-
-            throw new IllegalArgumentException(
-                    "La búsqueda debe contener al menos una letra o un número"
-            );
-        }
-
-
-        return nombreNormalizado;
-    }
-
-
-    // =========================================
-    // PRODUCTO INDIVIDUAL
-    // =========================================
-
-    private CatalogoItemResponse crearItemProducto(
-            Producto producto,
-            Map<Integer, String> imagenesPrincipales
-    ) {
-
-        String imagenUrl =
-                imagenesPrincipales.get(
-                        producto.getIdProducto()
-                );
-
-
-        boolean disponible =
-                producto.getStockActual() != null
-                &&
-                producto.getStockActual() > 0;
-
-
-        return new CatalogoItemResponse(
-
-                TipoItemCatalogo.PRODUCTO,
-
-                producto.getIdProducto(),
-
-                null,
-
-                producto.getNombre(),
-
-                imagenUrl,
-
-                producto.getPrecioVenta(),
-
-                false,
-
-                disponible,
-
-                1
-        );
-    }
-
-
-    // =========================================
-    // GRUPO DE CATÁLOGO
-    // =========================================
-
-    private CatalogoItemResponse crearItemGrupo(
-            List<Producto> opciones,
-            Map<Integer, String> imagenesPrincipales
-    ) {
-
-        Producto primerProducto =
-                opciones.get(0);
-
-
-        GrupoCatalogo grupo =
-                primerProducto
-                        .getGrupoCatalogo();
-
-
-        BigDecimal precioMinimo =
-                opciones
-                        .stream()
-                        .map(
-                                Producto::getPrecioVenta
-                        )
-                        .min(
-                                BigDecimal::compareTo
-                        )
-                        .orElse(
-                                BigDecimal.ZERO
-                        );
-
-
-        boolean disponible =
-                opciones
-                        .stream()
-                        .anyMatch(
-                                producto ->
-                                        producto.getStockActual()
-                                                != null
+                        if (grupo != null
                                         &&
-                                        producto.getStockActual()
-                                                > 0
-                        );
+                                        Boolean.TRUE.equals(
+                                                        grupo.getActivo())) {
 
+                                productosAgrupados
+                                                .computeIfAbsent(
+                                                                grupo.getIdGrupoCatalogo(),
+                                                                id -> new ArrayList<>())
+                                                .add(
+                                                                producto);
 
-        String imagenUrl =
-                obtenerImagenGrupo(
-                        grupo,
-                        opciones,
-                        imagenesPrincipales
-                );
+                        } else {
 
+                                productosIndividuales.add(
+                                                producto);
+                        }
+                }
 
-        return new CatalogoItemResponse(
+                List<CatalogoItemResponse> items = new ArrayList<>();
 
-                TipoItemCatalogo.GRUPO,
+                for (Producto producto : productosIndividuales) {
 
-                null,
+                        items.add(
+                                        crearItemProducto(
+                                                        producto,
+                                                        imagenesPrincipales));
+                }
 
-                grupo.getIdGrupoCatalogo(),
+                for (List<Producto> opciones : productosAgrupados.values()) {
 
-                grupo.getNombreVisible(),
+                        items.add(
+                                        crearItemGrupo(
+                                                        opciones,
+                                                        imagenesPrincipales));
+                }
 
-                imagenUrl,
+                items.sort(
+                                Comparator.comparing(
+                                                CatalogoItemResponse::nombre,
+                                                String.CASE_INSENSITIVE_ORDER));
 
-                precioMinimo,
-
-                opciones.size() > 1,
-
-                disponible,
-
-                opciones.size()
-        );
-    }
-
-
-    // =========================================
-    // IMAGEN DEL GRUPO
-    // =========================================
-
-    private String obtenerImagenGrupo(
-            GrupoCatalogo grupo,
-            List<Producto> opciones,
-            Map<Integer, String> imagenesPrincipales
-    ) {
-
-        if (
-                grupo.getImagenUrl() != null
-                &&
-                !grupo.getImagenUrl()
-                        .trim()
-                        .isEmpty()
-        ) {
-
-            return grupo
-                    .getImagenUrl()
-                    .trim();
+                return items;
         }
 
+        // =========================================
+        // FILTROS DISPONIBLES - US03
+        // =========================================
 
-        for (
-                Producto producto
-                : opciones
-        ) {
+        @Override
+        @Transactional(readOnly = true)
+        public CatalogoFiltrosResponse obtenerFiltros() {
 
-            String imagen =
-                    imagenesPrincipales.get(
-                            producto.getIdProducto()
-                    );
+                List<CatalogoFiltroOpcionResponse> categorias = categoriaRespository
+                                .findByActiva(
+                                                true)
+                                .stream()
+                                .sorted(
+                                                Comparator.comparing(
+                                                                Categoria::getNombre,
+                                                                String.CASE_INSENSITIVE_ORDER))
+                                .map(
+                                                categoria -> new CatalogoFiltroOpcionResponse(
 
+                                                                categoria.getId(),
 
-            if (
-                    imagen != null
-                    &&
-                    !imagen.isBlank()
-            ) {
+                                                                categoria.getNombre()))
+                                .toList();
 
-                return imagen;
-            }
+                List<CatalogoFiltroOpcionResponse> marcas = marcaRespository
+                                .findByActiva(
+                                                true)
+                                .stream()
+                                .sorted(
+                                                Comparator.comparing(
+                                                                Marca::getNombre,
+                                                                String.CASE_INSENSITIVE_ORDER))
+                                .map(
+                                                marca -> new CatalogoFiltroOpcionResponse(
+
+                                                                marca.getId(),
+
+                                                                marca.getNombre()))
+                                .toList();
+
+                return new CatalogoFiltrosResponse(
+
+                                categorias,
+
+                                marcas);
         }
 
+        // =========================================
+        // DETALLE PÚBLICO DEL PRODUCTO - US04
+        // =========================================
 
-        return null;
-    }
+        @Override
+        @Transactional(readOnly = true)
+        public CatalogoProductoDetalleResponse obtenerDetalle(
+                        Integer idProducto) {
 
+                if (idProducto == null
+                                ||
+                                idProducto <= 0) {
 
-    // =========================================
-    // IMÁGENES PRINCIPALES
-    // =========================================
+                        throw new ProductoNoEncontradoException(
+                                        "El producto no existe o no está disponible");
+                }
 
-    private Map<Integer, String>
-    obtenerImagenesPrincipales(
-            List<Producto> productos
-    ) {
+                Producto producto = productoRepository
+                                .buscarDetallePublico(
 
-        List<Integer> idsProductos =
-                productos
-                        .stream()
-                        .map(
-                                Producto::getIdProducto
-                        )
-                        .toList();
+                                                idProducto,
 
+                                                EstadoProducto.ACTIVO)
+                                .orElseThrow(
+                                                () -> new ProductoNoEncontradoException(
+                                                                "El producto no existe o no está disponible"));
 
-        if (
-                idsProductos.isEmpty()
-        ) {
+                List<CatalogoImagenResponse> imagenes = imagenProductoRepository
+                                .findByProducto_IdProductoOrderByOrdenAscIdImagenAsc(
+                                                idProducto)
+                                .stream()
+                                .sorted(
+                                                Comparator
+                                                                .comparing(
+                                                                                ImagenProducto::getPrincipal,
+                                                                                Comparator.nullsLast(
+                                                                                                Comparator.reverseOrder()))
+                                                                .thenComparing(
+                                                                                ImagenProducto::getOrden,
+                                                                                Comparator.nullsLast(
+                                                                                                Comparator.naturalOrder()))
+                                                                .thenComparing(
+                                                                                ImagenProducto::getIdImagen))
+                                .map(
+                                                imagen -> new CatalogoImagenResponse(
 
-            return Map.of();
+                                                                imagen.getUrlImagen(),
+
+                                                                imagen.getPrincipal(),
+
+                                                                imagen.getOrden()))
+                                .toList();
+
+                boolean disponible = producto.getStockActual() != null
+                                &&
+                                producto.getStockActual() > 0;
+
+                boolean enOferta = Boolean.TRUE.equals(
+                                producto.getEnOferta())
+                                &&
+                                producto.getPorcentajeDescuentoOferta() != null;
+
+                BigDecimal precioOferta = calcularPrecioOferta(
+                                producto);
+
+                boolean tieneDescuentoMayorista = producto.getCantidadMinimaMayorista() != null
+                                &&
+                                producto.getPorcentajeDescuentoMayorista() != null;
+
+                return new CatalogoProductoDetalleResponse(
+
+                                producto.getIdProducto(),
+
+                                producto.getNombre(),
+
+                                producto.getDescripcion(),
+
+                                producto.getPrecioVenta(),
+
+                                disponible,
+
+                                enOferta,
+
+                                enOferta
+                                                ? producto.getPorcentajeDescuentoOferta()
+                                                : null,
+
+                                precioOferta,
+
+                                tieneDescuentoMayorista,
+
+                                tieneDescuentoMayorista
+                                                ? producto.getCantidadMinimaMayorista()
+                                                : null,
+
+                                tieneDescuentoMayorista
+                                                ? producto.getPorcentajeDescuentoMayorista()
+                                                : null,
+
+                                producto.getCategoria() != null
+                                                ? producto.getCategoria().getId()
+                                                : null,
+
+                                producto.getCategoria() != null
+                                                ? producto.getCategoria().getNombre()
+                                                : null,
+
+                                producto.getMarca() != null
+                                                ? producto.getMarca().getId()
+                                                : null,
+
+                                producto.getMarca() != null
+                                                ? producto.getMarca().getNombre()
+                                                : null,
+
+                                producto.getGrupoCatalogo() != null
+                                                ? producto
+                                                                .getGrupoCatalogo()
+                                                                .getIdGrupoCatalogo()
+                                                : null,
+
+                                producto.getGrupoCatalogo() != null
+                                                ? producto
+                                                                .getGrupoCatalogo()
+                                                                .getNombreVisible()
+                                                : null,
+
+                                imagenes);
         }
 
+        // =========================================
+        // PRECIO DE OFERTA - US04
+        // =========================================
 
-        List<ImagenProducto> imagenes =
-                imagenProductoRepository
-                        .buscarPrincipalesPorProductos(
-                                idsProductos
-                        );
+        private BigDecimal calcularPrecioOferta(
+                        Producto producto) {
 
+                if (!Boolean.TRUE.equals(
+                                producto.getEnOferta())
+                                ||
+                                producto.getPorcentajeDescuentoOferta() == null) {
 
-        Map<Integer, String> resultado =
-                new LinkedHashMap<>();
+                        return null;
+                }
 
+                BigDecimal porcentajeRestante = BigDecimal
+                                .valueOf(
+                                                100)
+                                .subtract(
+                                                producto
+                                                                .getPorcentajeDescuentoOferta());
 
-        for (
-                ImagenProducto imagen
-                : imagenes
-        ) {
-
-            resultado.put(
-                    imagen
-                            .getProducto()
-                            .getIdProducto(),
-
-                    imagen.getUrlImagen()
-            );
+                return producto
+                                .getPrecioVenta()
+                                .multiply(
+                                                porcentajeRestante)
+                                .divide(
+                                                BigDecimal.valueOf(
+                                                                100),
+                                                2,
+                                                RoundingMode.HALF_UP);
         }
 
+        // =========================================
+        // VALIDAR BÚSQUEDA - US03
+        // =========================================
 
-        return resultado;
-    }
+        private String normalizarNombreBusqueda(
+                        String nombre) {
+
+                if (nombre == null) {
+
+                        return null;
+                }
+
+                String nombreNormalizado = nombre.trim();
+
+                if (nombreNormalizado.isEmpty()) {
+
+                        return null;
+                }
+
+                if (nombreNormalizado.length() > 120) {
+
+                        throw new IllegalArgumentException(
+                                        "La búsqueda no puede superar los 120 caracteres");
+                }
+
+                if (!nombreNormalizado.matches(
+                                ".*[\\p{L}\\p{N}].*")) {
+
+                        throw new IllegalArgumentException(
+                                        "La búsqueda debe contener al menos una letra o un número");
+                }
+
+                return nombreNormalizado;
+        }
+
+        // =========================================
+        // PRODUCTO INDIVIDUAL
+        // =========================================
+
+        private CatalogoItemResponse crearItemProducto(
+                        Producto producto,
+                        Map<Integer, String> imagenesPrincipales) {
+
+                String imagenUrl = imagenesPrincipales.get(
+                                producto.getIdProducto());
+
+                boolean disponible = producto.getStockActual() != null
+                                &&
+                                producto.getStockActual() > 0;
+
+                return new CatalogoItemResponse(
+
+                                TipoItemCatalogo.PRODUCTO,
+
+                                producto.getIdProducto(),
+
+                                null,
+
+                                producto.getNombre(),
+
+                                imagenUrl,
+
+                                producto.getPrecioVenta(),
+
+                                false,
+
+                                disponible,
+
+                                1);
+        }
+
+        // =========================================
+        // GRUPO DE CATÁLOGO
+        // =========================================
+
+        private CatalogoItemResponse crearItemGrupo(
+                        List<Producto> opciones,
+                        Map<Integer, String> imagenesPrincipales) {
+
+                Producto primerProducto = opciones.get(0);
+
+                GrupoCatalogo grupo = primerProducto
+                                .getGrupoCatalogo();
+
+                BigDecimal precioMinimo = opciones
+                                .stream()
+                                .map(
+                                                Producto::getPrecioVenta)
+                                .min(
+                                                BigDecimal::compareTo)
+                                .orElse(
+                                                BigDecimal.ZERO);
+
+                boolean disponible = opciones
+                                .stream()
+                                .anyMatch(
+                                                producto -> producto.getStockActual() != null
+                                                                &&
+                                                                producto.getStockActual() > 0);
+
+                String imagenUrl = obtenerImagenGrupo(
+                                grupo,
+                                opciones,
+                                imagenesPrincipales);
+
+                return new CatalogoItemResponse(
+
+                                TipoItemCatalogo.GRUPO,
+
+                                null,
+
+                                grupo.getIdGrupoCatalogo(),
+
+                                grupo.getNombreVisible(),
+
+                                imagenUrl,
+
+                                precioMinimo,
+
+                                opciones.size() > 1,
+
+                                disponible,
+
+                                opciones.size());
+        }
+
+        // =========================================
+        // IMAGEN DEL GRUPO
+        // =========================================
+
+        private String obtenerImagenGrupo(
+                        GrupoCatalogo grupo,
+                        List<Producto> opciones,
+                        Map<Integer, String> imagenesPrincipales) {
+
+                if (grupo.getImagenUrl() != null
+                                &&
+                                !grupo.getImagenUrl()
+                                                .trim()
+                                                .isEmpty()) {
+
+                        return grupo
+                                        .getImagenUrl()
+                                        .trim();
+                }
+
+                for (Producto producto : opciones) {
+
+                        String imagen = imagenesPrincipales.get(
+                                        producto.getIdProducto());
+
+                        if (imagen != null
+                                        &&
+                                        !imagen.isBlank()) {
+
+                                return imagen;
+                        }
+                }
+
+                return null;
+        }
+
+        // =========================================
+        // IMÁGENES PRINCIPALES
+        // =========================================
+
+        private Map<Integer, String> obtenerImagenesPrincipales(
+                        List<Producto> productos) {
+
+                List<Integer> idsProductos = productos
+                                .stream()
+                                .map(
+                                                Producto::getIdProducto)
+                                .toList();
+
+                if (idsProductos.isEmpty()) {
+
+                        return Map.of();
+                }
+
+                List<ImagenProducto> imagenes = imagenProductoRepository
+                                .buscarPrincipalesPorProductos(
+                                                idsProductos);
+
+                Map<Integer, String> resultado = new LinkedHashMap<>();
+
+                for (ImagenProducto imagen : imagenes) {
+
+                        resultado.put(
+                                        imagen
+                                                        .getProducto()
+                                                        .getIdProducto(),
+
+                                        imagen.getUrlImagen());
+                }
+
+                return resultado;
+        }
 }
