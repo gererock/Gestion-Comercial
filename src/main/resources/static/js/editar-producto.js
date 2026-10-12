@@ -20,6 +20,7 @@
 
     let idProducto = null;
     let guardando = false;
+    let cambiandoEstado = false;
 
 
     document.addEventListener(
@@ -267,12 +268,38 @@
             "btnCerrarSesion"
         );
 
+    const estadoActualProducto =
+        document.getElementById(
+            "estadoActualProducto"
+        );
+
+    const btnPausarProducto =
+        document.getElementById(
+            "btnPausarProducto"
+        );
+
+    const btnDiscontinuarProducto =
+        document.getElementById(
+            "btnDiscontinuarProducto"
+        );
+
 
     // =====================================
     // EVENTOS
     // =====================================
 
     function configurarEventos() {
+
+        btnPausarProducto.addEventListener(
+            "click",
+            pausarProducto
+        );
+
+
+        btnDiscontinuarProducto.addEventListener(
+            "click",
+            discontinuarProducto
+        );
 
         formProducto.addEventListener(
             "submit",
@@ -691,6 +718,10 @@
         estado.value =
             producto.estado;
 
+        actualizarAccionesEstado(
+            producto.estado
+        );
+
 
         publicadoOnline.checked =
             Boolean(
@@ -895,6 +926,205 @@
             guardando = false;
 
             bloquearFormulario(false);
+        }
+    }
+
+
+
+    // =====================================
+    // ESTADO PRODUCTO - US29
+    // =====================================
+
+    function actualizarAccionesEstado(
+        estadoProducto
+    ) {
+
+        estadoActualProducto.textContent =
+            obtenerNombreEstado(
+                estadoProducto
+            );
+
+
+        btnPausarProducto.disabled =
+            cambiandoEstado
+            ||
+            estadoProducto === "PAUSADO"
+            ||
+            estadoProducto === "DISCONTINUADO";
+
+
+        btnDiscontinuarProducto.disabled =
+            cambiandoEstado
+            ||
+            estadoProducto === "DISCONTINUADO";
+    }
+
+
+    function obtenerNombreEstado(
+        estadoProducto
+    ) {
+
+        if (
+            estadoProducto === "ACTIVO"
+        ) {
+
+            return "Activo";
+        }
+
+
+        if (
+            estadoProducto === "PAUSADO"
+        ) {
+
+            return "Pausado";
+        }
+
+
+        if (
+            estadoProducto === "DISCONTINUADO"
+        ) {
+
+            return "Discontinuado";
+        }
+
+
+        return estadoProducto;
+    }
+
+
+    async function pausarProducto() {
+
+        const confirmado =
+            window.confirm(
+                "¿Confirmás que querés pausar este producto?"
+            );
+
+
+        if (!confirmado) {
+            return;
+        }
+
+
+        await cambiarEstadoProducto(
+            "pausar",
+            "Producto pausado correctamente."
+        );
+    }
+
+
+    async function discontinuarProducto() {
+
+        const confirmado =
+            window.confirm(
+                "¿Confirmás que querés discontinuar este producto?"
+            );
+
+
+        if (!confirmado) {
+            return;
+        }
+
+
+        await cambiarEstadoProducto(
+            "discontinuar",
+            "Producto discontinuado correctamente."
+        );
+    }
+
+
+    async function cambiarEstadoProducto(
+        accion,
+        mensajeExito
+    ) {
+
+        if (
+            cambiandoEstado
+            ||
+            guardando
+        ) {
+
+            return;
+        }
+
+
+        ocultarMensaje();
+
+
+        try {
+
+            cambiandoEstado = true;
+
+
+            btnPausarProducto.disabled =
+                true;
+
+            btnDiscontinuarProducto.disabled =
+                true;
+
+
+            const response =
+                await Auth.fetchAutenticado(
+                    `${API_PRODUCTOS}/${idProducto}/${accion}`,
+                    {
+                        method: "PATCH"
+                    }
+                );
+
+
+            if (!response) {
+                return;
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await obtenerMensajeError(
+                        response
+                    )
+                );
+            }
+
+
+            const productoActualizado =
+                await response.json();
+
+
+            estado.value =
+                productoActualizado.estado;
+
+
+            actualizarAccionesEstado(
+                productoActualizado.estado
+            );
+
+
+            mostrarMensaje(
+                mensajeExito,
+                "exito"
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            mostrarMensaje(
+                error.message ||
+                "No se pudo cambiar el estado del producto.",
+                "error"
+            );
+
+
+        } finally {
+
+            cambiandoEstado = false;
+
+
+            actualizarAccionesEstado(
+                estado.value
+            );
         }
     }
 
@@ -1445,11 +1675,15 @@
     // CANCELAR
     // =====================================
 
-    function cancelar() {
+        function cancelar() {
 
-        if (guardando) {
-            return;
-        }
+            if (
+                guardando
+                ||
+                cambiandoEstado
+            ) {
+                return;
+            }
 
 
         window.location.href =
