@@ -3,8 +3,12 @@
     'use strict';
 
 
-    const API =
+    const API_PRODUCTOS =
         '/api/public/catalogo/productos';
+
+
+    const API_GRUPOS =
+        '/api/public/catalogo/grupos';
 
 
     const loading =
@@ -85,6 +89,24 @@
         );
 
 
+    const optionsSection =
+        document.getElementById(
+            'detail-options-section'
+        );
+
+
+    const optionsGroupName =
+        document.getElementById(
+            'detail-options-group-name'
+        );
+
+
+    const optionsContainer =
+        document.getElementById(
+            'detail-options'
+        );
+
+
     const meta =
         document.getElementById(
             'detail-meta'
@@ -118,17 +140,137 @@
     iniciar();
 
 
+    // =========================================
+    // INICIO
+    // =========================================
+
     async function iniciar() {
 
         configurarCuenta();
 
 
-        const idProducto =
-            obtenerIdProducto();
+        const parametros =
+            obtenerParametros();
 
 
         if (
-            !idProducto
+            parametros.idProducto
+        ) {
+
+            const producto =
+                await cargarProducto(
+                    parametros.idProducto
+                );
+
+
+            if (
+                producto
+                &&
+                producto.idGrupoCatalogo
+            ) {
+
+                await cargarOpcionesGrupo(
+                    producto.idGrupoCatalogo,
+                    producto.idProducto
+                );
+            }
+
+
+            return;
+        }
+
+
+        if (
+            parametros.idGrupoCatalogo
+        ) {
+
+            await cargarGrupoInicial(
+                parametros.idGrupoCatalogo
+            );
+
+
+            return;
+        }
+
+
+        mostrarError();
+
+    }
+
+
+    function obtenerParametros() {
+
+        const parametros =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        return {
+
+            idProducto:
+                convertirId(
+                    parametros.get(
+                        'id'
+                    )
+                ),
+
+            idGrupoCatalogo:
+                convertirId(
+                    parametros.get(
+                        'grupo'
+                    )
+                )
+        };
+
+    }
+
+
+    function convertirId(
+        valor
+    ) {
+
+        const numero =
+            Number(
+                valor
+            );
+
+
+        if (
+            !Number.isInteger(
+                numero
+            )
+            ||
+            numero <= 0
+        ) {
+
+            return null;
+        }
+
+
+        return numero;
+
+    }
+
+
+    // =========================================
+    // INICIO DESDE GRUPO
+    // =========================================
+
+    async function cargarGrupoInicial(
+        idGrupoCatalogo
+    ) {
+
+        const opciones =
+            await obtenerOpcionesGrupo(
+                idGrupoCatalogo
+            );
+
+
+        if (
+            opciones === null
+            ||
+            opciones.length === 0
         ) {
 
             mostrarError();
@@ -137,55 +279,59 @@
         }
 
 
-        await cargarProducto(
-            idProducto
+        const opcionInicial =
+            opciones.find(
+                opcion =>
+                    opcion.disponible
+            )
+            ||
+            opciones[0];
+
+
+        renderizarOpciones(
+            opciones,
+            opcionInicial.idProducto
+        );
+
+
+        const producto =
+            await cargarProducto(
+                opcionInicial.idProducto
+            );
+
+
+        if (
+            !producto
+        ) {
+
+            return;
+        }
+
+
+        actualizarUrl(
+            producto.idProducto,
+            idGrupoCatalogo
         );
 
     }
 
 
-    function obtenerIdProducto() {
-
-        const parametros =
-            new URLSearchParams(
-                window.location.search
-            );
-
-
-        const id =
-            Number(
-                parametros.get(
-                    'id'
-                )
-            );
-
-
-        if (
-            !Number.isInteger(
-                id
-            )
-            ||
-            id <= 0
-        ) {
-
-            return null;
-        }
-
-
-        return id;
-
-    }
-
+    // =========================================
+    // PRODUCTO
+    // =========================================
 
     async function cargarProducto(
         idProducto
     ) {
 
+        mostrarCargando();
+
+
         try {
 
             const response =
                 await fetch(
-                    `${API}/${idProducto}`,
+                    `${API_PRODUCTOS}/${idProducto}`,
                     {
                         headers: {
                             'Accept':
@@ -201,7 +347,7 @@
 
                 mostrarError();
 
-                return;
+                return null;
             }
 
 
@@ -214,6 +360,9 @@
             );
 
 
+            return producto;
+
+
         } catch (error) {
 
             console.error(
@@ -223,10 +372,453 @@
 
 
             mostrarError();
+
+
+            return null;
         }
 
     }
 
+
+    // =========================================
+    // OPCIONES DEL GRUPO
+    // =========================================
+
+    async function cargarOpcionesGrupo(
+        idGrupoCatalogo,
+        idProductoSeleccionado
+    ) {
+
+        const opciones =
+            await obtenerOpcionesGrupo(
+                idGrupoCatalogo
+            );
+
+
+        if (
+            opciones === null
+            ||
+            opciones.length === 0
+        ) {
+
+            ocultarOpciones();
+
+            return;
+        }
+
+
+        renderizarOpciones(
+            opciones,
+            idProductoSeleccionado
+        );
+
+    }
+
+
+    async function obtenerOpcionesGrupo(
+        idGrupoCatalogo
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_GRUPOS}/${idGrupoCatalogo}/opciones`,
+                    {
+                        headers: {
+                            'Accept':
+                                'application/json'
+                        }
+                    }
+                );
+
+
+            if (
+                !response.ok
+            ) {
+
+                return null;
+            }
+
+
+            const opciones =
+                await response.json();
+
+
+            if (
+                !Array.isArray(
+                    opciones
+                )
+            ) {
+
+                return null;
+            }
+
+
+            return opciones;
+
+
+        } catch (error) {
+
+            console.error(
+                'Error al cargar opciones del grupo:',
+                error
+            );
+
+
+            return null;
+        }
+
+    }
+
+
+    function renderizarOpciones(
+        opciones,
+        idProductoSeleccionado
+    ) {
+
+        optionsContainer.innerHTML =
+            '';
+
+
+        opciones.forEach(
+            opcion => {
+
+                const button =
+                    crearOpcion(
+                        opcion,
+                        idProductoSeleccionado
+                    );
+
+
+                optionsContainer.appendChild(
+                    button
+                );
+            }
+        );
+
+
+        optionsSection.classList.remove(
+            'hidden'
+        );
+
+    }
+
+
+    function crearOpcion(
+        opcion,
+        idProductoSeleccionado
+    ) {
+
+        const button =
+            document.createElement(
+                'button'
+            );
+
+
+        button.type =
+            'button';
+
+
+        button.className =
+            'product-option';
+
+
+        button.dataset.idProducto =
+            opcion.idProducto;
+
+
+        if (
+            !opcion.disponible
+        ) {
+
+            button.classList.add(
+                'product-option--out'
+            );
+        }
+
+
+        const seleccionada =
+            Number(
+                opcion.idProducto
+            )
+            ===
+            Number(
+                idProductoSeleccionado
+            );
+
+
+        if (
+            seleccionada
+        ) {
+
+            button.classList.add(
+                'is-active'
+            );
+        }
+
+
+        button.setAttribute(
+            'aria-pressed',
+            seleccionada
+                ? 'true'
+                : 'false'
+        );
+
+
+        const imageContainer =
+            document.createElement(
+                'span'
+            );
+
+
+        imageContainer.className =
+            'product-option__image';
+
+
+        imageContainer.textContent =
+            'TD';
+
+
+        if (
+            typeof opcion.imagenUrl === 'string'
+            &&
+            opcion.imagenUrl.trim() !== ''
+        ) {
+
+            const img =
+                document.createElement(
+                    'img'
+                );
+
+
+            img.src =
+                opcion.imagenUrl.trim();
+
+
+            img.alt =
+                '';
+
+
+            img.addEventListener(
+                'error',
+                () => {
+
+                    img.remove();
+                }
+            );
+
+
+            imageContainer.appendChild(
+                img
+            );
+        }
+
+
+        const optionContent =
+            document.createElement(
+                'span'
+            );
+
+
+        optionContent.className =
+            'product-option__content';
+
+
+        const optionName =
+            document.createElement(
+                'span'
+            );
+
+
+        optionName.className =
+            'product-option__name';
+
+
+        optionName.textContent =
+            opcion.nombre
+            ||
+            'Producto';
+
+
+        const optionPrice =
+            document.createElement(
+                'span'
+            );
+
+
+        optionPrice.className =
+            'product-option__price';
+
+
+        optionPrice.textContent =
+            formatearPrecio(
+                opcion.precioVenta
+            );
+
+
+        const optionStock =
+            document.createElement(
+                'span'
+            );
+
+
+        optionStock.className =
+            'product-option__stock';
+
+
+        if (
+            opcion.disponible
+        ) {
+
+            optionStock.textContent =
+                'Disponible';
+
+
+        } else {
+
+            optionStock.textContent =
+                'Sin stock';
+
+
+            optionStock.classList.add(
+                'product-option__stock--out'
+            );
+        }
+
+
+        optionContent.appendChild(
+            optionName
+        );
+
+
+        optionContent.appendChild(
+            optionPrice
+        );
+
+
+        optionContent.appendChild(
+            optionStock
+        );
+
+
+        button.appendChild(
+            imageContainer
+        );
+
+
+        button.appendChild(
+            optionContent
+        );
+
+
+        button.addEventListener(
+            'click',
+            async () => {
+
+                await seleccionarOpcion(
+                    opcion.idProducto
+                );
+            }
+        );
+
+
+        return button;
+
+    }
+
+
+    async function seleccionarOpcion(
+        idProducto
+    ) {
+
+        const producto =
+            await cargarProducto(
+                idProducto
+            );
+
+
+        if (
+            !producto
+        ) {
+
+            return;
+        }
+
+
+        marcarOpcionSeleccionada(
+            idProducto
+        );
+
+
+        if (
+            producto.idGrupoCatalogo
+        ) {
+
+            actualizarUrl(
+                producto.idProducto,
+                producto.idGrupoCatalogo
+            );
+        }
+
+    }
+
+
+    function marcarOpcionSeleccionada(
+        idProducto
+    ) {
+
+        document
+                .querySelectorAll(
+                    '.product-option'
+                )
+                .forEach(
+                    opcion => {
+
+                        const activa =
+                            Number(
+                                opcion.dataset.idProducto
+                            )
+                            ===
+                            Number(
+                                idProducto
+                            );
+
+
+                        opcion.classList.toggle(
+                            'is-active',
+                            activa
+                        );
+
+
+                        opcion.setAttribute(
+                            'aria-pressed',
+                            activa
+                                ? 'true'
+                                : 'false'
+                        );
+                    }
+                );
+
+    }
+
+
+    function ocultarOpciones() {
+
+        optionsContainer.innerHTML =
+            '';
+
+
+        optionsSection.classList.add(
+            'hidden'
+        );
+
+    }
+
+
+    // =========================================
+    // RENDER PRODUCTO
+    // =========================================
 
     function renderizar(
         producto
@@ -234,7 +826,8 @@
 
         name.textContent =
             producto.nombre
-            || 'Producto';
+            ||
+            'Producto';
 
 
         document.title =
@@ -243,7 +836,8 @@
 
         description.textContent =
             producto.descripcion
-            && producto.descripcion.trim() !== ''
+            &&
+            producto.descripcion.trim() !== ''
                 ? producto.descripcion
                 : 'Sin descripción disponible.';
 
@@ -274,11 +868,17 @@
 
 
         renderizarImagenes(
-            producto.imagenes
+            producto.imagenes,
+            producto.nombre
         );
 
 
         loading.classList.add(
+            'hidden'
+        );
+
+
+        errorState.classList.add(
             'hidden'
         );
 
@@ -325,6 +925,10 @@
 
     }
 
+
+    // =========================================
+    // PRECIO
+    // =========================================
 
     function renderizarPrecio(
         producto
@@ -386,6 +990,10 @@
     }
 
 
+    // =========================================
+    // DISPONIBILIDAD
+    // =========================================
+
     function renderizarDisponibilidad(
         producto
     ) {
@@ -425,6 +1033,10 @@
     }
 
 
+    // =========================================
+    // MAYORISTA
+    // =========================================
+
     function renderizarMayorista(
         producto
     ) {
@@ -436,6 +1048,11 @@
             wholesale.classList.add(
                 'hidden'
             );
+
+
+            wholesaleText.textContent =
+                '';
+
 
             return;
         }
@@ -458,6 +1075,10 @@
     }
 
 
+    // =========================================
+    // GRUPO
+    // =========================================
+
     function renderizarGrupo(
         producto
     ) {
@@ -472,11 +1093,27 @@
                 'hidden'
             );
 
+
+            groupName.textContent =
+                '';
+
+
+            optionsGroupName.textContent =
+                '';
+
+
+            ocultarOpciones();
+
+
             return;
         }
 
 
         groupName.textContent =
+            producto.grupoCatalogo;
+
+
+        optionsGroupName.textContent =
             producto.grupoCatalogo;
 
 
@@ -487,8 +1124,13 @@
     }
 
 
+    // =========================================
+    // IMÁGENES
+    // =========================================
+
     function renderizarImagenes(
-        imagenes
+        imagenes,
+        nombreProducto
     ) {
 
         thumbnails.innerHTML =
@@ -500,6 +1142,15 @@
         );
 
 
+        mainImage.removeAttribute(
+            'src'
+        );
+
+
+        mainImage.alt =
+            '';
+
+
         if (
             !Array.isArray(
                 imagenes
@@ -507,11 +1158,6 @@
             ||
             imagenes.length === 0
         ) {
-
-            mainImage.removeAttribute(
-                'src'
-            );
-
 
             thumbnails.classList.add(
                 'hidden'
@@ -523,7 +1169,8 @@
 
 
         cambiarImagenPrincipal(
-            imagenes[0].urlImagen
+            imagenes[0].urlImagen,
+            nombreProducto
         );
 
 
@@ -534,6 +1181,7 @@
             thumbnails.classList.add(
                 'hidden'
             );
+
 
             return;
         }
@@ -577,7 +1225,7 @@
 
 
                 img.alt =
-                    `Imagen ${indice + 1} del producto`;
+                    `Imagen ${indice + 1} de ${nombreProducto || 'producto'}`;
 
 
                 button.appendChild(
@@ -590,20 +1238,22 @@
                     () => {
 
                         cambiarImagenPrincipal(
-                            imagen.urlImagen
+                            imagen.urlImagen,
+                            nombreProducto
                         );
 
 
                         document
-                            .querySelectorAll(
-                                '.product-gallery__thumbnail'
-                            )
-                            .forEach(
-                                thumbnail =>
-                                    thumbnail.classList.remove(
-                                        'is-active'
-                                    )
-                            );
+                                .querySelectorAll(
+                                    '.product-gallery__thumbnail'
+                                )
+                                .forEach(
+                                    thumbnail =>
+
+                                        thumbnail.classList.remove(
+                                            'is-active'
+                                        )
+                                );
 
 
                         button.classList.add(
@@ -628,7 +1278,8 @@
 
 
     function cambiarImagenPrincipal(
-        ruta
+        ruta,
+        nombreProducto
     ) {
 
         mainImage.classList.remove(
@@ -654,8 +1305,66 @@
             };
 
 
+        mainImage.alt =
+            `Imagen de ${nombreProducto || 'producto'}`;
+
+
         mainImage.src =
             ruta;
+
+    }
+
+
+    // =========================================
+    // URL
+    // =========================================
+
+    function actualizarUrl(
+        idProducto,
+        idGrupoCatalogo
+    ) {
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+
+        url.searchParams.set(
+            'id',
+            idProducto
+        );
+
+
+        url.searchParams.set(
+            'grupo',
+            idGrupoCatalogo
+        );
+
+
+        window.history.replaceState(
+            {},
+            '',
+            url
+        );
+
+    }
+
+
+    // =========================================
+    // ESTADOS
+    // =========================================
+
+    function mostrarCargando() {
+
+        loading.classList.remove(
+            'hidden'
+        );
+
+
+        errorState.classList.add(
+            'hidden'
+        );
 
     }
 
@@ -678,6 +1387,10 @@
 
     }
 
+
+    // =========================================
+    // FORMATO
+    // =========================================
 
     function formatearPrecio(
         valor
@@ -731,6 +1444,16 @@
             );
 
 
+        if (
+            !Number.isFinite(
+                numero
+            )
+        ) {
+
+            return '';
+        }
+
+
         return Number.isInteger(
             numero
         )
@@ -741,6 +1464,10 @@
 
     }
 
+
+    // =========================================
+    // CUENTA
+    // =========================================
 
     function configurarCuenta() {
 

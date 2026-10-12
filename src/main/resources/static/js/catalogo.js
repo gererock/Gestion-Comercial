@@ -15,10 +15,6 @@
         '/data/comercio.json';
 
 
-    /* =====================================================
-       ELEMENTOS DEL CATÁLOGO
-    ===================================================== */
-
     const grid =
         document.getElementById(
             'catalog-grid'
@@ -54,10 +50,6 @@
             'catalog-retry'
         );
 
-
-    /* =====================================================
-       FILTROS - US03
-    ===================================================== */
 
     const filterForm =
         document.getElementById(
@@ -113,10 +105,6 @@
         );
 
 
-    /* =====================================================
-       DATOS DEL COMERCIO
-    ===================================================== */
-
     const catalogLogo =
         document.getElementById(
             'catalog-logo'
@@ -169,9 +157,9 @@
     }
 
 
-    /* =====================================================
-       EVENTOS
-    ===================================================== */
+    // =========================================
+    // EVENTOS
+    // =========================================
 
     function configurarEventos() {
 
@@ -195,7 +183,6 @@
                 event => {
 
                     event.preventDefault();
-
 
                     ejecutarBusqueda();
                 }
@@ -272,9 +259,9 @@
     }
 
 
-    /* =====================================================
-       FILTROS DISPONIBLES
-    ===================================================== */
+    // =========================================
+    // FILTROS
+    // =========================================
 
     async function cargarFiltros() {
 
@@ -457,9 +444,9 @@
     }
 
 
-    /* =====================================================
-       EJECUTAR BÚSQUEDA
-    ===================================================== */
+    // =========================================
+    // BÚSQUEDA
+    // =========================================
 
     async function ejecutarBusqueda() {
 
@@ -535,9 +522,9 @@
     }
 
 
-    /* =====================================================
-       CATÁLOGO
-    ===================================================== */
+    // =========================================
+    // CATÁLOGO
+    // =========================================
 
     async function cargarCatalogo() {
 
@@ -557,13 +544,9 @@
 
         try {
 
-            const url =
-                construirUrlCatalogo();
-
-
             const response =
                 await fetch(
-                    url,
+                    construirUrlCatalogo(),
                     {
                         headers: {
                             'Accept':
@@ -577,14 +560,8 @@
                 !response.ok
             ) {
 
-                const mensaje =
-                    await obtenerMensajeError(
-                        response
-                    );
-
-
                 throw new Error(
-                    mensaje
+                    'No se pudo cargar el catálogo.'
                 );
             }
 
@@ -693,9 +670,9 @@
     }
 
 
-    /* =====================================================
-       LIMPIAR FILTROS
-    ===================================================== */
+    // =========================================
+    // LIMPIAR FILTROS
+    // =========================================
 
     async function limpiarFiltros() {
 
@@ -734,9 +711,9 @@
     }
 
 
-    /* =====================================================
-       RENDER
-    ===================================================== */
+    // =========================================
+    // RENDER CATÁLOGO
+    // =========================================
 
     function renderizarCatalogo(
         items
@@ -784,16 +761,11 @@
         items.forEach(
             item => {
 
-                const card =
+                grid.appendChild(
                     crearCard(
                         item
-                    );
-
-
-                grid.appendChild(
-                    card
+                    )
                 );
-
             }
         );
 
@@ -820,13 +792,11 @@
                 : '';
 
 
-        return (
-            nombre !== ''
-            ||
-            categoria !== ''
-            ||
-            marca !== ''
-        );
+        return nombre !== ''
+                ||
+                categoria !== ''
+                ||
+                marca !== '';
 
     }
 
@@ -852,9 +822,9 @@
     }
 
 
-    /* =====================================================
-       CARD
-    ===================================================== */
+    // =========================================
+    // CARD - US02 / US04 / US05
+    // =========================================
 
     function crearCard(
         item
@@ -866,9 +836,21 @@
             item.idProducto != null;
 
 
+        const esGrupo =
+            item.tipo === 'GRUPO'
+            &&
+            item.idGrupoCatalogo != null;
+
+
+        const esNavegable =
+            esProducto
+            ||
+            esGrupo;
+
+
         const card =
             document.createElement(
-                esProducto
+                esNavegable
                     ? 'a'
                     : 'article'
             );
@@ -879,13 +861,18 @@
 
 
         if (
-            esProducto
+            esNavegable
         ) {
 
             card.classList.add(
                 'product-card--link'
             );
+        }
 
+
+        if (
+            esProducto
+        ) {
 
             card.href =
                 `/catalogo/producto.html?id=${
@@ -899,7 +886,31 @@
                 'aria-label',
                 `Ver detalle de ${
                     item.nombre
-                    || 'producto'
+                    ||
+                    'producto'
+                }`
+            );
+        }
+
+
+        if (
+            esGrupo
+        ) {
+
+            card.href =
+                `/catalogo/producto.html?grupo=${
+                    encodeURIComponent(
+                        item.idGrupoCatalogo
+                    )
+                }`;
+
+
+            card.setAttribute(
+                'aria-label',
+                `Ver opciones de ${
+                    item.nombre
+                    ||
+                    'grupo'
                 }`
             );
         }
@@ -915,12 +926,8 @@
             'product-card__image';
 
 
-        const fallback =
-            crearFallbackImagen();
-
-
         imageContainer.appendChild(
-            fallback
+            crearFallbackImagen()
         );
 
 
@@ -1000,49 +1007,41 @@
             'product-card__type';
 
 
-        if (
+        type.textContent =
             item.tipo === 'GRUPO'
-        ) {
-
-            type.textContent =
-                textoOpciones(
+                ? textoOpciones(
                     item.cantidadOpciones
-                );
+                )
+                : 'Producto';
 
 
-        } else {
-
-            type.textContent =
-                'Producto';
-        }
-
-
-        const name =
+        const productName =
             document.createElement(
                 'h2'
             );
 
 
-        name.className =
+        productName.className =
             'product-card__name';
 
 
-        name.textContent =
+        productName.textContent =
             item.nombre
-            || 'Producto';
+            ||
+            'Producto';
 
 
-        const price =
+        const productPrice =
             document.createElement(
                 'p'
             );
 
 
-        price.className =
+        productPrice.className =
             'product-card__price';
 
 
-        price.textContent =
+        productPrice.textContent =
             crearTextoPrecio(
                 item
             );
@@ -1084,12 +1083,12 @@
 
 
         info.appendChild(
-            name
+            productName
         );
 
 
         info.appendChild(
-            price
+            productPrice
         );
 
 
@@ -1113,9 +1112,9 @@
     }
 
 
-    /* =====================================================
-       IMAGEN
-    ===================================================== */
+    // =========================================
+    // IMAGEN
+    // =========================================
 
     function crearFallbackImagen() {
 
@@ -1189,8 +1188,8 @@
 
         img.alt =
             nombre
-            ? `Imagen de ${nombre}`
-            : 'Imagen del producto';
+                ? `Imagen de ${nombre}`
+                : 'Imagen del producto';
 
 
         img.loading =
@@ -1240,9 +1239,9 @@
     }
 
 
-    /* =====================================================
-       BADGE
-    ===================================================== */
+    // =========================================
+    // BADGE
+    // =========================================
 
     function crearBadge(
         texto,
@@ -1268,9 +1267,9 @@
     }
 
 
-    /* =====================================================
-       PRECIO
-    ===================================================== */
+    // =========================================
+    // PRECIOS
+    // =========================================
 
     function crearTextoPrecio(
         item
@@ -1282,15 +1281,9 @@
             );
 
 
-        if (
-            item.precioDesde
-        ) {
-
-            return `Desde ${precio}`;
-        }
-
-
-        return precio;
+        return item.precioDesde
+            ? `Desde ${precio}`
+            : precio;
 
     }
 
@@ -1337,9 +1330,9 @@
     }
 
 
-    /* =====================================================
-       OPCIONES
-    ===================================================== */
+    // =========================================
+    // OPCIONES
+    // =========================================
 
     function textoOpciones(
         cantidad
@@ -1376,9 +1369,9 @@
     }
 
 
-    /* =====================================================
-       ESTADOS
-    ===================================================== */
+    // =========================================
+    // ESTADOS
+    // =========================================
 
     function ocultarEstados() {
 
@@ -1416,32 +1409,17 @@
 
     function mostrarError() {
 
-        if (
-            grid
-        ) {
-
-            grid.innerHTML =
-                '';
-        }
+        grid.innerHTML =
+            '';
 
 
-        if (
-            resultCount
-        ) {
-
-            resultCount.textContent =
-                'No se pudo cargar el catálogo';
-        }
+        resultCount.textContent =
+            'No se pudo cargar el catálogo';
 
 
-        if (
-            errorState
-        ) {
-
-            errorState.classList.remove(
-                'hidden'
-            );
-        }
+        errorState.classList.remove(
+            'hidden'
+        );
 
     }
 
@@ -1490,40 +1468,9 @@
     }
 
 
-    async function obtenerMensajeError(
-        response
-    ) {
-
-        try {
-
-            const body =
-                await response.json();
-
-
-            if (
-                typeof body.message === 'string'
-                &&
-                body.message.trim() !== ''
-            ) {
-
-                return body.message.trim();
-            }
-
-
-        } catch (error) {
-
-            // Se usa el mensaje genérico.
-        }
-
-
-        return 'No se pudo cargar el catálogo.';
-
-    }
-
-
-    /* =====================================================
-       DATOS DEL COMERCIO
-    ===================================================== */
+    // =========================================
+    // DATOS DEL COMERCIO
+    // =========================================
 
     async function cargarDatosComercio() {
 
@@ -1577,22 +1524,12 @@
                 comercio.nombre.trim();
 
 
-            if (
-                brandName
-            ) {
-
-                brandName.textContent =
-                    nombre;
-            }
+            brandName.textContent =
+                nombre;
 
 
-            if (
-                footerName
-            ) {
-
-                footerName.textContent =
-                    nombre;
-            }
+            footerName.textContent =
+                nombre;
 
 
             document.title =
@@ -1615,9 +1552,9 @@
     }
 
 
-    /* =====================================================
-       LOGO
-    ===================================================== */
+    // =========================================
+    // LOGO
+    // =========================================
 
     function configurarLogo() {
 
@@ -1665,9 +1602,9 @@
     }
 
 
-    /* =====================================================
-       CUENTA
-    ===================================================== */
+    // =========================================
+    // CUENTA
+    // =========================================
 
     function configurarCuenta() {
 
@@ -1716,18 +1653,18 @@
             accountLink,
             footerAccount
         ]
-            .filter(Boolean)
-            .forEach(
-                enlace => {
+                .filter(Boolean)
+                .forEach(
+                    enlace => {
 
-                    enlace.textContent =
-                        texto;
+                        enlace.textContent =
+                            texto;
 
 
-                    enlace.href =
-                        ruta;
-                }
-            );
+                        enlace.href =
+                            ruta;
+                    }
+                );
 
     }
 
