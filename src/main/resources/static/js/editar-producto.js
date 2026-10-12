@@ -198,6 +198,11 @@
             "grupoCatalogo"
         );
 
+    const avisoGrupoInactivoActual =
+    document.getElementById(
+        "avisoGrupoInactivoActual"
+    );
+
     const precioCosto =
         document.getElementById(
             "precioCosto"
@@ -525,6 +530,8 @@
 
         eliminarGrupoActualEspecial();
 
+        ocultarAvisoGrupoInactivoActual();
+
 
         if (
             idGrupoCatalogo === null
@@ -613,6 +620,9 @@
 
             option.textContent =
                 `${grupo.nombreVisible} (inactivo - asociación actual)`;
+
+
+            mostrarAvisoGrupoInactivoActual();
         }
 
 
@@ -641,6 +651,29 @@
                 option =>
                     option.remove()
             );
+    }
+
+    function mostrarAvisoGrupoInactivoActual() {
+
+        avisoGrupoInactivoActual.textContent =
+            "Grupo de catálogo (inactivo - asociación actual). Podés conservarlo, cambiarlo por un grupo activo o quitarlo.";
+
+
+        avisoGrupoInactivoActual.classList.remove(
+            "oculto"
+        );
+    }
+
+
+    function ocultarAvisoGrupoInactivoActual() {
+
+        avisoGrupoInactivoActual.textContent =
+            "";
+
+
+        avisoGrupoInactivoActual.classList.add(
+            "oculto"
+        );
     }
 
 
