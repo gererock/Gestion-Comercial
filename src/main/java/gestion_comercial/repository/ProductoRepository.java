@@ -100,4 +100,73 @@ public interface ProductoRepository
             @Param("estado")
             EstadoProducto estado
     );
+
+
+    // =========================================
+    // CATÁLOGO PÚBLICO CON FILTROS - US03
+    // =========================================
+
+    @Query("""
+            SELECT p
+            FROM Producto p
+
+            LEFT JOIN FETCH p.categoria c
+            LEFT JOIN FETCH p.marca m
+            LEFT JOIN FETCH p.grupoCatalogo g
+
+            WHERE
+                p.estado = :estado
+
+            AND
+                p.publicadoOnline = true
+
+            AND
+                (
+                    :nombre IS NULL
+
+                    OR LOWER(p.nombre)
+                        LIKE LOWER(
+                            CONCAT('%', :nombre, '%')
+                        )
+
+                    OR (
+                        g IS NOT NULL
+                        AND g.activo = true
+                        AND LOWER(g.nombreVisible)
+                            LIKE LOWER(
+                                CONCAT('%', :nombre, '%')
+                            )
+                    )
+                )
+
+            AND
+                (
+                    :idCategoria IS NULL
+                    OR c.id = :idCategoria
+                )
+
+            AND
+                (
+                    :idMarca IS NULL
+                    OR m.id = :idMarca
+                )
+
+            ORDER BY
+                p.nombre ASC,
+                p.idProducto ASC
+            """)
+    List<Producto> buscarPublicablesParaCatalogoFiltrado(
+
+            @Param("estado")
+            EstadoProducto estado,
+
+            @Param("nombre")
+            String nombre,
+
+            @Param("idCategoria")
+            Integer idCategoria,
+
+            @Param("idMarca")
+            Integer idMarca
+    );
 }
