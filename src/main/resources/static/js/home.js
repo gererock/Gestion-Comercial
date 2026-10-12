@@ -319,31 +319,37 @@
        TEXTO
        ===================================================== */
 
-    function establecerTexto(
-        id,
-        valor
-    ) {
-
-        const elemento =
-            document.getElementById(id);
-
-
-        if (!elemento) {
-            return;
-        }
-
-
-        if (
-            typeof valor !== 'string'
-            || valor.trim() === ''
+        function establecerTexto(
+            id,
+            valor
         ) {
-            return;
+
+            const elemento =
+                document.getElementById(id);
+
+
+            if (!elemento) {
+                return;
+            }
+
+
+            if (
+                typeof valor !== 'string'
+                ||
+                valor.trim() === ''
+            ) {
+
+                elemento.textContent =
+                    '';
+
+                return;
+            }
+
+
+            elemento.textContent =
+                valor.trim();
+
         }
-
-
-        elemento.textContent =
-            valor.trim();
-
     }
 
 
@@ -1246,27 +1252,74 @@
             );
 
 
-        if (
-            !contenedor
-            || !Array.isArray(horarios)
-        ) {
+        if (!contenedor) {
             return;
         }
 
 
-        contenedor.innerHTML = '';
+        contenedor.innerHTML =
+            '';
 
 
-        horarios.forEach(
+        if (
+            !Array.isArray(horarios)
+            ||
+            horarios.length === 0
+        ) {
+
+            const parrafo =
+                document.createElement(
+                    'p'
+                );
+
+
+            parrafo.textContent =
+                'Horarios no informados.';
+
+
+            contenedor.appendChild(
+                parrafo
+            );
+
+
+            return;
+        }
+
+
+        const horariosValidos =
+            horarios.filter(
+                horario =>
+                    typeof horario === 'string'
+                    &&
+                    horario.trim() !== ''
+            );
+
+
+        if (
+            horariosValidos.length === 0
+        ) {
+
+            const parrafo =
+                document.createElement(
+                    'p'
+                );
+
+
+            parrafo.textContent =
+                'Horarios no informados.';
+
+
+            contenedor.appendChild(
+                parrafo
+            );
+
+
+            return;
+        }
+
+
+        horariosValidos.forEach(
             horario => {
-
-                if (
-                    typeof horario !== 'string'
-                    || horario.trim() === ''
-                ) {
-                    return;
-                }
-
 
                 const parrafo =
                     document.createElement(
@@ -1281,7 +1334,6 @@
                 contenedor.appendChild(
                     parrafo
                 );
-
             }
         );
 
@@ -1302,17 +1354,48 @@
             );
 
 
+        if (!mapa) {
+            return;
+        }
+
+
+        const contenedor =
+            mapa.closest(
+                '.map-wrapper'
+            );
+
+
         if (
-            !mapa
-            || typeof ruta !== 'string'
-            || ruta.trim() === ''
+            typeof ruta !== 'string'
+            ||
+            ruta.trim() === ''
         ) {
+
+            mapa.removeAttribute(
+                'src'
+            );
+
+
+            if (contenedor) {
+
+                contenedor.hidden =
+                    true;
+            }
+
+
             return;
         }
 
 
         mapa.src =
             ruta.trim();
+
+
+        if (contenedor) {
+
+            contenedor.hidden =
+                false;
+        }
 
     }
 
@@ -1324,21 +1407,6 @@
     function aplicarTelefono(
         telefono
     ) {
-
-        if (
-            typeof telefono !== 'string'
-            || telefono.trim() === ''
-        ) {
-            return;
-        }
-
-
-        const numero =
-            telefono.replace(
-                /\D/g,
-                ''
-            );
-
 
         const enlaces = [
 
@@ -1353,12 +1421,45 @@
         ];
 
 
+        if (
+            typeof telefono !== 'string'
+            ||
+            telefono.trim() === ''
+        ) {
+
+            enlaces.forEach(
+                enlace => {
+
+                    if (enlace) {
+
+                        enlace.hidden =
+                            true;
+                    }
+                }
+            );
+
+
+            return;
+        }
+
+
+        const numero =
+            telefono.replace(
+                /\D/g,
+                ''
+            );
+
+
         enlaces.forEach(
             enlace => {
 
                 if (!enlace) {
                     return;
                 }
+
+
+                enlace.hidden =
+                    false;
 
 
                 enlace.href =
@@ -1372,7 +1473,6 @@
 
                     enlace.textContent =
                         telefono.trim();
-
                 }
 
             }
@@ -1389,14 +1489,6 @@
         correo
     ) {
 
-        if (
-            typeof correo !== 'string'
-            || correo.trim() === ''
-        ) {
-            return;
-        }
-
-
         const enlaces = [
 
             document.getElementById(
@@ -1410,12 +1502,38 @@
         ];
 
 
+        if (
+            typeof correo !== 'string'
+            ||
+            correo.trim() === ''
+        ) {
+
+            enlaces.forEach(
+                enlace => {
+
+                    if (enlace) {
+
+                        enlace.hidden =
+                            true;
+                    }
+                }
+            );
+
+
+            return;
+        }
+
+
         enlaces.forEach(
             enlace => {
 
                 if (!enlace) {
                     return;
                 }
+
+
+                enlace.hidden =
+                    false;
 
 
                 enlace.href =
@@ -1429,7 +1547,6 @@
 
                     enlace.textContent =
                         correo.trim();
-
                 }
 
             }
@@ -1447,10 +1564,37 @@
         mensaje
     ) {
 
+        const enlaces = [
+
+            document.getElementById(
+                'whatsapp-link'
+            ),
+
+            document.getElementById(
+                'footer-whatsapp-link'
+            )
+
+        ];
+
+
         if (
             typeof numero !== 'string'
-            || numero.trim() === ''
+            ||
+            numero.trim() === ''
         ) {
+
+            enlaces.forEach(
+                enlace => {
+
+                    if (enlace) {
+
+                        enlace.hidden =
+                            true;
+                    }
+                }
+            );
+
+
             return;
         }
 
@@ -1468,40 +1612,31 @@
 
         if (
             typeof mensaje === 'string'
-            && mensaje.trim() !== ''
+            &&
+            mensaje.trim() !== ''
         ) {
 
             ruta +=
                 `?text=${encodeURIComponent(
                     mensaje.trim()
                 )}`;
-
         }
-
-
-        const enlaces = [
-
-            document.getElementById(
-                'whatsapp-link'
-            ),
-
-            document.getElementById(
-                'footer-whatsapp-link'
-            )
-
-        ];
 
 
         enlaces.forEach(
             enlace => {
 
-                if (enlace) {
-
-                    enlace.href =
-                        ruta;
-
+                if (!enlace) {
+                    return;
                 }
 
+
+                enlace.hidden =
+                    false;
+
+
+                enlace.href =
+                    ruta;
             }
         );
 
@@ -1516,14 +1651,6 @@
         ruta
     ) {
 
-        if (
-            typeof ruta !== 'string'
-            || ruta.trim() === ''
-        ) {
-            return;
-        }
-
-
         const enlaces = [
 
             document.getElementById(
@@ -1537,16 +1664,42 @@
         ];
 
 
+        if (
+            typeof ruta !== 'string'
+            ||
+            ruta.trim() === ''
+        ) {
+
+            enlaces.forEach(
+                enlace => {
+
+                    if (enlace) {
+
+                        enlace.hidden =
+                            true;
+                    }
+                }
+            );
+
+
+            return;
+        }
+
+
         enlaces.forEach(
             enlace => {
 
-                if (enlace) {
-
-                    enlace.href =
-                        ruta.trim();
-
+                if (!enlace) {
+                    return;
                 }
 
+
+                enlace.hidden =
+                    false;
+
+
+                enlace.href =
+                    ruta.trim();
             }
         );
 
