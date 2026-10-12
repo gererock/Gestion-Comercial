@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Imágenes del producto | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/imagenes-producto.css"
+    >
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo-simbolo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Panel de administración
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Administrador
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Administración / Productos /
+                Imágenes
+            </p>
+
+            <h2>
+                Gestionar imágenes
+            </h2>
+
+            <p class="subtitulo">
+
+                Producto:
+
+                <strong id="nombreProducto">
+                    Cargando...
+                </strong>
+
+            </p>
+
+        </div>
+
+
+        <a
+            id="btnVolverProducto"
+            href="/admin/index.html"
+            class="btn btn-light"
+        >
+            Volver al producto
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <!-- =====================================
+         AGREGAR IMAGEN
+    ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Agregar imagen
+                </h3>
+
+                <p>
+                    Formatos permitidos:
+                    JPG, JPEG y PNG.
+                    Tamaño máximo: 5 MB.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="formImagen">
+
+            <div class="form-grid">
+
+                <div class="campo campo-completo">
+
+                    <label for="archivo">
+                        Imagen *
+                    </label>
+
+                    <input
+                        type="file"
+                        id="archivo"
+                        accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                        required
+                    >
+
+                    <small>
+                        Seleccioná una imagen válida.
+                    </small>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="orden">
+                        Orden
+                    </label>
+
+                    <input
+                        type="number"
+                        id="orden"
+                        min="0"
+                        step="1"
+                        placeholder="Automático"
+                    >
+
+                    <small>
+                        Si lo dejás vacío,
+                        el sistema asignará el siguiente orden.
+                    </small>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Imagen principal
+                    </label>
+
+                    <label class="check-linea">
+
+                        <input
+                            type="checkbox"
+                            id="principal"
+                        >
+
+                        <span>
+                            Establecer como principal
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="contenedorPreview"
+                class="preview oculto"
+            >
+
+                <p>
+                    Vista previa
+                </p>
+
+                <img
+                    id="previewImagen"
+                    alt="Vista previa de la imagen seleccionada"
+                >
+
+            </div>
+
+
+            <div class="acciones-formulario">
+
+                <button
+                    type="button"
+                    id="btnCancelarSeleccion"
+                    class="btn btn-light"
+                >
+                    Cancelar selección
+                </button>
+
+                <button
+                    type="submit"
+                    id="btnAgregarImagen"
+                    class="btn btn-primary"
+                >
+                    Agregar imagen
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================
+         IMÁGENES ACTUALES
+    ====================================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Imágenes actuales
+                </h3>
+
+                <p>
+                    Podés cambiar la imagen principal,
+                    modificar el orden o eliminar imágenes.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="sinImagenes"
+            class="estado-vacio oculto"
+        >
+
+            Este producto todavía no tiene imágenes.
+
+        </div>
+
+
+        <div
+            id="imagenesGrid"
+            class="imagenes-grid"
+        >
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/imagenes-producto.js"></script>
+
+</body>
+
+</html>

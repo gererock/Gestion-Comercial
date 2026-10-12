@@ -268,6 +268,12 @@
             "btnCancelar"
         );
 
+
+    const btnGestionarImagenes =
+    document.getElementById(
+        "btnGestionarImagenes"
+    );
+
     const btnCerrarSesion =
         document.getElementById(
             "btnCerrarSesion"
@@ -294,6 +300,12 @@
     // =====================================
 
     function configurarEventos() {
+
+
+        btnGestionarImagenes.addEventListener(
+            "click",
+            gestionarImagenes
+        );
 
         btnPausarProducto.addEventListener(
             "click",
@@ -1702,6 +1714,33 @@
         contadorDescripcion.textContent =
             descripcion.value.length;
     }
+
+
+
+
+    // =====================================
+    // IMÁGENES - US30
+    // =====================================
+
+    function gestionarImagenes() {
+
+        if (
+            guardando
+            ||
+            cambiandoEstado
+            ||
+            idProducto === null
+        ) {
+
+            return;
+        }
+
+
+        window.location.href =
+            `/admin/imagenes-producto.html?id=${idProducto}`;
+    }
+
+
 
 
     // =====================================
