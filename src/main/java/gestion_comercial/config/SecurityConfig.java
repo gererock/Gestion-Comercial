@@ -28,227 +28,352 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-        private final RestAuthenticationEntryPoint authenticationEntryPoint;
-        private final RestAccessDeniedHandler accessDeniedHandler;
-        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
+    private final RestAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-        @Value("${app.cors.allowed-origins}")
-        private String allowedOrigins;
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOrigins;
 
-        public SecurityConfig(
-                        RestAuthenticationEntryPoint authenticationEntryPoint,
-                        RestAccessDeniedHandler accessDeniedHandler,
-                        JwtAuthenticationFilter jwtAuthenticationFilter) {
 
-                this.authenticationEntryPoint = authenticationEntryPoint;
-                this.accessDeniedHandler = accessDeniedHandler;
-                this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        }
+    public SecurityConfig(
+            RestAuthenticationEntryPoint authenticationEntryPoint,
+            RestAccessDeniedHandler accessDeniedHandler,
+            JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http)
-                        throws Exception {
+        this.authenticationEntryPoint =
+                authenticationEntryPoint;
 
-                http
-                                .csrf(csrf -> csrf.disable())
+        this.accessDeniedHandler =
+                accessDeniedHandler;
 
-                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        this.jwtAuthenticationFilter =
+                jwtAuthenticationFilter;
+    }
 
-                                .sessionManagement(session -> session.sessionCreationPolicy(
-                                                SessionCreationPolicy.STATELESS))
 
-                                .authorizeHttpRequests(auth -> auth
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
 
-                                                // Archivos públicos del frontend
-                                                .requestMatchers(
-                                                                "/",
-                                                                "/index.html",
-                                                                "/categorias.html",
-                                                                "/marcas.html",
-                                                                "/css/**",
-                                                                "/js/**",
-                                                                "/data/**",
-                                                                "/img/**",
-                                                                "/images/**",
-                                                                "/login/**",
-                                                                "/registro/**",
-                                                                "/admin/**",
-                                                                "/vendedor/**",
-                                                                "/cliente/**",
-                                                                "/catalogo/**",
-                                                                "/crear-producto.html",
-                                                                "/editar-producto.html",
-                                                                "/grupos-catalogo.html")
-                                                .permitAll()
+        http
+                .csrf(
+                        csrf ->
+                                csrf.disable()
+                )
 
-                                                // Endpoint de errores
-                                                .requestMatchers("/error")
-                                                .permitAll()
+                .cors(
+                        cors ->
+                                cors.configurationSource(
+                                        corsConfigurationSource()
+                                )
+                )
 
-                                                // Login / autenticación
-                                                .requestMatchers("/api/auth/**")
-                                                .permitAll()
+                .sessionManagement(
+                        session ->
+                                session.sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS
+                                )
+                )
 
-                                                // Endpoints públicos
-                                                .requestMatchers("/api/public/**")
-                                                .permitAll()
+                .authorizeHttpRequests(
+                        auth ->
+                                auth
 
-                                                // =========================
-                                                // CATEGORÍAS
-                                                // =========================
+                                        // FRONTEND
+                                        .requestMatchers(
+                                                "/",
+                                                "/index.html",
+                                                "/categorias.html",
+                                                "/marcas.html",
+                                                "/css/**",
+                                                "/js/**",
+                                                "/data/**",
+                                                "/img/**",
+                                                "/images/**",
+                                                "/login/**",
+                                                "/registro/**",
+                                                "/admin/**",
+                                                "/vendedor/**",
+                                                "/cliente/**",
+                                                "/catalogo/**",
+                                                "/crear-producto.html",
+                                                "/editar-producto.html",
+                                                "/grupos-catalogo.html"
+                                        )
+                                        .permitAll()
 
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/api/categorias",
-                                                                "/api/categorias/**")
-                                                .hasAnyRole(
-                                                                "ADMINISTRADOR",
-                                                                "VENDEDOR")
 
-                                                .requestMatchers(
-                                                                "/api/categorias",
-                                                                "/api/categorias/**")
-                                                .hasRole("ADMINISTRADOR")
+                                        .requestMatchers(
+                                                "/error"
+                                        )
+                                        .permitAll()
 
-                                                // =========================
-                                                // GRUPOS DE CATÁLOGO
-                                                // =========================
 
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/api/grupos-catalogo",
-                                                                "/api/grupos-catalogo/**")
-                                                .hasAnyRole(
-                                                                "ADMINISTRADOR",
-                                                                "VENDEDOR")
+                                        .requestMatchers(
+                                                "/api/auth/**"
+                                        )
+                                        .permitAll()
 
-                                                .requestMatchers(
-                                                                "/api/grupos-catalogo",
-                                                                "/api/grupos-catalogo/**")
-                                                .hasRole("ADMINISTRADOR")
 
-                                                // =========================
-                                                // MARCAS
-                                                // =========================
+                                        .requestMatchers(
+                                                "/api/public/**"
+                                        )
+                                        .permitAll()
 
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/api/marcas",
-                                                                "/api/marcas/**")
-                                                .hasAnyRole(
-                                                                "ADMINISTRADOR",
-                                                                "VENDEDOR")
 
-                                                .requestMatchers(
-                                                                "/api/marcas",
-                                                                "/api/marcas/**")
-                                                .hasRole("ADMINISTRADOR")
+                                        // =========================
+                                        // CATEGORÍAS
+                                        // =========================
 
-                                                // =========================
-                                                // PRODUCTOS - US27
-                                                // =========================
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/categorias",
+                                                "/api/categorias/**"
+                                        )
+                                        .hasAnyRole(
+                                                "ADMINISTRADOR",
+                                                "VENDEDOR"
+                                        )
 
-                                                .requestMatchers(
-                                                                HttpMethod.POST,
-                                                                "/api/productos")
-                                                .hasRole("ADMINISTRADOR")
 
-                                                .requestMatchers(
-                                                                HttpMethod.PUT,
-                                                                "/api/productos/**")
-                                                .hasRole("ADMINISTRADOR")
+                                        .requestMatchers(
+                                                "/api/categorias",
+                                                "/api/categorias/**"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                                                .requestMatchers(
-                                                                HttpMethod.GET,
-                                                                "/api/productos/**")
-                                                .hasAnyRole(
-                                                                "ADMINISTRADOR",
-                                                                "VENDEDOR")
 
-                                                // =========================
-                                                // ROLES
-                                                // =========================
+                                        // =========================
+                                        // GRUPOS DE CATÁLOGO
+                                        // =========================
 
-                                                .requestMatchers("/api/admin/**")
-                                                .hasRole("ADMINISTRADOR")
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/grupos-catalogo",
+                                                "/api/grupos-catalogo/**"
+                                        )
+                                        .hasAnyRole(
+                                                "ADMINISTRADOR",
+                                                "VENDEDOR"
+                                        )
 
-                                                .requestMatchers("/api/vendedor/**")
-                                                .hasAnyRole(
-                                                                "VENDEDOR",
-                                                                "ADMINISTRADOR")
 
-                                                .requestMatchers("/api/cliente/**")
-                                                .hasRole("CLIENTE")
+                                        .requestMatchers(
+                                                "/api/grupos-catalogo",
+                                                "/api/grupos-catalogo/**"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                                                // SIEMPRE ÚLTIMO
-                                                .anyRequest()
-                                                .authenticated())
 
-                                .exceptionHandling(exception -> exception
-                                                .authenticationEntryPoint(
-                                                                authenticationEntryPoint)
-                                                .accessDeniedHandler(
-                                                                accessDeniedHandler))
+                                        // =========================
+                                        // MARCAS
+                                        // =========================
 
-                                .formLogin(form -> form.disable())
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/marcas",
+                                                "/api/marcas/**"
+                                        )
+                                        .hasAnyRole(
+                                                "ADMINISTRADOR",
+                                                "VENDEDOR"
+                                        )
 
-                                .httpBasic(basic -> basic.disable())
 
-                                .addFilterBefore(
-                                                jwtAuthenticationFilter,
-                                                UsernamePasswordAuthenticationFilter.class);
+                                        .requestMatchers(
+                                                "/api/marcas",
+                                                "/api/marcas/**"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                return http.build();
-        }
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+                                        // =========================
+                                        // PRODUCTOS
+                                        // =========================
 
-        @Bean
-        public AuthenticationManager authenticationManager(
-                        AuthenticationConfiguration authenticationConfiguration)
-                        throws Exception {
+                                        .requestMatchers(
+                                                HttpMethod.POST,
+                                                "/api/productos"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                return authenticationConfiguration
-                                .getAuthenticationManager();
-        }
 
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
+                                        .requestMatchers(
+                                                HttpMethod.PUT,
+                                                "/api/productos/**"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                CorsConfiguration configuration = new CorsConfiguration();
 
-                configuration.setAllowedOrigins(
-                                Arrays.stream(
-                                                allowedOrigins.split(","))
-                                                .map(String::trim)
-                                                .toList());
+                                        // US29
+                                        .requestMatchers(
+                                                HttpMethod.PATCH,
+                                                "/api/productos/*/pausar",
+                                                "/api/productos/*/discontinuar"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                configuration.setAllowedMethods(
-                                List.of(
-                                                "GET",
-                                                "POST",
-                                                "PUT",
-                                                "PATCH",
-                                                "DELETE",
-                                                "OPTIONS"));
 
-                configuration.setAllowedHeaders(
-                                List.of(
-                                                "Authorization",
-                                                "Content-Type",
-                                                "Accept"));
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/api/productos/**"
+                                        )
+                                        .hasAnyRole(
+                                                "ADMINISTRADOR",
+                                                "VENDEDOR"
+                                        )
 
-                configuration.setAllowCredentials(true);
 
-                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                                        // =========================
+                                        // ROLES
+                                        // =========================
 
-                source.registerCorsConfiguration(
-                                "/**",
-                                configuration);
+                                        .requestMatchers(
+                                                "/api/admin/**"
+                                        )
+                                        .hasRole(
+                                                "ADMINISTRADOR"
+                                        )
 
-                return source;
-        }
+
+                                        .requestMatchers(
+                                                "/api/vendedor/**"
+                                        )
+                                        .hasAnyRole(
+                                                "VENDEDOR",
+                                                "ADMINISTRADOR"
+                                        )
+
+
+                                        .requestMatchers(
+                                                "/api/cliente/**"
+                                        )
+                                        .hasRole(
+                                                "CLIENTE"
+                                        )
+
+
+                                        .anyRequest()
+                                        .authenticated()
+                )
+
+                .exceptionHandling(
+                        exception ->
+                                exception
+                                        .authenticationEntryPoint(
+                                                authenticationEntryPoint
+                                        )
+                                        .accessDeniedHandler(
+                                                accessDeniedHandler
+                                        )
+                )
+
+                .formLogin(
+                        form ->
+                                form.disable()
+                )
+
+                .httpBasic(
+                        basic ->
+                                basic.disable()
+                )
+
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+
+        return http.build();
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+
+        return authenticationConfiguration
+                .getAuthenticationManager();
+    }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+
+        configuration.setAllowedOrigins(
+                Arrays.stream(
+                                allowedOrigins.split(",")
+                        )
+                        .map(
+                                String::trim
+                        )
+                        .toList()
+        );
+
+
+        configuration.setAllowedMethods(
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS"
+                )
+        );
+
+
+        configuration.setAllowedHeaders(
+                List.of(
+                        "Authorization",
+                        "Content-Type",
+                        "Accept"
+                )
+        );
+
+
+        configuration.setAllowCredentials(
+                true
+        );
+
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
+
+
+        return source;
+    }
 }

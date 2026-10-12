@@ -5,6 +5,7 @@ import gestion_comercial.dto.request.ProductoUpdateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
 
 import gestion_comercial.entity.Categoria;
+import gestion_comercial.entity.EstadoProducto;
 import gestion_comercial.entity.GrupoCatalogo;
 import gestion_comercial.entity.Marca;
 import gestion_comercial.entity.Producto;
@@ -145,7 +146,9 @@ public class ProductoService
     ) {
 
         Producto producto =
-                buscarProducto(id);
+                buscarProducto(
+                        id
+                );
 
 
         return ProductoMapper.toResponse(
@@ -166,7 +169,9 @@ public class ProductoService
     ) {
 
         Producto producto =
-                buscarProducto(id);
+                buscarProducto(
+                        id
+                );
 
 
         validarMayorista(
@@ -292,6 +297,108 @@ public class ProductoService
 
 
     // =========================================
+    // PAUSAR PRODUCTO - US29
+    // =========================================
+
+    @Override
+    @Transactional
+    public ProductoResponse pausar(
+            Integer id
+    ) {
+
+        Producto producto =
+                buscarProducto(
+                        id
+                );
+
+
+        if (
+                producto.getEstado()
+                        ==
+                EstadoProducto.PAUSADO
+        ) {
+
+            throw new IllegalArgumentException(
+                    "El producto ya se encuentra pausado"
+            );
+        }
+
+
+        if (
+                producto.getEstado()
+                        ==
+                EstadoProducto.DISCONTINUADO
+        ) {
+
+            throw new IllegalArgumentException(
+                    "Un producto discontinuado no puede pausarse"
+            );
+        }
+
+
+        producto.setEstado(
+                EstadoProducto.PAUSADO
+        );
+
+
+        Producto productoGuardado =
+                productoRepository.saveAndFlush(
+                        producto
+                );
+
+
+        return ProductoMapper.toResponse(
+                productoGuardado
+        );
+    }
+
+
+    // =========================================
+    // DISCONTINUAR PRODUCTO - US29
+    // =========================================
+
+    @Override
+    @Transactional
+    public ProductoResponse discontinuar(
+            Integer id
+    ) {
+
+        Producto producto =
+                buscarProducto(
+                        id
+                );
+
+
+        if (
+                producto.getEstado()
+                        ==
+                EstadoProducto.DISCONTINUADO
+        ) {
+
+            throw new IllegalArgumentException(
+                    "El producto ya se encuentra discontinuado"
+            );
+        }
+
+
+        producto.setEstado(
+                EstadoProducto.DISCONTINUADO
+        );
+
+
+        Producto productoGuardado =
+                productoRepository.saveAndFlush(
+                        producto
+                );
+
+
+        return ProductoMapper.toResponse(
+                productoGuardado
+        );
+    }
+
+
+    // =========================================
     // PRODUCTO
     // =========================================
 
@@ -300,7 +407,9 @@ public class ProductoService
     ) {
 
         return productoRepository
-                .findById(id)
+                .findById(
+                        id
+                )
                 .orElseThrow(
                         () ->
                                 new ProductoNoEncontradoException(
@@ -530,10 +639,6 @@ public class ProductoService
             Integer idGrupoCatalogo
     ) {
 
-        /*
-         * Si viene null, el administrador está quitando
-         * la asociación actual.
-         */
         if (
                 idGrupoCatalogo == null
         ) {
@@ -546,11 +651,6 @@ public class ProductoService
                 producto.getGrupoCatalogo();
 
 
-        /*
-         * Si el producto ya pertenece a ese mismo grupo,
-         * se permite conservarlo aunque el grupo haya sido
-         * desactivado después de la asociación.
-         */
         if (
                 grupoActual != null
                         &&
@@ -565,10 +665,6 @@ public class ProductoService
         }
 
 
-        /*
-         * Si se trata de una nueva asociación o de un cambio
-         * de grupo, el grupo seleccionado debe estar activo.
-         */
         return obtenerGrupoCatalogoActivo(
                 idGrupoCatalogo
         );
