@@ -154,6 +154,9 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // MODIFICAR PRODUCTO - US28 / US63
+    // =========================================
 
     @Override
     @Transactional
@@ -176,6 +179,7 @@ public class ProductoService
                 request.enOferta(),
                 request.porcentajeDescuentoOferta()
         );
+
 
         producto.setNombre(
                 request.nombre().trim()
@@ -204,7 +208,8 @@ public class ProductoService
 
 
         producto.setGrupoCatalogo(
-                obtenerGrupoCatalogo(
+                resolverGrupoCatalogoParaModificacion(
+                        producto,
                         request.idGrupoCatalogo()
                 )
         );
@@ -229,6 +234,7 @@ public class ProductoService
                     request.stockMinimo()
             );
         }
+
 
         producto.setCantidadMinimaMayorista(
                 request.cantidadMinimaMayorista()
@@ -285,6 +291,10 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // PRODUCTO
+    // =========================================
+
     private Producto buscarProducto(
             Integer id
     ) {
@@ -300,7 +310,9 @@ public class ProductoService
     }
 
 
-
+    // =========================================
+    // MAYORISTA
+    // =========================================
 
     private void validarMayorista(
             Integer cantidadMinima,
@@ -326,6 +338,10 @@ public class ProductoService
         }
     }
 
+
+    // =========================================
+    // OFERTA
+    // =========================================
 
     private void validarOferta(
             Boolean enOferta,
@@ -367,6 +383,9 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // CATEGORÍA
+    // =========================================
 
     private void asignarCategoria(
             Producto producto,
@@ -384,44 +403,6 @@ public class ProductoService
                 )
         );
     }
-
-
-    private void asignarMarca(
-            Producto producto,
-            Integer idMarca
-    ) {
-
-        if (idMarca == null) {
-            return;
-        }
-
-
-        producto.setMarca(
-                obtenerMarca(
-                        idMarca
-                )
-        );
-    }
-
-
-
-    private void asignarGrupoCatalogo(
-            Producto producto,
-            Integer idGrupoCatalogo
-    ) {
-
-        if (idGrupoCatalogo == null) {
-            return;
-        }
-
-
-        producto.setGrupoCatalogo(
-                obtenerGrupoCatalogo(
-                        idGrupoCatalogo
-                )
-        );
-    }
-
 
 
     private Categoria obtenerCategoria(
@@ -462,6 +443,28 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // MARCA
+    // =========================================
+
+    private void asignarMarca(
+            Producto producto,
+            Integer idMarca
+    ) {
+
+        if (idMarca == null) {
+            return;
+        }
+
+
+        producto.setMarca(
+                obtenerMarca(
+                        idMarca
+                )
+        );
+    }
+
+
     private Marca obtenerMarca(
             Integer idMarca
     ) {
@@ -499,10 +502,38 @@ public class ProductoService
         return marca;
     }
 
-    private GrupoCatalogo obtenerGrupoCatalogo(
+
+    // =========================================
+    // GRUPO DE CATÁLOGO - US63
+    // =========================================
+
+    private void asignarGrupoCatalogo(
+            Producto producto,
             Integer idGrupoCatalogo
     ) {
 
+        if (idGrupoCatalogo == null) {
+            return;
+        }
+
+
+        producto.setGrupoCatalogo(
+                obtenerGrupoCatalogoActivo(
+                        idGrupoCatalogo
+                )
+        );
+    }
+
+
+    private GrupoCatalogo resolverGrupoCatalogoParaModificacion(
+            Producto producto,
+            Integer idGrupoCatalogo
+    ) {
+
+        /*
+         * Si viene null, el administrador está quitando
+         * la asociación actual.
+         */
         if (
                 idGrupoCatalogo == null
         ) {
@@ -510,6 +541,43 @@ public class ProductoService
             return null;
         }
 
+
+        GrupoCatalogo grupoActual =
+                producto.getGrupoCatalogo();
+
+
+        /*
+         * Si el producto ya pertenece a ese mismo grupo,
+         * se permite conservarlo aunque el grupo haya sido
+         * desactivado después de la asociación.
+         */
+        if (
+                grupoActual != null
+                        &&
+                grupoActual
+                        .getIdGrupoCatalogo()
+                        .equals(
+                                idGrupoCatalogo
+                        )
+        ) {
+
+            return grupoActual;
+        }
+
+
+        /*
+         * Si se trata de una nueva asociación o de un cambio
+         * de grupo, el grupo seleccionado debe estar activo.
+         */
+        return obtenerGrupoCatalogoActivo(
+                idGrupoCatalogo
+        );
+    }
+
+
+    private GrupoCatalogo obtenerGrupoCatalogoActivo(
+            Integer idGrupoCatalogo
+    ) {
 
         GrupoCatalogo grupoCatalogo =
                 grupoCatalogoRepository
@@ -540,6 +608,9 @@ public class ProductoService
     }
 
 
+    // =========================================
+    // DESCRIPCIÓN
+    // =========================================
 
     private String limpiarDescripcion(
             String descripcion
