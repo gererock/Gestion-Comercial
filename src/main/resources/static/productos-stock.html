@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Productos y stock | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/productos-stock.css"
+    >
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo-simbolo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Consulta interna
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                type="button"
+                class="btn btn-outline"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Gestión / Productos /
+                Productos y stock
+            </p>
+
+            <h2>
+                Productos y stock
+            </h2>
+
+            <p class="subtitulo">
+                Consultá productos, disponibilidad
+                y niveles de stock.
+            </p>
+
+        </div>
+
+
+        <a
+            id="btnVolverPanel"
+            class="btn btn-light"
+            href="#"
+        >
+            Volver al panel
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <!-- =========================
+         FILTROS
+    ========================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Buscar y filtrar
+                </h3>
+
+                <p>
+                    Podés combinar los filtros
+                    para encontrar productos.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="formFiltros">
+
+            <div class="filtros-grid">
+
+                <div class="campo">
+
+                    <label for="idProducto">
+                        ID del producto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="idProducto"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="Ej: 15"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="nombre">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre"
+                        autocomplete="off"
+                        placeholder="Ej: vaso"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="categoria">
+                        Categoría
+                    </label>
+
+                    <select id="categoria">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="marca">
+                        Marca
+                    </label>
+
+                    <select id="marca">
+
+                        <option value="">
+                            Todas
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="estado">
+                        Estado
+                    </label>
+
+                    <select id="estado">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="ACTIVO">
+                            Activo
+                        </option>
+
+                        <option value="PAUSADO">
+                            Pausado
+                        </option>
+
+                        <option value="DISCONTINUADO">
+                            Discontinuado
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="stock">
+                        Stock
+                    </label>
+
+                    <select id="stock">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option value="bajo">
+                            Bajo stock
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="acciones-filtros">
+
+                <button
+                    type="button"
+                    id="btnLimpiar"
+                    class="btn btn-light"
+                >
+                    Limpiar filtros
+                </button>
+
+                <button
+                    type="submit"
+                    id="btnBuscar"
+                    class="btn btn-primary"
+                >
+                    Buscar
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- =========================
+         RESULTADOS
+    ========================== -->
+
+    <section class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>
+                    Productos
+                </h3>
+
+                <p id="cantidadResultados">
+                    Cargando productos...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="estadoVacio"
+            class="estado-vacio oculto"
+        >
+        </div>
+
+
+        <div
+            id="contenedorTabla"
+            class="tabla-contenedor"
+        >
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Producto</th>
+
+                    <th>Categoría</th>
+
+                    <th>Marca</th>
+
+                    <th>Precio</th>
+
+                    <th>Stock</th>
+
+                    <th>Mínimo</th>
+
+                    <th>Estado</th>
+
+                    <th>Disponibilidad</th>
+
+                    <th></th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="productosBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         DETALLE SOLO LECTURA
+    ========================== -->
+
+    <section
+        id="detalleProducto"
+        class="card oculto"
+    >
+
+        <div class="card-header detalle-header">
+
+            <div>
+
+                <h3>
+                    Información del producto
+                </h3>
+
+                <p>
+                    Consulta de solo lectura.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="btnCerrarDetalle"
+                class="btn btn-light"
+            >
+                Cerrar
+            </button>
+
+        </div>
+
+
+        <div class="detalle-grid">
+
+            <div>
+                <span>ID</span>
+                <strong id="detalleId">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Producto</span>
+                <strong id="detalleNombre">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Categoría</span>
+                <strong id="detalleCategoria">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Marca</span>
+                <strong id="detalleMarca">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Precio de venta</span>
+                <strong id="detallePrecio">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Stock actual</span>
+                <strong id="detalleStockActual">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Stock mínimo</span>
+                <strong id="detalleStockMinimo">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Estado</span>
+                <strong id="detalleEstado">
+                    -
+                </strong>
+            </div>
+
+            <div>
+                <span>Disponibilidad</span>
+                <strong id="detalleDisponibilidad">
+                    -
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/productos-stock.js"></script>
+
+</body>
+
+</html>
