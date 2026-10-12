@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,42 +22,108 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/productos")
 public class ProductoController {
 
-        private final IProductoService productoService;
+    private final IProductoService productoService;
 
-        public ProductoController(
-                        IProductoService productoService) {
 
-                this.productoService = productoService;
-        }
+    public ProductoController(
+            IProductoService productoService
+    ) {
 
-        @PostMapping
-        public ResponseEntity<ProductoResponse> crear(
-                        @Valid @RequestBody ProductoCreateRequest request) {
+        this.productoService =
+                productoService;
+    }
 
-                ProductoResponse producto = productoService.crear(
-                                request);
 
-                return ResponseEntity
-                                .status(
-                                                HttpStatus.CREATED)
-                                .body(
-                                                producto);
-        }
+    @PostMapping
+    public ResponseEntity<ProductoResponse> crear(
+            @Valid
+            @RequestBody
+            ProductoCreateRequest request
+    ) {
 
-        @PutMapping("/{id}")
-        public ResponseEntity<ProductoResponse> modificar(@Valid @RequestBody ProductoUpdateRequest request,
-                        @PathVariable Integer id) {
-                return ResponseEntity.ok(productoService.modificar(id, request));
-        }
+        ProductoResponse producto =
+                productoService.crear(
+                        request
+                );
 
-        @GetMapping("/{id}")
-        public ResponseEntity<ProductoResponse> obtenerPorId(
-                        @PathVariable Integer id) {
+        return ResponseEntity
+                .status(
+                        HttpStatus.CREATED
+                )
+                .body(
+                        producto
+                );
+    }
 
-                ProductoResponse producto = productoService.obtenerPorId(
-                                id);
 
-                return ResponseEntity.ok(
-                                producto);
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductoResponse> modificar(
+            @Valid
+            @RequestBody
+            ProductoUpdateRequest request,
+
+            @PathVariable
+            Integer id
+    ) {
+
+        return ResponseEntity.ok(
+                productoService.modificar(
+                        id,
+                        request
+                )
+        );
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoResponse> obtenerPorId(
+            @PathVariable
+            Integer id
+    ) {
+
+        ProductoResponse producto =
+                productoService.obtenerPorId(
+                        id
+                );
+
+        return ResponseEntity.ok(
+                producto
+        );
+    }
+
+
+    // =========================================
+    // US29 - PAUSAR PRODUCTO
+    // =========================================
+
+    @PatchMapping("/{id}/pausar")
+    public ResponseEntity<ProductoResponse> pausar(
+            @PathVariable
+            Integer id
+    ) {
+
+        return ResponseEntity.ok(
+                productoService.pausar(
+                        id
+                )
+        );
+    }
+
+
+    // =========================================
+    // US29 - DISCONTINUAR PRODUCTO
+    // =========================================
+
+    @PatchMapping("/{id}/discontinuar")
+    public ResponseEntity<ProductoResponse> discontinuar(
+            @PathVariable
+            Integer id
+    ) {
+
+        return ResponseEntity.ok(
+                productoService.discontinuar(
+                        id
+                )
+        );
+    }
 }

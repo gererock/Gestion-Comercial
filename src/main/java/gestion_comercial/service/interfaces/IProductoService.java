@@ -20,4 +20,14 @@ public interface IProductoService {
             Integer id,
             ProductoUpdateRequest request
     );
+
+
+    ProductoResponse pausar(
+            Integer id
+    );
+
+
+    ProductoResponse discontinuar(
+            Integer id
+    );
 }
