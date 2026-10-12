@@ -6,84 +6,311 @@
     <meta charset="UTF-8">
 
     <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1"
+        name="viewport"
+        content="width=device-width, initial-scale=1"
     >
 
     <meta
-            name="description"
-            content="Catálogo de productos de Todo Descartables"
+        name="description"
+        content="Catálogo de productos de Todo Descartables"
     >
 
-    <title>Catálogo | Todo Descartables</title>
+    <title>
+        Catálogo | Todo Descartables
+    </title>
 
     <link
-            rel="stylesheet"
-            href="/css/home.css"
+        rel="stylesheet"
+        href="/css/home.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/catalogo.css"
     >
 
 </head>
 
+
 <body class="catalog-page">
 
-<main class="catalog-placeholder">
 
-    <div class="container catalog-placeholder__content">
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="catalog-header">
+
+    <div class="container catalog-header__content">
 
         <a
-                class="catalog-placeholder__brand"
-                href="/"
+            class="catalog-brand"
+            href="/"
+            aria-label="Ir al inicio"
         >
-            <span class="brand__mark">
-                <span class="brand__fallback">
+
+            <span class="catalog-brand__mark">
+
+                <span
+                    class="catalog-brand__fallback"
+                    aria-hidden="true"
+                >
                     TD
                 </span>
+
+                <img
+                    id="catalog-logo"
+                    class="catalog-brand__logo"
+                    src="/img/comercio/logo.png"
+                    alt=""
+                >
+
             </span>
 
-            <span>
+
+            <span
+                id="catalog-brand-name"
+                class="catalog-brand__name"
+            >
                 Todo Descartables
             </span>
+
         </a>
 
 
-        <span class="section-label">
-            Próximamente
-        </span>
+        <nav
+            class="catalog-nav"
+            aria-label="Navegación del catálogo"
+        >
 
-
-        <h1>
-            Nuestro catálogo
-        </h1>
-
-
-        <p>
-            Estamos preparando el catálogo de productos.
-            Desde acá vas a poder consultar productos,
-            precios y realizar tus pedidos.
-        </p>
-
-
-        <div class="catalog-placeholder__actions">
-
-            <a
-                    class="button button--primary"
-                    href="/"
-            >
-                ← Volver al inicio
+            <a href="/">
+                Inicio
             </a>
 
             <a
-                    class="button button--secondary"
-                    href="/login/index.html"
+                class="is-active"
+                href="/catalogo/index.html"
             >
-                Iniciar sesión
+                Catálogo
+            </a>
+
+            <a
+                id="catalog-account-link"
+                href="/login/index.html"
+            >
+                Ingresar
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <!-- =================================================
+         ENCABEZADO DEL CATÁLOGO
+    ================================================== -->
+
+    <section class="catalog-intro">
+
+        <div class="container">
+
+            <p class="catalog-breadcrumb">
+                Inicio / Catálogo
+            </p>
+
+
+            <div class="catalog-intro__content">
+
+                <div>
+
+                    <span class="catalog-label">
+                        Nuestros productos
+                    </span>
+
+                    <h1>
+                        Catálogo
+                    </h1>
+
+                    <p>
+                        Conocé nuestros productos,
+                        precios y disponibilidad.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         PRODUCTOS
+    ================================================== -->
+
+    <section class="catalog-products">
+
+        <div class="container">
+
+
+            <div class="catalog-toolbar">
+
+                <div>
+
+                    <h2>
+                        Productos
+                    </h2>
+
+                    <p
+                        id="catalog-result-count"
+                        aria-live="polite"
+                    >
+                        Cargando productos...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+                id="catalog-error"
+                class="catalog-message catalog-message--error hidden"
+                role="alert"
+            >
+
+                <h2>
+                    No pudimos cargar el catálogo
+                </h2>
+
+                <p>
+                    Intentá nuevamente dentro de unos momentos.
+                </p>
+
+                <button
+                    type="button"
+                    id="catalog-retry"
+                    class="catalog-button"
+                >
+                    Reintentar
+                </button>
+
+            </div>
+
+
+            <!-- VACÍO -->
+
+            <div
+                id="catalog-empty"
+                class="catalog-message hidden"
+            >
+
+                <div
+                    class="catalog-message__icon"
+                    aria-hidden="true"
+                >
+                    TD
+                </div>
+
+                <h2>
+                    No hay productos disponibles
+                </h2>
+
+                <p>
+                    En este momento no tenemos productos publicados
+                    en el catálogo.
+                </p>
+
+                <a
+                    href="/"
+                    class="catalog-button"
+                >
+                    Volver al inicio
+                </a>
+
+            </div>
+
+
+            <!-- GRILLA -->
+
+            <div
+                id="catalog-grid"
+                class="catalog-grid"
+                aria-live="polite"
+            >
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER SIMPLE
+===================================================== -->
+
+<footer class="catalog-footer">
+
+    <div class="container catalog-footer__content">
+
+        <div>
+
+            <strong id="catalog-footer-name">
+                Todo Descartables
+            </strong>
+
+            <p>
+                Productos para comercios,
+                emprendimientos y particulares.
+            </p>
+
+        </div>
+
+
+        <div class="catalog-footer__links">
+
+            <a href="/">
+                Inicio
+            </a>
+
+            <a href="/catalogo/index.html">
+                Catálogo
+            </a>
+
+            <a
+                id="catalog-footer-account"
+                href="/login/index.html"
+            >
+                Ingresar
             </a>
 
         </div>
 
     </div>
 
-</main>
+</footer>
+
+
+<script
+    src="/js/auth.js"
+    defer
+></script>
+
+<script
+    src="/js/catalogo.js"
+    defer
+></script>
 
 </body>
 
