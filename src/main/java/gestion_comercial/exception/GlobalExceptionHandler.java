@@ -11,6 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -233,6 +235,107 @@ public class GlobalExceptionHandler {
                 );
 
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+                }
+
+        @ExceptionHandler(ImagenProductoNoEncontradaException.class)
+        public ResponseEntity<ApiErrorResponse> handleImagenProductoNoEncontrada(
+                ImagenProductoNoEncontradaException exception,
+                HttpServletRequest request
+        ) {
+
+                ApiErrorResponse body =
+                        ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI()
+                        );
+
+
+                return ResponseEntity
+                        .status(
+                                HttpStatus.NOT_FOUND
+                        )
+                        .body(
+                                body
+                        );
+        }
+
+
+        @ExceptionHandler(ImagenProductoAlmacenamientoException.class)
+        public ResponseEntity<ApiErrorResponse> handleImagenProductoAlmacenamiento(
+                ImagenProductoAlmacenamientoException exception,
+                HttpServletRequest request
+        ) {
+
+                ApiErrorResponse body =
+                        ApiErrorResponse.simple(
+                                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                "Internal Server Error",
+                                exception.getMessage(),
+                                request.getRequestURI()
+                        );
+
+
+                return ResponseEntity
+                        .status(
+                                HttpStatus.INTERNAL_SERVER_ERROR
+                        )
+                        .body(
+                                body
+                        );
+        }
+
+
+        @ExceptionHandler(MaxUploadSizeExceededException.class)
+        public ResponseEntity<ApiErrorResponse> handleArchivoDemasiadoGrande(
+                MaxUploadSizeExceededException exception,
+                HttpServletRequest request
+        ) {
+
+                ApiErrorResponse body =
+                        ApiErrorResponse.simple(
+                                HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                                "Payload Too Large",
+                                "La imagen no puede superar los 5 MB",
+                                request.getRequestURI()
+                        );
+
+
+                return ResponseEntity
+                        .status(
+                                HttpStatus.PAYLOAD_TOO_LARGE
+                        )
+                        .body(
+                                body
+                        );
+        }
+
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ApiErrorResponse> handleTipoArgumentoInvalido(
+                MethodArgumentTypeMismatchException exception,
+                HttpServletRequest request
+        ) {
+
+                ApiErrorResponse body =
+                        ApiErrorResponse.simple(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                "El valor enviado para '"
+                                        + exception.getName()
+                                        + "' no tiene un formato válido",
+                                request.getRequestURI()
+                        );
+
+
+                return ResponseEntity
+                        .status(
+                                HttpStatus.BAD_REQUEST
+                        )
+                        .body(
+                                body
+                        );
         }
 
 
