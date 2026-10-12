@@ -860,14 +860,49 @@
         item
     ) {
 
+        const esProducto =
+            item.tipo === 'PRODUCTO'
+            &&
+            item.idProducto != null;
+
+
         const card =
             document.createElement(
-                'article'
+                esProducto
+                    ? 'a'
+                    : 'article'
             );
 
 
         card.className =
             'product-card';
+
+
+        if (
+            esProducto
+        ) {
+
+            card.classList.add(
+                'product-card--link'
+            );
+
+
+            card.href =
+                `/catalogo/producto.html?id=${
+                    encodeURIComponent(
+                        item.idProducto
+                    )
+                }`;
+
+
+            card.setAttribute(
+                'aria-label',
+                `Ver detalle de ${
+                    item.nombre
+                    || 'producto'
+                }`
+            );
+        }
 
 
         const imageContainer =
