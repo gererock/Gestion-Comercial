@@ -41,4 +41,31 @@ public interface ImagenProductoRepository
             @Param("idProducto")
             Integer idProducto
     );
+
+
+    // =========================================
+    // CATÁLOGO PÚBLICO - US02
+    // =========================================
+
+    @Query("""
+            SELECT i
+            FROM ImagenProducto i
+
+            WHERE
+                i.producto.idProducto
+                IN :idsProductos
+
+            AND
+                i.principal = true
+
+            ORDER BY
+                i.producto.idProducto ASC,
+                i.idImagen ASC
+            """)
+    List<ImagenProducto>
+    buscarPrincipalesPorProductos(
+
+            @Param("idsProductos")
+            List<Integer> idsProductos
+    );
 }
