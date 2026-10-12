@@ -4,6 +4,13 @@ import gestion_comercial.dto.request.ProductoCreateRequest;
 import gestion_comercial.dto.request.ProductoUpdateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
 
+
+import gestion_comercial.dto.response.ProductoConsultaResponse;
+
+import gestion_comercial.mapper.ProductoConsultaMapper;
+
+import java.util.List;
+
 import gestion_comercial.entity.Categoria;
 import gestion_comercial.entity.EstadoProducto;
 import gestion_comercial.entity.GrupoCatalogo;
@@ -155,6 +162,71 @@ public class ProductoService
                 producto
         );
     }
+
+
+
+        // =========================================
+        // CONSULTAR PRODUCTOS Y STOCK - US23
+        // =========================================
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<ProductoConsultaResponse> consultar(
+                Integer idProducto,
+                String nombre,
+                Integer idCategoria,
+                Integer idMarca,
+                EstadoProducto estado,
+                Boolean bajoStock
+        ) {
+
+        validarIdFiltro(
+                idProducto,
+                "El ID del producto"
+        );
+
+
+        validarIdFiltro(
+                idCategoria,
+                "El ID de la categoría"
+        );
+
+
+        validarIdFiltro(
+                idMarca,
+                "El ID de la marca"
+        );
+
+
+        String nombreBusqueda =
+                normalizarNombreBusqueda(
+                        nombre
+                );
+
+
+        return productoRepository
+                .consultar(
+
+                        idProducto,
+
+                        nombreBusqueda,
+
+                        idCategoria,
+
+                        idMarca,
+
+                        estado,
+
+                        Boolean.TRUE.equals(
+                                bajoStock
+                        )
+                )
+                .stream()
+                .map(
+                        ProductoConsultaMapper::toResponse
+                )
+                .toList();
+        }
 
 
     // =========================================
@@ -724,4 +796,77 @@ public class ProductoService
 
         return descripcion.trim();
     }
+
+
+
+
+
+
+        // =========================================
+        // VALIDACIONES CONSULTA - US23
+        // =========================================
+
+        private void validarIdFiltro(
+                Integer id,
+                String nombreCampo
+        ) {
+
+        if (
+                id != null
+                        &&
+                id <= 0
+        ) {
+
+                throw new IllegalArgumentException(
+                        nombreCampo
+                                + " debe ser un número entero mayor a cero"
+                );
+        }
+        }
+
+
+        private String normalizarNombreBusqueda(
+                String nombre
+        ) {
+
+        if (nombre == null) {
+
+                return null;
+        }
+
+
+        if (nombre.isEmpty()) {
+
+                return null;
+        }
+
+
+        if (
+                nombre.trim().isEmpty()
+        ) {
+
+                throw new IllegalArgumentException(
+                        "El nombre de búsqueda no puede contener solo espacios"
+                );
+        }
+
+
+        String nombreLimpio =
+                nombre.trim();
+
+
+        if (
+                !nombreLimpio.matches(
+                        ".*\\p{L}.*"
+                )
+        ) {
+
+                throw new IllegalArgumentException(
+                        "El nombre de búsqueda debe contener al menos una letra"
+                );
+        }
+
+
+        return nombreLimpio;
+        }
 }

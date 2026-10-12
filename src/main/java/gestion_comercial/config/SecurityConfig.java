@@ -231,6 +231,7 @@ public class SecurityConfig {
 
                                         .requestMatchers(
                                                 HttpMethod.GET,
+                                                "/api/productos",
                                                 "/api/productos/**"
                                         )
                                         .hasAnyRole(

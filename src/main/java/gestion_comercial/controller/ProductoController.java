@@ -5,6 +5,13 @@ import gestion_comercial.dto.request.ProductoUpdateRequest;
 import gestion_comercial.dto.response.ProductoResponse;
 import gestion_comercial.service.interfaces.IProductoService;
 
+import gestion_comercial.dto.response.ProductoConsultaResponse;
+import gestion_comercial.entity.EstadoProducto;
+
+
+
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -18,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
@@ -73,6 +81,51 @@ public class ProductoController {
                 )
         );
     }
+
+        // =========================================
+        // CONSULTAR PRODUCTOS Y STOCK - US23
+        // =========================================
+
+        @GetMapping
+        public ResponseEntity<List<ProductoConsultaResponse>>
+        consultar(
+
+                @RequestParam(required = false)
+                Integer idProducto,
+
+                @RequestParam(required = false)
+                String nombre,
+
+                @RequestParam(required = false)
+                Integer idCategoria,
+
+                @RequestParam(required = false)
+                Integer idMarca,
+
+                @RequestParam(required = false)
+                EstadoProducto estado,
+
+                @RequestParam(required = false)
+                Boolean bajoStock
+        ) {
+
+        return ResponseEntity.ok(
+                productoService.consultar(
+
+                        idProducto,
+
+                        nombre,
+
+                        idCategoria,
+
+                        idMarca,
+
+                        estado,
+
+                        bajoStock
+                )
+        );
+        }
 
 
     @GetMapping("/{id}")
