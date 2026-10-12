@@ -73,4 +73,31 @@ public interface ProductoRepository
             @Param("bajoStock")
             boolean bajoStock
     );
+
+
+    // =========================================
+    // CATÁLOGO PÚBLICO - US02
+    // =========================================
+
+    @Query("""
+            SELECT p
+            FROM Producto p
+
+            LEFT JOIN FETCH p.grupoCatalogo g
+
+            WHERE
+                p.estado = :estado
+
+            AND
+                p.publicadoOnline = true
+
+            ORDER BY
+                p.nombre ASC,
+                p.idProducto ASC
+            """)
+    List<Producto> buscarPublicablesParaCatalogo(
+
+            @Param("estado")
+            EstadoProducto estado
+    );
 }
