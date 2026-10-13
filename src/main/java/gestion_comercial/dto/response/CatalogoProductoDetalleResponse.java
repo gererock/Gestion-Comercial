@@ -16,6 +16,8 @@ public record CatalogoProductoDetalleResponse(
 
         Boolean disponible,
 
+        Integer stockDisponible,
+
         Boolean enOferta,
 
         BigDecimal porcentajeDescuentoOferta,
