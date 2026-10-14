@@ -2,127 +2,192 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Panel administrador</title>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Panel administrador
+    </title>
+
 </head>
+
 
 <body>
 
-    <h1>Panel administrador</h1>
 
-    <p id="usuario"></p>
-
-    <a href="/categorias.html">
-        Gestionar categorías
-    </a>
-
-    <br>
-
-    <a href="/marcas.html">
-        Gestionar marcas
-    </a>
-
-    <br>
-
-    <a href="/grupos-catalogo.html">
-        Gestionar grupos de catálogo
-    </a>
-    <br>
-
-    <a href="/crear-producto.html">
-        Crear producto
-    </a>
-
-    <br>
-
-    <a href="/productos-stock.html">
-        Consultar productos y stock
-    </a>
-
-    <br>
-    <br>
-
-    <label for="productoEditar">
-        ID del producto a modificar:
-    </label>
-
-    <input type="number" id="productoEditar" min="1" step="1">
-
-    <button type="button" id="btnEditarProducto">
-        Modificar producto
-    </button>
+<h1>
+    Panel administrador
+</h1>
 
 
-
-    <br>
-
-    <button id="logout">
-        Cerrar sesión
-    </button>
+<p id="usuario"></p>
 
 
-    <script src="../js/auth.js"></script>
+<a href="/categorias.html">
+    Gestionar categorías
+</a>
 
-    <script>
 
-        if (Auth.requerirRol('ADMINISTRADOR')) {
+<br>
 
-            const usuario =
-                Auth.obtenerUsuario();
+
+<a href="/marcas.html">
+    Gestionar marcas
+</a>
+
+
+<br>
+
+
+<a href="/grupos-catalogo.html">
+    Gestionar grupos de catálogo
+</a>
+
+
+<br>
+
+
+<a href="/crear-producto.html">
+    Crear producto
+</a>
+
+
+<br>
+
+
+<a href="/productos-stock.html">
+    Consultar productos y stock
+</a>
+
+
+<br>
+
+
+<a href="/admin/medios-pago.html">
+    Gestionar medios de pago
+</a>
+
+
+<br>
+<br>
+
+
+<label for="productoEditar">
+    ID del producto a modificar:
+</label>
+
+
+<input
+    type="number"
+    id="productoEditar"
+    min="1"
+    step="1"
+>
+
+
+<button
+    type="button"
+    id="btnEditarProducto"
+>
+    Modificar producto
+</button>
+
+
+<br>
+<br>
+
+
+<button id="logout">
+    Cerrar sesión
+</button>
+
+
+<script src="/js/auth.js"></script>
+
+
+<script>
+
+    if (
+        Auth.requerirRol(
+            'ADMINISTRADOR'
+        )
+    ) {
+
+        const usuario =
+            Auth.obtenerUsuario();
+
+
+        if (
+            usuario
+            &&
+            usuario.nombre
+        ) {
 
             document.getElementById(
                 'usuario'
             ).textContent =
                 `Bienvenido, ${usuario.nombre}`;
+
         }
 
-        document.getElementById(
-            'logout'
-        ).addEventListener(
-            'click',
-            Auth.cerrarSesion
-        );
-
-        document.getElementById(
-            'btnEditarProducto'
-        ).addEventListener(
-            'click',
-            () => {
-
-                const input =
-                    document.getElementById(
-                        'productoEditar'
-                    );
+    }
 
 
-                const id =
-                    Number(
-                        input.value
-                    );
+    document.getElementById(
+        'logout'
+    ).addEventListener(
+        'click',
+        Auth.cerrarSesion
+    );
 
 
-                if (
-                    !Number.isInteger(id)
-                    ||
-                    id <= 0
-                ) {
+    document.getElementById(
+        'btnEditarProducto'
+    ).addEventListener(
+        'click',
+        () => {
 
-                    alert(
-                        'Ingresá un ID de producto válido.'
-                    );
-
-                    return;
-                }
+            const input =
+                document.getElementById(
+                    'productoEditar'
+                );
 
 
-                window.location.href =
-                    `/editar-producto.html?id=${id}`;
+            const id =
+                Number(
+                    input.value
+                );
+
+
+            if (
+                !Number.isInteger(
+                    id
+                )
+                ||
+                id <= 0
+            ) {
+
+                alert(
+                    'Ingresá un ID de producto válido.'
+                );
+
+
+                return;
             }
-        );
 
-    </script>
+
+            window.location.href =
+                `/editar-producto.html?id=${id}`;
+        }
+    );
+
+</script>
+
 
 </body>
 
