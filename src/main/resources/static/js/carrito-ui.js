@@ -202,7 +202,7 @@
                     class="cart-panel__items"
                 >
                 </div>
-
+                <a href="/carrito/index.html" class="cart-panel__manage">Ver carrito completo</a>
 
                 <div
                     class="cart-panel__footer hidden"
@@ -501,10 +501,9 @@
 
 
         detalle.textContent =
-            `${item.cantidad} × ${
-                formatearPrecio(
-                    item.precioUnitario
-                )
+            `${item.cantidad} × ${formatearPrecio(
+                item.precioUnitario
+            )
             }`;
 
 
