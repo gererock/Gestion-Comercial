@@ -1,0 +1,307 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Medio de pago | Todo Descartables
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="/css/home.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/checkout-medio-pago.css"
+    >
+
+</head>
+
+
+<body class="checkout-page">
+
+
+<header class="checkout-header">
+
+    <div class="container checkout-header__content">
+
+        <a
+            href="/"
+            class="checkout-brand"
+        >
+
+            <span class="checkout-brand__mark">
+                TD
+            </span>
+
+            <span>
+                Todo Descartables
+            </span>
+
+        </a>
+
+
+        <div class="checkout-user">
+
+            <span id="checkout-user-name">
+                Cliente
+            </span>
+
+            <button
+                type="button"
+                id="checkout-logout"
+                class="checkout-link-button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="checkout-main">
+
+    <div class="container">
+
+
+        <div class="checkout-heading">
+
+            <div>
+
+                <span class="checkout-label">
+                    Confirmación del pedido
+                </span>
+
+                <h1>
+                    Seleccioná cómo vas a pagar
+                </h1>
+
+                <p>
+                    Elegí uno de los medios de pago
+                    actualmente disponibles.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/carrito/index.html"
+                class="checkout-back"
+            >
+                ← Volver al carrito
+            </a>
+
+        </div>
+
+
+        <p
+            id="checkout-message"
+            class="checkout-message hidden"
+            aria-live="polite"
+        >
+        </p>
+
+
+        <div class="checkout-layout">
+
+
+            <!-- MEDIOS DE PAGO -->
+
+            <section class="checkout-card">
+
+                <div class="checkout-card__header">
+
+                    <span class="checkout-step">
+                        Paso actual
+                    </span>
+
+                    <h2>
+                        Medio de pago
+                    </h2>
+
+                    <p>
+                        Solo se muestran medios de pago
+                        que se encuentran activos.
+                    </p>
+
+                </div>
+
+
+                <!-- CARGANDO -->
+
+                <div
+                    id="payment-loading"
+                    class="checkout-state"
+                >
+
+                    <div class="checkout-spinner">
+                    </div>
+
+                    <p>
+                        Cargando medios de pago...
+                    </p>
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="payment-error"
+                    class="checkout-state hidden"
+                >
+
+                    <strong>
+                        No pudimos cargar los medios de pago.
+                    </strong>
+
+                    <p>
+                        Intentá nuevamente.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="payment-retry"
+                        class="checkout-secondary-button"
+                    >
+                        Reintentar
+                    </button>
+
+                </div>
+
+
+                <!-- SIN MEDIOS -->
+
+                <div
+                    id="payment-empty"
+                    class="checkout-state hidden"
+                >
+
+                    <strong>
+                        No hay medios de pago disponibles.
+                    </strong>
+
+                    <p>
+                        El comercio no posee medios de pago
+                        activos en este momento.
+                    </p>
+
+                </div>
+
+
+                <!-- OPCIONES -->
+
+                <form
+                    id="payment-form"
+                    class="hidden"
+                    novalidate
+                >
+
+                    <div
+                        id="payment-options"
+                        class="payment-options"
+                    >
+                    </div>
+
+
+                    <div class="checkout-actions">
+
+                        <a
+                            href="/carrito/index.html"
+                            class="checkout-secondary-button"
+                        >
+                            Volver
+                        </a>
+
+                        <button
+                            type="submit"
+                            id="payment-continue"
+                            class="checkout-primary-button"
+                        >
+                            Continuar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- RESUMEN -->
+
+            <aside class="checkout-card checkout-summary">
+
+                <h2>
+                    Resumen de compra
+                </h2>
+
+
+                <div class="checkout-summary__row">
+
+                    <span>
+                        Productos
+                    </span>
+
+                    <strong id="checkout-product-count">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-summary__row checkout-summary__total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="checkout-total">
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <p class="checkout-summary__note">
+
+                    El pedido todavía no será generado.
+                    La confirmación definitiva se realizará
+                    al finalizar todos los pasos del checkout.
+
+                </p>
+
+            </aside>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/carrito.js"></script>
+
+<script src="/js/checkout-medio-pago.js"></script>
+
+
+</body>
+
+</html>
