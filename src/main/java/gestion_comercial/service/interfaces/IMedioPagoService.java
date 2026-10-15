@@ -34,4 +34,17 @@ public interface IMedioPagoService {
             Integer idMedioPago,
             Boolean activo
     );
+
+
+    // =========================================
+    // CHECKOUT - US11
+    // =========================================
+
+    List<MedioPagoResponse>
+    listarActivos();
+
+
+    MedioPagoResponse buscarActivoPorId(
+            Integer idMedioPago
+    );
 }

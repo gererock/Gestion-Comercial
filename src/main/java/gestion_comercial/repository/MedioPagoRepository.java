@@ -5,6 +5,7 @@ import gestion_comercial.entity.MedioPago;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface MedioPagoRepository
@@ -41,5 +42,15 @@ public interface MedioPagoRepository
     findByNombreContainingIgnoreCaseAndActivoOrderByNombreAsc(
             String nombre,
             Boolean activo
+    );
+
+
+    // =========================================
+    // CHECKOUT - US11
+    // =========================================
+
+    Optional<MedioPago>
+    findByIdMedioPagoAndActivoTrue(
+            Integer idMedioPago
     );
 }

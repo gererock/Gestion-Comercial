@@ -280,6 +280,68 @@ public class MedioPagoService
 
 
     // =========================================
+    // LISTAR ACTIVOS PARA CHECKOUT - US11
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MedioPagoResponse>
+    listarActivos() {
+
+        return medioPagoRepository
+                .findByActivoOrderByNombreAsc(
+                        true
+                )
+                .stream()
+                .map(
+                        MedioPagoMapper::toResponse
+                )
+                .toList();
+    }
+
+
+    // =========================================
+    // VALIDAR MEDIO ACTIVO - US11
+    // =========================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public MedioPagoResponse buscarActivoPorId(
+            Integer idMedioPago
+    ) {
+
+        if (
+                idMedioPago == null
+                ||
+                idMedioPago <= 0
+        ) {
+
+            throw new MedioPagoNoEncontradoException(
+                    "El medio de pago seleccionado no existe o no está activo"
+            );
+        }
+
+
+        MedioPago medioPago =
+                medioPagoRepository
+                        .findByIdMedioPagoAndActivoTrue(
+                                idMedioPago
+                        )
+                        .orElseThrow(
+                                () ->
+                                        new MedioPagoNoEncontradoException(
+                                                "El medio de pago seleccionado no existe o no está activo"
+                                        )
+                        );
+
+
+        return MedioPagoMapper.toResponse(
+                medioPago
+        );
+    }
+
+
+    // =========================================
     // OBTENER ENTIDAD
     // =========================================
 
