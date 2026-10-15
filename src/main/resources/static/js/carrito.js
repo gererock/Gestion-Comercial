@@ -110,11 +110,144 @@
         ) || null;
     }
 
+    // =========================================
+    // DATOS COMERCIALES DEL ITEM
+    // =========================================
+
+    function actualizarDatosComerciales(
+        item,
+        producto
+    ) {
+
+        item.nombre =
+            producto.nombre;
+
+
+        item.precioBase =
+            Number(
+                producto.precioVenta
+            );
+
+
+        item.stockDisponible =
+            Number(
+                producto.stockDisponible
+            );
+
+
+        item.enOferta =
+            Boolean(
+                producto.enOferta
+            );
+
+
+        item.precioOferta =
+            producto.precioOferta != null
+                ? Number(
+                    producto.precioOferta
+                )
+                : null;
+
+
+        item.porcentajeDescuentoOferta =
+            producto.porcentajeDescuentoOferta != null
+                ? Number(
+                    producto.porcentajeDescuentoOferta
+                )
+                : null;
+
+
+        item.tieneDescuentoMayorista =
+            Boolean(
+                producto.tieneDescuentoMayorista
+            );
+
+
+        item.cantidadMinimaMayorista =
+            producto.cantidadMinimaMayorista != null
+                ? Number(
+                    producto.cantidadMinimaMayorista
+                )
+                : null;
+
+
+        item.porcentajeDescuentoMayorista =
+            producto.porcentajeDescuentoMayorista != null
+                ? Number(
+                    producto.porcentajeDescuentoMayorista
+                )
+                : null;
+    }
+
+    // =========================================
+    // RECALCULAR ITEM
+    // =========================================
+
+    function recalcularItem(
+        item
+    ) {
+
+        const productoParaCalculo = {
+
+            precioVenta:
+                item.precioBase,
+
+            enOferta:
+                item.enOferta,
+
+            precioOferta:
+                item.precioOferta,
+
+            porcentajeDescuentoOferta:
+                item.porcentajeDescuentoOferta,
+
+            tieneDescuentoMayorista:
+                item.tieneDescuentoMayorista,
+
+            cantidadMinimaMayorista:
+                item.cantidadMinimaMayorista,
+
+            porcentajeDescuentoMayorista:
+                item.porcentajeDescuentoMayorista
+        };
+
+
+        const precioCalculado =
+            calcularPrecio(
+                productoParaCalculo,
+                item.cantidad
+            );
+
+
+        item.precioUnitario =
+            precioCalculado.precioUnitario;
+
+
+        item.tipoDescuento =
+            precioCalculado.tipoDescuento;
+
+
+        item.porcentajeDescuentoAplicado =
+            precioCalculado
+                .porcentajeDescuentoAplicado;
+
+
+        item.subtotal =
+            redondearDinero(
+                item.precioUnitario
+                *
+                item.cantidad
+            );
+
+
+        return item;
+    }
 
     // =========================================
     // AGREGAR PRODUCTO
     // =========================================
 
+ 
     function agregarProducto(
         producto,
         cantidad
@@ -165,98 +298,53 @@
         );
 
 
-        const precioCalculado =
-            calcularPrecio(
-                producto,
-                cantidadFinal
+        if (
+            itemExistente
+        ) {
+
+            actualizarDatosComerciales(
+                itemExistente,
+                producto
             );
-
-
-        const subtotal =
-            redondearDinero(
-                precioCalculado.precioUnitario
-                *
-                cantidadFinal
-            );
-
-
-        if (itemExistente) {
-
-            itemExistente.nombre =
-                producto.nombre;
-
-
-            itemExistente.precioBase =
-                Number(
-                    producto.precioVenta
-                );
-
-
-            itemExistente.stockDisponible =
-                Number(
-                    producto.stockDisponible
-                );
 
 
             itemExistente.cantidad =
                 cantidadFinal;
 
 
-            itemExistente.precioUnitario =
-                precioCalculado.precioUnitario;
-
-
-            itemExistente.tipoDescuento =
-                precioCalculado.tipoDescuento;
-
-
-            itemExistente.porcentajeDescuentoAplicado =
-                precioCalculado
-                    .porcentajeDescuentoAplicado;
-
-
-            itemExistente.subtotal =
-                subtotal;
+            recalcularItem(
+                itemExistente
+            );
 
 
         } else {
 
-            carrito.push({
+            const nuevoItem = {
 
                 idProducto:
                     Number(
                         producto.idProducto
                     ),
 
-                nombre:
-                    producto.nombre,
-
-                precioBase:
-                    Number(
-                        producto.precioVenta
-                    ),
-
-                stockDisponible:
-                    Number(
-                        producto.stockDisponible
-                    ),
-
                 cantidad:
-                    cantidadFinal,
+                    cantidadFinal
+            };
 
-                precioUnitario:
-                    precioCalculado.precioUnitario,
 
-                tipoDescuento:
-                    precioCalculado.tipoDescuento,
+            actualizarDatosComerciales(
+                nuevoItem,
+                producto
+            );
 
-                porcentajeDescuentoAplicado:
-                    precioCalculado
-                        .porcentajeDescuentoAplicado,
 
-                subtotal:
-                    subtotal
-            });
+            recalcularItem(
+                nuevoItem
+            );
+
+
+            carrito.push(
+                nuevoItem
+            );
         }
 
 
@@ -270,6 +358,204 @@
         );
     }
 
+
+    // =========================================
+    // ACTUALIZAR CANTIDAD
+    // =========================================
+
+    function actualizarCantidad(
+        idProducto,
+        nuevaCantidad
+    ) {
+
+        validarCantidad(
+            nuevaCantidad
+        );
+
+
+        const carrito =
+            obtenerCarrito();
+
+
+        const item =
+            carrito.find(
+                producto =>
+                    Number(
+                        producto.idProducto
+                    )
+                    ===
+                    Number(
+                        idProducto
+                    )
+            );
+
+
+        if (
+            !item
+        ) {
+
+            throw new Error(
+                'El producto no se encuentra en el carrito.'
+            );
+        }
+
+
+        validarStock(
+            nuevaCantidad,
+            item.stockDisponible
+        );
+
+
+        item.cantidad =
+            nuevaCantidad;
+
+
+        recalcularItem(
+            item
+        );
+
+
+        guardarCarrito(
+            carrito
+        );
+
+
+        return item;
+    }
+
+
+    // =========================================
+    // SINCRONIZAR PRODUCTO
+    // =========================================
+
+    function sincronizarProducto(
+        producto
+    ) {
+
+        validarProductoSinStock(
+            producto
+        );
+
+
+        const carrito =
+            obtenerCarrito();
+
+
+        const item =
+            carrito.find(
+                item =>
+                    Number(
+                        item.idProducto
+                    )
+                    ===
+                    Number(
+                        producto.idProducto
+                    )
+            );
+
+
+        if (
+            !item
+        ) {
+
+            return null;
+        }
+
+
+        actualizarDatosComerciales(
+            item,
+            producto
+        );
+
+
+        recalcularItem(
+            item
+        );
+
+
+        guardarCarrito(
+            carrito
+        );
+
+
+        return item;
+    }
+
+    function eliminarProducto(
+        idProducto
+    ) {
+
+        const carrito =
+            obtenerCarrito();
+
+
+        const carritoActualizado =
+            carrito.filter(
+                item =>
+                    Number(
+                        item.idProducto
+                    )
+                    !==
+                    Number(
+                        idProducto
+                    )
+            );
+
+
+        if (
+            carritoActualizado.length
+            ===
+            carrito.length
+        ) {
+
+            return false;
+        }
+
+
+        guardarCarrito(
+            carritoActualizado
+        );
+
+
+        return true;
+    }
+
+    // =========================================
+    // VACIAR CARRITO
+    // =========================================
+
+    function vaciarCarrito() {
+
+        guardarCarrito(
+            []
+        );
+    }
+
+    function validarProductoSinStock(
+        producto
+    ) {
+
+        if (
+            !producto
+            ||
+            !producto.idProducto
+        ) {
+
+            throw new Error(
+                'El producto no es válido.'
+            );
+        }
+
+
+        if (
+            producto.stockDisponible == null
+        ) {
+
+            throw new Error(
+                'No se pudo determinar el stock del producto.'
+            );
+        }
+    }
 
     // =========================================
     // VALIDAR PRODUCTO
@@ -598,18 +884,25 @@
     // =========================================
     // API PÚBLICA
     // =========================================
+window.Carrito = {
 
-    window.Carrito = {
+    obtenerCarrito,
 
-        obtenerCarrito,
+    buscarProducto,
 
-        buscarProducto,
+    agregarProducto,
 
-        agregarProducto,
+    actualizarCantidad,
 
-        obtenerCantidadTotal,
+    sincronizarProducto,
 
-        obtenerSubtotal
-    };
+    eliminarProducto,
+
+    vaciarCarrito,
+
+    obtenerCantidadTotal,
+
+    obtenerSubtotal
+};
 
 })();

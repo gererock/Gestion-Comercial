@@ -99,6 +99,7 @@ public class SecurityConfig {
                                                 "/vendedor/**",
                                                 "/cliente/**",
                                                 "/catalogo/**",
+                                                "/carrito/**",
                                                 "/crear-producto.html",
                                                 "/editar-producto.html",
                                                 "/grupos-catalogo.html",
