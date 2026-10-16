@@ -1,5 +1,6 @@
 package gestion_comercial.controller;
 
+import gestion_comercial.dto.response.ConfiguracionCheckoutEnvioResponse;
 import gestion_comercial.dto.response.ConfiguracionEnvioResponse;
 
 import gestion_comercial.service.interfaces.IConfiguracionComercioService;
@@ -40,5 +41,10 @@ public class ConfiguracionComercioPublicoController {
                 configuracionComercioService
                         .obtenerConfiguracionEnvio()
         );
+    }
+
+    @GetMapping("/envio")
+    public ResponseEntity<ConfiguracionCheckoutEnvioResponse> obtenerCheckout() {
+        return ResponseEntity.ok(configuracionComercioService.obtenerCheckout());
     }
 }
