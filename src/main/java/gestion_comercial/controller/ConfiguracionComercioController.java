@@ -1,8 +1,9 @@
 package gestion_comercial.controller;
 
+import gestion_comercial.dto.request.EnvioLocalidadRequest;
 import gestion_comercial.dto.request.MontoMinimoEnvioRequest;
 import gestion_comercial.dto.response.ConfiguracionEnvioResponse;
-
+import gestion_comercial.dto.response.EnvioLocalidadResponse;
 import gestion_comercial.service.interfaces.IConfiguracionComercioService;
 
 import jakarta.validation.Valid;
@@ -70,5 +71,15 @@ public class ConfiguracionComercioController {
                                 request
                         )
         );
+    }
+
+    @GetMapping("/localidades-envio")
+    public ResponseEntity<EnvioLocalidadResponse> obtenerLocalidades() {
+        return ResponseEntity.ok(configuracionComercioService.obtenerLocalidades());
+    }
+
+    @PutMapping("/localidades-envio")
+    public ResponseEntity<EnvioLocalidadResponse> actualizarLocalidades(@Valid @RequestBody EnvioLocalidadRequest request) {
+        return  ResponseEntity.ok(configuracionComercioService.actualizarLocalidades(request));
     }
 }

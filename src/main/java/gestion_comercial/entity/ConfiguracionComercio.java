@@ -39,7 +39,11 @@ public class ConfiguracionComercio {
             scale = 2
     )
     private BigDecimal montoMinimoEnvio;
+    @Column(name = "permite_envio_Villa_maria", nullable = false)
+    Boolean permiteEnvioVillaMaria;
 
+    @Column(name = "permite_envio_Villa_nueva", nullable = false)
+    Boolean permiteEnvioVillaNueva;
 
     @Column(
             name = "fecha_actualizacion",
