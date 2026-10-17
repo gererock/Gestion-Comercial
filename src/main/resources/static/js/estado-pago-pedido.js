@@ -1192,76 +1192,90 @@
     // =====================================================
 
     async function obtenerMensajeError(
-        response
-    ) {
+            response
+        ) {
 
-        try {
-
-            const body =
-                await response.json();
-
+            /*
+            * Los errores del servidor no deben mostrar
+            * mensajes técnicos de JDBC, Hibernate,
+            * Hikari, PostgreSQL, etc.
+            */
 
             if (
-                body.errors
-                &&
-                typeof body.errors
-                ===
-                'object'
+                response.status >= 500
             ) {
 
-                const errores =
-                    Object.values(
-                        body.errors
-                    );
+                return 'Ocurrió un problema al procesar la solicitud. Intentá nuevamente en unos momentos.';
+            }
+
+
+            try {
+
+                const body =
+                    await response.json();
 
 
                 if (
-                    errores.length > 0
+                    body.errors
+                    &&
+                    typeof body.errors
+                    ===
+                    'object'
                 ) {
 
-                    return errores[0];
+                    const errores =
+                        Object.values(
+                            body.errors
+                        );
+
+
+                    if (
+                        errores.length > 0
+                    ) {
+
+                        return errores[0];
+                    }
                 }
+
+
+                if (
+                    typeof body.message
+                    ===
+                    'string'
+                    &&
+                    body.message.trim()
+                    !==
+                    ''
+                ) {
+
+                    return body.message.trim();
+                }
+
+
+            } catch (error) {
+
+                // Se utilizará un mensaje genérico.
             }
 
 
             if (
-                typeof body.message
-                ===
-                'string'
-                &&
-                body.message.trim()
-                !==
-                ''
+                response.status === 404
             ) {
 
-                return body.message.trim();
+                return 'No se encontró el pedido indicado.';
             }
 
 
-        } catch (error) {
+            if (
+                response.status === 409
+            ) {
 
-            // Se utilizará mensaje genérico.
+                return 'El cambio solicitado no está permitido.';
+            }
+
+
+            return 'No se pudo procesar la solicitud.';
         }
-
-
-        if (
-            response.status === 404
-        ) {
-
-            return 'No se encontró el pedido indicado.';
-        }
-
-
-        if (
-            response.status === 409
-        ) {
-
-            return 'El cambio solicitado no está permitido.';
-        }
-
-
-        return 'No se pudo procesar la solicitud.';
-    }
 
 
     // =====================================================
