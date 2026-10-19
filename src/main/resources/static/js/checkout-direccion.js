@@ -471,10 +471,10 @@
             !data
             ||
             typeof data.permiteEnvioVillaMaria
-                !== 'boolean'
+            !== 'boolean'
             ||
             typeof data.permiteEnvioVillaNueva
-                !== 'boolean'
+            !== 'boolean'
         ) {
 
             throw new Error(
@@ -1573,6 +1573,8 @@
                 );
 
 
+                await cargarConfiguracionEnvio();
+
                 await cargarDirecciones();
 
 
@@ -1599,7 +1601,7 @@
                 ||
                 direccion
                     .habilitadaParaEnvio
-                    !== true
+                !== true
             ) {
 
                 sessionStorage.removeItem(
@@ -1939,7 +1941,7 @@
     ) {
 
         switch (
-            valor
+        valor
         ) {
 
             case 'VILLA_MARIA':
