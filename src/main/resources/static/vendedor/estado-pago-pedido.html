@@ -1,0 +1,444 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Estado de pago | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/estado-pago-pedido.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Gestión de pedidos online
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Pedidos / Estado de pago
+            </p>
+
+            <h2>
+                Actualizar estado de pago
+            </h2>
+
+            <p class="subtitulo">
+                Consultá un pedido online y registrá si el pago
+                continúa pendiente o si ya fue abonado.
+            </p>
+
+        </div>
+
+
+        <a
+            href="#"
+            id="btnVolverPanel"
+            class="btn btn-light"
+        >
+            ← Volver al panel
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        role="alert"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <!-- =============================================
+         BUSCAR PEDIDO
+    ============================================== -->
+
+    <section class="card buscar-card">
+
+        <div>
+
+            <h3>
+                Buscar pedido
+            </h3>
+
+            <p>
+                Ingresá el ID de un pedido online existente.
+            </p>
+
+        </div>
+
+
+        <form
+            id="formBuscar"
+            class="buscar-form"
+            novalidate
+        >
+
+            <div class="campo">
+
+                <label for="idPedido">
+                    ID del pedido
+                </label>
+
+                <input
+                    type="text"
+                    id="idPedido"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    placeholder="Ej: 15"
+                >
+
+                <div
+                    id="errorIdPedido"
+                    class="error-campo oculto"
+                >
+                </div>
+
+            </div>
+
+
+            <button
+                id="btnBuscar"
+                type="submit"
+                class="btn btn-primary"
+            >
+                Buscar
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- =============================================
+         CARGANDO
+    ============================================== -->
+
+    <section
+        id="cargando"
+        class="card estado-contenedor oculto"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Consultando pedido...
+        </p>
+
+    </section>
+
+
+    <!-- =============================================
+         RESULTADO
+    ============================================== -->
+
+    <section
+        id="seccionPedido"
+        class="pedido-grid oculto"
+    >
+
+
+        <!-- DATOS DEL PEDIDO -->
+
+        <article class="card resumen-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="etiqueta-superior">
+                        Pedido online
+                    </p>
+
+                    <h3 id="numeroPedido">
+                        -
+                    </h3>
+
+                </div>
+
+
+                <span
+                    id="estadoPedido"
+                    class="badge"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <span>
+                    ID del pedido
+                </span>
+
+                <strong id="pedidoId">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                <span>
+                    Medio de pago
+                </span>
+
+                <strong id="medioPago">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                <span>
+                    Estado de pago actual
+                </span>
+
+                <strong
+                    id="estadoPagoActual"
+                    class="estado-pago"
+                >
+                    -
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                <span>
+                    Última actualización
+                </span>
+
+                <strong id="fechaActualizacion">
+                    -
+                </strong>
+
+            </div>
+
+
+            <div
+                id="descripcionActualContenedor"
+                class="descripcion-actual oculto"
+            >
+
+                <span>
+                    Descripción actual
+                </span>
+
+                <p id="descripcionActual">
+                </p>
+
+            </div>
+
+        </article>
+
+
+        <!-- FORMULARIO -->
+
+        <article class="card formulario-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Modificar pago
+                    </h3>
+
+                    <p>
+                        Elegí el nuevo estado del pago.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="formPago"
+                novalidate
+            >
+
+
+                <div class="campo">
+
+                    <label for="estadoPago">
+                        Estado de pago
+                    </label>
+
+                    <select
+                        id="estadoPago"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccionar estado
+                        </option>
+
+                        <option value="PENDIENTE">
+                            Pendiente
+                        </option>
+
+                        <option value="PAGADO">
+                            Pagado
+                        </option>
+
+                    </select>
+
+
+                    <div
+                        id="errorEstadoPago"
+                        class="error-campo oculto"
+                    >
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="contenedorDescripcion"
+                    class="campo"
+                >
+
+                    <label for="descripcionPago">
+                        Descripción del pago pendiente
+                        <span class="opcional">
+                            Opcional
+                        </span>
+                    </label>
+
+
+                    <textarea
+                        id="descripcionPago"
+                        rows="4"
+                        maxlength="500"
+                        placeholder="Ej: Abona en efectivo al retirar"
+                    ></textarea>
+
+
+                    <small>
+                        Podés agregar una observación sobre el pago pendiente.
+                    </small>
+
+
+                    <div
+                        id="errorDescripcion"
+                        class="error-campo oculto"
+                    >
+                    </div>
+
+                </div>
+
+
+                <div class="acciones">
+
+                    <button
+                        id="btnCancelar"
+                        type="button"
+                        class="btn btn-light"
+                    >
+                        Cancelar cambios
+                    </button>
+
+
+                    <button
+                        id="btnGuardar"
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Guardar estado
+                    </button>
+
+                </div>
+
+            </form>
+
+        </article>
+
+
+    </section>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/estado-pago-pedido.js"></script>
+
+
+</body>
+
+</html>

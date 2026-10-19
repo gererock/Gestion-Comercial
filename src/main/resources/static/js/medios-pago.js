@@ -353,11 +353,19 @@
     // CARGAR LISTADO
     // =====================================================
 
-    async function cargarMediosPago() {
+    async function cargarMediosPago(
+            ocultarMensajeActual = true
+        ) {
 
-        mostrarCargando();
+            mostrarCargando();
 
-        ocultarMensaje();
+
+            if (
+                ocultarMensajeActual
+            ) {
+
+                ocultarMensaje();
+            }
 
 
         try {
@@ -1068,7 +1076,9 @@
             );
 
 
-            await cargarMediosPago();
+            await cargarMediosPago(
+                false
+            );
 
 
         } catch (error) {
@@ -1351,7 +1361,9 @@
             );
 
 
-            await cargarMediosPago();
+            await cargarMediosPago(
+                false
+            );
 
 
         } catch (error) {
