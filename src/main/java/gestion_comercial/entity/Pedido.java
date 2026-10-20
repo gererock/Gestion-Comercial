@@ -85,6 +85,9 @@ public class Pedido {
     @Column(name = "observaciones_cliente")
     private String observacionesCliente;
 
+    @Column(name = "observaciones_internas")
+    private String observacionesInternas;
+
     @Column(name = "clave_confirmacion", unique = true)
     private UUID claveConfirmacion;
 

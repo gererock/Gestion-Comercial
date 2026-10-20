@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalle del pedido | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/pedido-detalle.css">
+</head>
+<body>
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de pedidos online</p>
+            </div>
+        </div>
+        <div class="usuario">
+            <span id="nombreUsuario">Usuario</span>
+            <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Pedidos / Detalle</p>
+            <h2>Detalle del pedido online</h2>
+            <p class="subtitulo">
+                Información del cliente, pago, entrega, productos y stock.
+            </p>
+        </div>
+        <a href="/vendedor/pedidos-pendientes.html" class="btn btn-light">
+            ← Volver a pedidos
+        </a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section id="cargando" class="card estado-contenedor">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Cargando detalle del pedido...</p>
+    </section>
+
+    <div id="detalle" class="detalle oculto">
+        <section class="card encabezado-pedido">
+            <div>
+                <p class="etiqueta">Pedido</p>
+                <h3 id="numeroPedido">-</h3>
+                <p id="fechaCreacion" class="texto-suave">-</p>
+            </div>
+            <div class="badges">
+                <span id="estadoPedido" class="badge">-</span>
+                <span id="estadoPago" class="badge badge-secundario">-</span>
+            </div>
+        </section>
+
+        <div class="columnas">
+            <section class="card seccion">
+                <h3>Cliente</h3>
+                <dl class="datos">
+                    <div><dt>Nombre</dt><dd id="clienteNombre">-</dd></div>
+                    <div><dt>Documento</dt><dd id="clienteDocumento">-</dd></div>
+                    <div><dt>Teléfono</dt><dd id="clienteTelefono">-</dd></div>
+                    <div><dt>Correo</dt><dd id="clienteCorreo">-</dd></div>
+                </dl>
+            </section>
+
+            <section class="card seccion">
+                <h3>Pago y entrega</h3>
+                <dl class="datos">
+                    <div><dt>Medio de pago</dt><dd id="medioPago">-</dd></div>
+                    <div><dt>Modalidad</dt><dd id="medioEntrega">-</dd></div>
+                    <div id="filaLocalidad"><dt>Localidad</dt><dd id="localidad">-</dd></div>
+                    <div id="filaDireccion"><dt>Dirección</dt><dd id="direccion">-</dd></div>
+                </dl>
+            </section>
+        </div>
+
+        <section class="card seccion">
+            <h3>Productos</h3>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Descuento</th>
+                        <th>Subtotal</th>
+                        <th>Stock disponible</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productos"></tbody>
+                </table>
+            </div>
+            <p id="sinProductos" class="texto-suave oculto">
+                El pedido no contiene productos.
+            </p>
+        </section>
+
+        <div class="columnas columnas-finales">
+            <section class="card seccion">
+                <h3>Observaciones</h3>
+                <div class="observacion">
+                    <strong>Del cliente</strong>
+                    <p id="observacionesCliente">Sin observaciones.</p>
+                </div>
+                <div class="observacion">
+                    <strong>Internas</strong>
+                    <p id="observacionesInternas">Sin observaciones.</p>
+                </div>
+            </section>
+
+            <section class="card seccion resumen">
+                <h3>Resumen</h3>
+                <dl class="totales">
+                    <div><dt>Subtotal</dt><dd id="subtotal">-</dd></div>
+                    <div><dt>Descuento por oferta</dt><dd id="descuentoOferta">-</dd></div>
+                    <div><dt>Descuento mayorista</dt><dd id="descuentoMayorista">-</dd></div>
+                    <div><dt>Descuento cliente</dt><dd id="descuentoCliente">-</dd></div>
+                    <div class="total"><dt>Total</dt><dd id="total">-</dd></div>
+                </dl>
+            </section>
+        </div>
+    </div>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/pedido-detalle.js"></script>
+</body>
+</html>

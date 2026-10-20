@@ -372,7 +372,7 @@
             'Ver detalle';
 
         enlace.href =
-            `/vendedor/pedido-pendiente-detalle.html?id=${pedido.idPedido}`;
+            `/vendedor/pedido-detalle.html?id=${pedido.idPedido}`;
 
 
         acciones.appendChild(
