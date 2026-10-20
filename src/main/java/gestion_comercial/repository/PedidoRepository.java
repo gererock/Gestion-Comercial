@@ -85,4 +85,16 @@ public interface PedidoRepository
             Integer idCliente,
             TipoVenta tipoVenta
     );
+
+
+    @EntityGraph(
+            attributePaths = {
+                    "medioPago"
+            }
+    )
+    Optional<Pedido> findByIdPedidoAndCliente_IdClienteAndTipoVenta(
+            Integer idPedido,
+            Integer idCliente,
+            TipoVenta tipoVenta
+    );
 }

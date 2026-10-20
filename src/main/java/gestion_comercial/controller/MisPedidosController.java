@@ -1,5 +1,6 @@
 package gestion_comercial.controller;
 
+import gestion_comercial.dto.response.PedidoClienteDetalleResponse;
 import gestion_comercial.dto.response.PedidoClienteResumenResponse;
 import gestion_comercial.service.interfaces.IPedidoClienteConsultaService;
 
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +30,19 @@ public class MisPedidosController {
     ) {
         return ResponseEntity.ok(
                 pedidoClienteConsultaService.listar(authentication.getName())
+        );
+    }
+
+    @GetMapping("/{idPedido}")
+    public ResponseEntity<PedidoClienteDetalleResponse> buscarDetalle(
+            @PathVariable Integer idPedido,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                pedidoClienteConsultaService.buscarDetalle(
+                        authentication.getName(),
+                        idPedido
+                )
         );
     }
 }
