@@ -95,6 +95,7 @@ public class PedidoDetalleService implements IPedidoDetalleService {
                 pedido.getIdPedido(),
                 pedido.getNumeroPedido(),
                 pedido.getFechaCreacion(),
+                pedido.getFechaActualizacion(),
                 pedido.getEstadoPedido(),
                 pedido.getEstadoPago(),
                 pedido.getMedioPago().getIdMedioPago(),

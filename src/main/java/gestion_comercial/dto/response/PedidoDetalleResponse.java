@@ -13,6 +13,7 @@ public record PedidoDetalleResponse(
         Integer idPedido,
         String numeroPedido,
         LocalDateTime fechaCreacion,
+        LocalDateTime fechaActualizacion,
         EstadoPedido estadoPedido,
         EstadoPago estadoPago,
         Integer idMedioPago,

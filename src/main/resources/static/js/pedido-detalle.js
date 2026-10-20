@@ -13,7 +13,11 @@
     const accionesPedido = document.getElementById('accionesPedido');
     const btnAprobar = document.getElementById('btnAprobarPedido');
     const btnCancelar = document.getElementById('btnCancelarPedido');
+    const gestionEstadoPedido = document.getElementById('gestionEstadoPedido');
+    const nuevoEstadoPedido = document.getElementById('nuevoEstadoPedido');
+    const btnActualizarEstado = document.getElementById('btnActualizarEstado');
     let idPedidoActual = null;
+    let pedidoActual = null;
 
     iniciar();
 
@@ -23,6 +27,7 @@
             .addEventListener('click', Auth.cerrarSesion);
         btnAprobar.addEventListener('click', () => decidirPedido('aprobar'));
         btnCancelar.addEventListener('click', () => decidirPedido('cancelar'));
+        btnActualizarEstado.addEventListener('click', actualizarEstado);
 
         const idPedido = obtenerIdPedido();
         if (idPedido === null) {
@@ -66,8 +71,10 @@
 
     function mostrarPedido(pedido) {
         idPedidoActual = pedido.idPedido;
+        pedidoActual = pedido;
         texto('numeroPedido', pedido.numeroPedido || `Pedido #${pedido.idPedido}`);
         texto('fechaCreacion', formatearFecha(pedido.fechaCreacion));
+        texto('fechaActualizacion', `Actualizado: ${formatearFecha(pedido.fechaActualizacion)}`);
         texto('estadoPedido', formatearTexto(pedido.estadoPedido));
         texto('estadoPago', formatearTexto(pedido.estadoPago));
         texto('medioPago', pedido.medioPago || '-');
@@ -87,11 +94,51 @@
             textoOpcional(pedido.observacionesInternas, 'Sin observaciones.')
         );
 
-        accionesPedido.classList.toggle(
-            'oculto',
-            pedido.estadoPedido !== 'PENDIENTE_APROBACION'
-        );
+        configurarAcciones(pedido);
         detalle.classList.remove('oculto');
+    }
+
+    function configurarAcciones(pedido) {
+        const pendiente = pedido.estadoPedido === 'PENDIENTE_APROBACION';
+        accionesPedido.classList.toggle('oculto', !pendiente);
+
+        const siguienteEstado = obtenerSiguienteEstado(pedido);
+        gestionEstadoPedido.classList.toggle('oculto', !siguienteEstado);
+        nuevoEstadoPedido.innerHTML = '';
+
+        if (siguienteEstado) {
+            const opcion = document.createElement('option');
+            opcion.value = siguienteEstado;
+            opcion.textContent = formatearTexto(siguienteEstado);
+            nuevoEstadoPedido.appendChild(opcion);
+        }
+    }
+
+    function obtenerSiguienteEstado(pedido) {
+        switch (pedido.estadoPedido) {
+            case 'CONFIRMADO':
+                return 'EN_PREPARACION';
+            case 'EN_PREPARACION':
+                return pedido.medioEntrega === 'RETIRO_LOCAL'
+                    ? 'LISTO_PARA_RETIRAR'
+                    : pedido.medioEntrega === 'ENVIO'
+                        ? 'LISTO_PARA_ENVIAR'
+                        : null;
+            case 'LISTO_PARA_RETIRAR':
+                return pedido.medioEntrega === 'RETIRO_LOCAL'
+                    ? 'ENTREGADO'
+                    : null;
+            case 'LISTO_PARA_ENVIAR':
+                return pedido.medioEntrega === 'ENVIO'
+                    ? 'ENVIADO'
+                    : null;
+            case 'ENVIADO':
+                return pedido.medioEntrega === 'ENVIO'
+                    ? 'ENTREGADO'
+                    : null;
+            default:
+                return null;
+        }
     }
 
     async function decidirPedido(accion) {
@@ -126,8 +173,14 @@
             }
 
             const resultado = await response.json();
+            pedidoActual.estadoPedido = resultado.estadoPedido;
+            pedidoActual.fechaActualizacion = resultado.fechaActualizacion;
             texto('estadoPedido', formatearTexto(resultado.estadoPedido));
-            accionesPedido.classList.add('oculto');
+            texto(
+                'fechaActualizacion',
+                `Actualizado: ${formatearFecha(resultado.fechaActualizacion)}`
+            );
+            configurarAcciones(pedidoActual);
             mostrarExito(resultado.mensaje);
         } catch (error) {
             mostrarMensajeError(
@@ -138,9 +191,57 @@
         }
     }
 
+    async function actualizarEstado() {
+        const estadoPedido = nuevoEstadoPedido.value;
+        if (!idPedidoActual || !estadoPedido) {
+            mostrarMensajeError('No hay un nuevo estado permitido para este pedido.');
+            return;
+        }
+
+        bloquearAcciones(true);
+        ocultarMensaje();
+
+        try {
+            const response = await Auth.fetchAutenticado(
+                `${API}/${idPedidoActual}/estado`,
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estadoPedido })
+                }
+            );
+
+            if (!response) {
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(await obtenerMensajeError(response));
+            }
+
+            const resultado = await response.json();
+            pedidoActual.estadoPedido = resultado.estadoPedido;
+            pedidoActual.fechaActualizacion = resultado.fechaActualizacion;
+            texto('estadoPedido', formatearTexto(resultado.estadoPedido));
+            texto(
+                'fechaActualizacion',
+                `Actualizado: ${formatearFecha(resultado.fechaActualizacion)}`
+            );
+            configurarAcciones(pedidoActual);
+            mostrarExito(resultado.mensaje);
+        } catch (error) {
+            mostrarMensajeError(
+                error.message || 'No se pudo actualizar el estado del pedido.'
+            );
+        } finally {
+            bloquearAcciones(false);
+        }
+    }
+
     function bloquearAcciones(bloqueadas) {
         btnAprobar.disabled = bloqueadas;
         btnCancelar.disabled = bloqueadas;
+        btnActualizarEstado.disabled = bloqueadas;
+        nuevoEstadoPedido.disabled = bloqueadas;
     }
 
     function ocultarMensaje() {
