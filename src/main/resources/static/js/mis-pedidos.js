@@ -70,9 +70,30 @@
 
         agregarCelda(fila, 'Pago', formatearTexto(pedido.estadoPago));
         agregarCelda(fila, 'Entrega', formatearTexto(pedido.medioEntrega));
+        agregarCelda(fila, 'Destino', formatearDestino(pedido));
         agregarCelda(fila, 'Total', formatearDinero(pedido.total));
         agregarCelda(fila, 'Actualizado', formatearFecha(pedido.fechaActualizacion));
+
+        const acciones = document.createElement('td');
+        acciones.dataset.label = 'Detalle';
+        const enlace = document.createElement('a');
+        enlace.className = 'btn-detalle';
+        enlace.href = `/cliente/pedido-detalle.html?id=${pedido.idPedido}`;
+        enlace.textContent = 'Ver pedido';
+        acciones.appendChild(enlace);
+        fila.appendChild(acciones);
         return fila;
+    }
+
+    function formatearDestino(pedido) {
+        if (pedido.medioEntrega === 'RETIRO_LOCAL') {
+            return 'Retiro en local';
+        }
+
+        const localidad = formatearTexto(pedido.localidadEnvio);
+        return [localidad === '-' ? null : localidad, pedido.direccionEnvio]
+            .filter(Boolean)
+            .join(' · ') || '-';
     }
 
     function agregarCelda(fila, etiqueta, valor) {
