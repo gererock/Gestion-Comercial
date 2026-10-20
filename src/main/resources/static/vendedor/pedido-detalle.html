@@ -52,6 +52,7 @@
                 <p class="etiqueta">Pedido</p>
                 <h3 id="numeroPedido">-</h3>
                 <p id="fechaCreacion" class="texto-suave">-</p>
+                <p id="fechaActualizacion" class="texto-suave">-</p>
             </div>
             <div class="badges">
                 <span id="estadoPedido" class="badge">-</span>
@@ -72,6 +73,20 @@
                 </button>
                 <button id="btnAprobarPedido" class="btn btn-success" type="button">
                     Aprobar pedido
+                </button>
+            </div>
+        </section>
+
+        <section id="gestionEstadoPedido" class="card acciones-pedido oculto">
+            <div>
+                <h3>Actualizar avance</h3>
+                <p>Seleccioná el siguiente estado permitido para este pedido.</p>
+            </div>
+            <div class="actualizacion-estado">
+                <label for="nuevoEstadoPedido">Nuevo estado</label>
+                <select id="nuevoEstadoPedido"></select>
+                <button id="btnActualizarEstado" class="btn btn-success" type="button">
+                    Actualizar estado
                 </button>
             </div>
         </section>

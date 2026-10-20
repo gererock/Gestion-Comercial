@@ -74,4 +74,15 @@ public interface PedidoRepository
     Optional<Pedido> buscarPorIdParaDecision(
             @Param("idPedido") Integer idPedido
     );
+
+
+    @EntityGraph(
+            attributePaths = {
+                    "medioPago"
+            }
+    )
+    List<Pedido> findByCliente_IdClienteAndTipoVentaOrderByFechaCreacionDesc(
+            Integer idCliente,
+            TipoVenta tipoVenta
+    );
 }
