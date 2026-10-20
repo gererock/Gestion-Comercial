@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Historial de compras | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/mis-pedidos.css">
+</head>
+<body>
+<header class="header">
+    <div class="contenedor header-contenido">
+        <div>
+            <strong>Todo Descartable</strong>
+            <p>Historial de compras online</p>
+        </div>
+        <div class="usuario">
+            <span id="nombreUsuario">Cliente</span>
+            <button id="btnCerrarSesion" class="btn btn-secundario" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor principal">
+    <section class="titulo">
+        <div>
+            <p class="etiqueta">Mi cuenta</p>
+            <h1>Historial de compras</h1>
+            <p>Revisá todas las compras registradas en tu cuenta.</p>
+        </div>
+        <a class="btn btn-secundario" href="/cliente/index.html">← Volver</a>
+    </section>
+
+    <div id="mensaje" class="mensaje" role="status" aria-live="polite">
+        Cargando historial...
+    </div>
+
+    <section id="listado" class="card oculto">
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                <tr>
+                    <th>Compra</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Pago</th>
+                    <th>Entrega</th>
+                    <th>Total</th>
+                    <th>Detalle</th>
+                </tr>
+                </thead>
+                <tbody id="compras"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/historial-compras.js"></script>
+</body>
+</html>
