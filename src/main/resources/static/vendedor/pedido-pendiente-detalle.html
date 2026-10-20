@@ -1,0 +1,265 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Detalle de pedido | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/pedidos-pendientes.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Gestión de pedidos online
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Pedidos / Pendientes / Detalle
+            </p>
+
+            <h2>
+                Detalle del pedido
+            </h2>
+
+            <p class="subtitulo">
+                Información general del pedido online
+                pendiente de aprobación.
+            </p>
+
+        </div>
+
+
+        <a
+            href="/vendedor/pedidos-pendientes.html"
+            class="btn btn-light"
+        >
+            ← Volver a pedidos
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        role="alert"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <section
+        id="cargando"
+        class="card estado-contenedor"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Cargando pedido...
+        </p>
+
+    </section>
+
+
+    <section
+        id="detalle"
+        class="card detalle-card oculto"
+    >
+
+        <h3 id="numeroPedido">
+            -
+        </h3>
+
+
+        <div class="dato">
+
+            <span>
+                Cliente
+            </span>
+
+            <strong id="cliente">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span>
+                Fecha
+            </span>
+
+            <strong id="fechaCreacion">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span>
+                Estado del pedido
+            </span>
+
+            <strong id="estadoPedido">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span>
+                Estado de pago
+            </span>
+
+            <strong id="estadoPago">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span>
+                Modalidad de entrega
+            </span>
+
+            <strong id="medioEntrega">
+                -
+            </strong>
+
+        </div>
+
+
+        <div
+            id="filaLocalidad"
+            class="dato"
+        >
+
+            <span>
+                Localidad
+            </span>
+
+            <strong id="localidad">
+                -
+            </strong>
+
+        </div>
+
+
+        <div
+            id="filaDireccion"
+            class="dato"
+        >
+
+            <span>
+                Dirección
+            </span>
+
+            <strong id="direccion">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span>
+                Total
+            </span>
+
+            <strong
+                id="total"
+                class="total"
+            >
+                -
+            </strong>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/pedido-pendiente-detalle.js"></script>
+
+
+</body>
+
+</html>
