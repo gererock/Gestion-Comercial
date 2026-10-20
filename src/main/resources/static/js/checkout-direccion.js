@@ -1752,23 +1752,8 @@
             );
 
 
-            mostrarMensaje(
-                'La dirección quedó seleccionada correctamente.',
-                'success'
-            );
-
-
-            /*
-             * Cuando US12 / US10 estén integradas,
-             * acá se redirigirá al siguiente paso
-             * del checkout.
-             *
-             * Por ahora dejamos la dirección
-             * correctamente validada y guardada
-             * en sessionStorage:
-             *
-             * checkout_direccion_envio_id
-             */
+            window.location.href =
+                '/cliente/checkout-confirmar.html';
 
 
         } catch (error) {

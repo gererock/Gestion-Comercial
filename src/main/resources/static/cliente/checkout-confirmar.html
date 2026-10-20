@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confirmar pedido | Todo Descartables</title>
+  <link rel="stylesheet" href="/css/checkout-confirmar.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="/" class="brand"><span class="brand-mark">TD</span> Todo Descartables</a>
+      <div class="account"><span id="nombreUsuario">Cliente</span><button id="cerrarSesion" type="button" class="text-button">Cerrar sesión</button></div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <div id="pasoConfirmacion">
+      <div class="heading">
+        <div>
+          <p class="eyebrow">Último paso del checkout</p>
+          <h1>Revisá tu pedido</h1>
+          <p class="muted">Verificá los productos y la entrega antes de confirmar la compra.</p>
+        </div>
+        <a id="volver" href="/cliente/checkout-entrega.html" class="back-link">← Modificar entrega</a>
+      </div>
+
+      <div id="mensaje" class="message hidden" role="alert" aria-live="polite"></div>
+      <div id="cargando" class="panel loading" role="status">Validando medio de pago y dirección…</div>
+
+      <div id="contenido" class="layout hidden">
+        <div class="left">
+          <section class="panel">
+            <div class="section-title"><h2>Productos</h2><a href="/carrito/index.html">Editar carrito</a></div>
+            <div id="listaProductos" class="products"></div>
+          </section>
+
+          <section class="panel">
+            <h2>Entrega y pago</h2>
+            <dl class="details">
+              <div><dt>Modalidad</dt><dd id="medioEntrega">—</dd></div>
+              <div><dt>Dirección</dt><dd id="direccionEntrega">—</dd></div>
+              <div><dt>Medio de pago</dt><dd id="medioPago">—</dd></div>
+            </dl>
+            <div class="edit-links">
+              <a href="/cliente/checkout-medio-pago.html">Cambiar medio de pago</a>
+              <a href="/cliente/checkout-entrega.html">Cambiar entrega</a>
+            </div>
+          </section>
+
+          <section class="panel">
+            <label for="observaciones" class="notes-label">Observaciones para el comercio <span>(opcional)</span></label>
+            <textarea id="observaciones" rows="3" maxlength="500" placeholder="Ej.: Retiro por la tarde"></textarea>
+            <p class="hint">Máximo 500 caracteres.</p>
+          </section>
+        </div>
+
+        <aside class="panel summary">
+          <h2>Resumen</h2>
+          <div class="summary-row"><span>Unidades</span><strong id="cantidadProductos">0</strong></div>
+          <div class="summary-row"><span>Subtotal estimado del carrito</span><strong id="subtotalEstimado">$0</strong></div>
+          <p class="hint">El total definitivo, incluidos los descuentos del cliente, se calcula en el servidor al confirmar. Si no alcanza el mínimo de envío, se te informará antes de crear el pedido.</p>
+          <button type="button" id="confirmarPedido" class="primary-button" disabled>Confirmar pedido</button>
+          <p class="safe-note">No se crea ningún pedido hasta que presiones Confirmar pedido.</p>
+        </aside>
+      </div>
+    </div>
+
+    <section id="resultadoExitoso" class="success panel hidden" role="status" aria-live="polite">
+      <span class="success-icon" aria-hidden="true">✓</span>
+      <h1>¡Pedido registrado!</h1>
+      <p>Tu pedido quedó pendiente de aprobación del comercio.</p>
+      <div class="order-number">N.º de pedido: <strong id="numeroConfirmado">—</strong></div>
+      <p>Estado de pago: <strong id="pagoConfirmado">Pendiente</strong></p>
+      <p>Total confirmado: <strong id="totalConfirmado">—</strong></p>
+      <a class="primary-button link-button" href="/cliente/index.html">Volver al área cliente</a>
+      <a class="secondary-link" href="/catalogo/index.html">Seguir comprando</a>
+    </section>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/carrito.js"></script>
+  <script src="/js/checkout-confirmar.js"></script>
+</body>
+</html>
