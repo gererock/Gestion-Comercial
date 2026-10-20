@@ -815,16 +815,8 @@
             );
 
 
-            mostrarMensaje(
-                'Retiro en el local quedó seleccionado. No necesitás una dirección de envío.',
-                'success'
-            );
-
-
-            /*
-             * El próximo paso será US10:
-             * confirmación definitiva del pedido.
-             */
+            window.location.href =
+                '/cliente/checkout-confirmar.html';
 
 
             return;
