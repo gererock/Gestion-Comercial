@@ -828,25 +828,9 @@
             );
 
 
-            sessionStorage.setItem(
-                STORAGE_KEY,
-                String(
-                    medioPago.idMedioPago
-                )
-            );
-
-
             window.location.href =
                 '/cliente/checkout-entrega.html';
 
-
-            /*
-             * US12 agregará aquí el siguiente paso:
-             * selección de retiro o envío.
-             *
-             * US10 utilizará finalmente este ID
-             * al crear el pedido.
-             */
 
 
         } catch (error) {

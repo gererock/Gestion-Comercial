@@ -3,6 +3,10 @@
     'use strict';
 
 
+    const API_CONFIGURACION_ENVIO =
+        '/api/public/configuracion-comercio/envio';
+
+
     const CLAVE_MEDIO_PAGO =
         'checkout_medio_pago_id';
 
@@ -57,6 +61,30 @@
         );
 
 
+    const radioEnvio =
+        document.querySelector(
+            'input[name="medioEntrega"][value="ENVIO"]'
+        );
+
+
+    const opcionEnvio =
+        document.getElementById(
+            'delivery-shipping-option'
+        );
+
+
+    const shippingStatus =
+        document.getElementById(
+            'shipping-status'
+        );
+
+
+    const continueButton =
+        document.getElementById(
+            'delivery-continue'
+        );
+
+
     const message =
         document.getElementById(
             'checkout-message'
@@ -82,13 +110,25 @@
 
 
     // =========================================
+    // ESTADO
+    // =========================================
+
+    let configuracionEnvio =
+        null;
+
+
+    let procesando =
+        false;
+
+
+    // =========================================
     // INICIO
     // =========================================
 
     iniciar();
 
 
-    function iniciar() {
+    async function iniciar() {
 
         configurarUsuario();
 
@@ -113,21 +153,20 @@
         }
 
 
-        /*
-         * US12 es posterior a US11.
-         * No debe llegarse a entrega
-         * sin un medio de pago válido
-         * previamente seleccionado.
-         */
-
-        const medioPago =
-            sessionStorage.getItem(
-                CLAVE_MEDIO_PAGO
+        const idMedioPago =
+            Number(
+                sessionStorage.getItem(
+                    CLAVE_MEDIO_PAGO
+                )
             );
 
 
         if (
-            !medioPago
+            !Number.isInteger(
+                idMedioPago
+            )
+            ||
+            idMedioPago <= 0
         ) {
 
             window.location.href =
@@ -135,6 +174,38 @@
 
 
             return;
+        }
+
+
+        bloquearEnvio(
+            'Verificando monto mínimo y localidades habilitadas...',
+            false
+        );
+
+
+        try {
+
+            await cargarConfiguracionEnvio();
+
+
+        } catch (error) {
+
+            console.error(
+                'Error al cargar configuración de envío:',
+                error
+            );
+
+
+            bloquearEnvio(
+                'No pudimos verificar las condiciones de envío. Podés elegir retiro en el local.',
+                true
+            );
+
+
+            mostrarMensaje(
+                'No pudimos consultar la configuración de envío.',
+                'error'
+            );
         }
 
 
@@ -219,6 +290,250 @@
 
 
     // =========================================
+    // CONFIGURACIÓN ENVÍO
+    // =========================================
+
+    async function cargarConfiguracionEnvio() {
+
+        const response =
+            await fetch(
+                API_CONFIGURACION_ENVIO,
+                {
+                    headers: {
+                        'Accept':
+                            'application/json'
+                    }
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                'No se pudo cargar la configuración de envío.'
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const montoMinimo =
+            Number(
+                data
+                    ?.montoMinimoEnvio
+            );
+
+
+        if (
+            !Number.isFinite(
+                montoMinimo
+            )
+            ||
+            montoMinimo < 0
+            ||
+            typeof data.permiteEnvioVillaMaria
+            !== 'boolean'
+            ||
+            typeof data.permiteEnvioVillaNueva
+            !== 'boolean'
+        ) {
+
+            throw new Error(
+                'La configuración de envío recibida no es válida.'
+            );
+        }
+
+
+        configuracionEnvio =
+            data;
+
+
+        actualizarDisponibilidadEnvio();
+    }
+
+
+    // =========================================
+    // DISPONIBILIDAD ENVÍO
+    // =========================================
+
+    function actualizarDisponibilidadEnvio() {
+
+        if (
+            !configuracionEnvio
+        ) {
+
+            bloquearEnvio(
+                'No pudimos verificar las condiciones de envío.',
+                true
+            );
+
+
+            return false;
+        }
+
+
+        const subtotal =
+            Number(
+                Carrito.obtenerSubtotal()
+            );
+
+
+        const montoMinimo =
+            Number(
+                configuracionEnvio
+                    .montoMinimoEnvio
+            );
+
+
+        /*
+         * US61 definió:
+         *
+         * total >= monto mínimo
+         * permite envío.
+         */
+
+        if (
+            subtotal < montoMinimo
+        ) {
+
+            const faltante =
+                montoMinimo
+                -
+                subtotal;
+
+
+            bloquearEnvio(
+                `El envío está disponible desde ${formatearPrecio(montoMinimo)}. Te faltan ${formatearPrecio(faltante)}.`,
+                true
+            );
+
+
+            return false;
+        }
+
+
+        const villaMaria =
+            configuracionEnvio
+                .permiteEnvioVillaMaria
+            ===
+            true;
+
+
+        const villaNueva =
+            configuracionEnvio
+                .permiteEnvioVillaNueva
+            ===
+            true;
+
+
+        if (
+            !villaMaria
+            &&
+            !villaNueva
+        ) {
+
+            bloquearEnvio(
+                'El comercio no tiene localidades habilitadas para envío en este momento.',
+                true
+            );
+
+
+            return false;
+        }
+
+
+        radioEnvio.disabled =
+            false;
+
+
+        opcionEnvio.classList.remove(
+            'is-disabled'
+        );
+
+
+        if (
+            villaMaria
+            &&
+            villaNueva
+        ) {
+
+            shippingStatus.textContent =
+                `Disponible para Villa María y Villa Nueva. Monto mínimo: ${formatearPrecio(montoMinimo)}.`;
+
+
+        } else if (
+            villaMaria
+        ) {
+
+            shippingStatus.textContent =
+                `Disponible para Villa María. Monto mínimo: ${formatearPrecio(montoMinimo)}.`;
+
+
+        } else {
+
+            shippingStatus.textContent =
+                `Disponible para Villa Nueva. Monto mínimo: ${formatearPrecio(montoMinimo)}.`;
+        }
+
+
+        return true;
+    }
+
+
+    function bloquearEnvio(
+        texto,
+        limpiarSeleccion
+    ) {
+
+        radioEnvio.disabled =
+            true;
+
+
+        opcionEnvio.classList.add(
+            'is-disabled'
+        );
+
+
+        shippingStatus.textContent =
+            texto;
+
+
+        if (
+            limpiarSeleccion
+            &&
+            sessionStorage.getItem(
+                CLAVE_ENTREGA
+            )
+            ===
+            'ENVIO'
+        ) {
+
+            sessionStorage.removeItem(
+                CLAVE_ENTREGA
+            );
+
+
+            sessionStorage.removeItem(
+                CLAVE_DIRECCION
+            );
+
+
+            radioEnvio.checked =
+                false;
+
+
+            actualizarSeleccionVisual();
+
+            actualizarResumenEntrega();
+        }
+    }
+
+
+    // =========================================
     // SELECCIÓN
     // =========================================
 
@@ -236,6 +551,16 @@
         }
 
 
+        if (
+            medioEntrega === 'ENVIO'
+            &&
+            radioEnvio.disabled
+        ) {
+
+            return;
+        }
+
+
         sessionStorage.setItem(
             CLAVE_ENTREGA,
             medioEntrega
@@ -243,9 +568,8 @@
 
 
         /*
-         * Si cambia a RETIRO,
-         * una dirección previamente elegida
-         * deja de corresponder al checkout.
+         * Una dirección de envío deja de corresponder
+         * si el cliente cambia a retiro en el local.
          */
 
         if (
@@ -288,6 +612,32 @@
             actualizarSeleccionVisual();
 
             actualizarResumenEntrega();
+
+
+            return;
+        }
+
+
+        if (
+            guardado === 'ENVIO'
+            &&
+            radioEnvio.disabled
+        ) {
+
+            sessionStorage.removeItem(
+                CLAVE_ENTREGA
+            );
+
+
+            sessionStorage.removeItem(
+                CLAVE_DIRECCION
+            );
+
+
+            actualizarSeleccionVisual();
+
+            actualizarResumenEntrega();
+
 
             return;
         }
@@ -350,31 +700,32 @@
             );
 
 
-        switch (
-            medio
+        if (
+            medio === 'RETIRO_LOCAL'
         ) {
 
-            case 'RETIRO_LOCAL':
-
-                deliverySummary.textContent =
-                    'Retiro en el local';
-
-                break;
+            deliverySummary.textContent =
+                'Retiro en el local';
 
 
-            case 'ENVIO':
-
-                deliverySummary.textContent =
-                    'Envío a domicilio';
-
-                break;
-
-
-            default:
-
-                deliverySummary.textContent =
-                    'Sin seleccionar';
+            return;
         }
+
+
+        if (
+            medio === 'ENVIO'
+        ) {
+
+            deliverySummary.textContent =
+                'Envío a domicilio';
+
+
+            return;
+        }
+
+
+        deliverySummary.textContent =
+            'Sin seleccionar';
     }
 
 
@@ -382,11 +733,20 @@
     // CONTINUAR
     // =========================================
 
-    function continuar(
+    async function continuar(
         event
     ) {
 
         event.preventDefault();
+
+
+        if (
+            procesando
+        ) {
+
+            return;
+        }
+
 
         ocultarMensaje();
 
@@ -436,15 +796,19 @@
         }
 
 
-        sessionStorage.setItem(
-            CLAVE_ENTREGA,
-            medioEntrega
-        );
-
+        // =====================================
+        // RETIRO EN LOCAL
+        // =====================================
 
         if (
             medioEntrega === 'RETIRO_LOCAL'
         ) {
+
+            sessionStorage.setItem(
+                CLAVE_ENTREGA,
+                'RETIRO_LOCAL'
+            );
+
 
             sessionStorage.removeItem(
                 CLAVE_DIRECCION
@@ -452,16 +816,14 @@
 
 
             mostrarMensaje(
-                'Retiro en el local quedó seleccionado.',
+                'Retiro en el local quedó seleccionado. No necesitás una dirección de envío.',
                 'success'
             );
 
 
             /*
-             * US10 continuará desde aquí hacia
-             * la confirmación final.
-             *
-             * No se solicita dirección.
+             * El próximo paso será US10:
+             * confirmación definitiva del pedido.
              */
 
 
@@ -469,21 +831,88 @@
         }
 
 
-        /*
-         * ENVIO:
-         *
-         * En Etapa 2 se validará:
-         *
-         * - monto mínimo US61;
-         * - localidades habilitadas US62;
-         * - integración con US13.
-         */
+        // =====================================
+        // ENVÍO
+        // =====================================
+
+        procesando =
+            true;
 
 
-        mostrarMensaje(
-            'Envío a domicilio quedó seleccionado. En el siguiente paso se validarán las condiciones de envío.',
-            'success'
-        );
+        continueButton.disabled =
+            true;
+
+
+        const textoOriginal =
+            continueButton.textContent;
+
+
+        continueButton.textContent =
+            'Validando envío...';
+
+
+        try {
+
+            /*
+             * Volvemos a consultar justo antes
+             * de continuar por si el administrador
+             * cambió monto/localidades.
+             */
+
+            await cargarConfiguracionEnvio();
+
+
+            if (
+                !actualizarDisponibilidadEnvio()
+            ) {
+
+                mostrarMensaje(
+                    'En este momento el pedido no cumple las condiciones para envío.',
+                    'error'
+                );
+
+
+                return;
+            }
+
+
+            sessionStorage.setItem(
+                CLAVE_ENTREGA,
+                'ENVIO'
+            );
+
+
+            window.location.href =
+                '/cliente/checkout-direccion.html';
+
+
+        } catch (error) {
+
+            console.error(
+                'Error al validar envío:',
+                error
+            );
+
+
+            mostrarMensaje(
+                'No pudimos validar las condiciones de envío. Intentá nuevamente.',
+                'error'
+            );
+
+
+        } finally {
+
+            procesando =
+                false;
+
+
+            continueButton.disabled =
+                false;
+
+
+            continueButton.textContent =
+                textoOriginal;
+        }
     }
 
 
