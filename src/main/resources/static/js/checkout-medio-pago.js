@@ -828,10 +828,16 @@
             );
 
 
-            mostrarMensaje(
-                `${medioPago.nombre} quedó seleccionado como medio de pago.`,
-                'success'
+            sessionStorage.setItem(
+                STORAGE_KEY,
+                String(
+                    medioPago.idMedioPago
+                )
             );
+
+
+            window.location.href =
+                '/cliente/checkout-entrega.html';
 
 
             /*
