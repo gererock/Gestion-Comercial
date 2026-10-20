@@ -10,6 +10,10 @@
     const mensaje = document.getElementById('mensaje');
     const cargando = document.getElementById('cargando');
     const detalle = document.getElementById('detalle');
+    const accionesPedido = document.getElementById('accionesPedido');
+    const btnAprobar = document.getElementById('btnAprobarPedido');
+    const btnCancelar = document.getElementById('btnCancelarPedido');
+    let idPedidoActual = null;
 
     iniciar();
 
@@ -17,6 +21,8 @@
         mostrarUsuario();
         document.getElementById('btnCerrarSesion')
             .addEventListener('click', Auth.cerrarSesion);
+        btnAprobar.addEventListener('click', () => decidirPedido('aprobar'));
+        btnCancelar.addEventListener('click', () => decidirPedido('cancelar'));
 
         const idPedido = obtenerIdPedido();
         if (idPedido === null) {
@@ -59,6 +65,7 @@
     }
 
     function mostrarPedido(pedido) {
+        idPedidoActual = pedido.idPedido;
         texto('numeroPedido', pedido.numeroPedido || `Pedido #${pedido.idPedido}`);
         texto('fechaCreacion', formatearFecha(pedido.fechaCreacion));
         texto('estadoPedido', formatearTexto(pedido.estadoPedido));
@@ -80,7 +87,77 @@
             textoOpcional(pedido.observacionesInternas, 'Sin observaciones.')
         );
 
+        accionesPedido.classList.toggle(
+            'oculto',
+            pedido.estadoPedido !== 'PENDIENTE_APROBACION'
+        );
         detalle.classList.remove('oculto');
+    }
+
+    async function decidirPedido(accion) {
+        if (!idPedidoActual) {
+            return;
+        }
+
+        const esAprobacion = accion === 'aprobar';
+        const verbo = esAprobacion ? 'aprobar' : 'cancelar';
+        const confirmado = window.confirm(
+            `¿Confirmás que querés ${verbo} este pedido?`
+        );
+
+        if (!confirmado) {
+            return;
+        }
+
+        bloquearAcciones(true);
+        ocultarMensaje();
+
+        try {
+            const response = await Auth.fetchAutenticado(
+                `${API}/${idPedidoActual}/${accion}`,
+                { method: 'PATCH' }
+            );
+
+            if (!response) {
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(await obtenerMensajeError(response));
+            }
+
+            const resultado = await response.json();
+            texto('estadoPedido', formatearTexto(resultado.estadoPedido));
+            accionesPedido.classList.add('oculto');
+            mostrarExito(resultado.mensaje);
+        } catch (error) {
+            mostrarMensajeError(
+                error.message || `No se pudo ${verbo} el pedido.`
+            );
+        } finally {
+            bloquearAcciones(false);
+        }
+    }
+
+    function bloquearAcciones(bloqueadas) {
+        btnAprobar.disabled = bloqueadas;
+        btnCancelar.disabled = bloqueadas;
+    }
+
+    function ocultarMensaje() {
+        mensaje.textContent = '';
+        mensaje.className = 'mensaje oculto';
+    }
+
+    function mostrarExito(textoMensaje) {
+        mensaje.textContent = textoMensaje || 'La operación se realizó correctamente.';
+        mensaje.className = 'mensaje mensaje-exito';
+        mensaje.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function mostrarMensajeError(textoError) {
+        mensaje.textContent = textoError;
+        mensaje.className = 'mensaje mensaje-error';
+        mensaje.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function mostrarCliente(cliente) {
