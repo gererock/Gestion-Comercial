@@ -5,10 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>
         Panel administrador
@@ -20,194 +17,191 @@
 <body>
 
 
-<h1>
-    Panel administrador
-</h1>
+    <h1>
+        Panel administrador
+    </h1>
 
 
-<p id="usuario"></p>
+    <p id="usuario"></p>
 
 
-<a href="/categorias.html">
-    Gestionar categorías
-</a>
+    <a href="/categorias.html">
+        Gestionar categorías
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/marcas.html">
-    Gestionar marcas
-</a>
+    <a href="/marcas.html">
+        Gestionar marcas
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/grupos-catalogo.html">
-    Gestionar grupos de catálogo
-</a>
+    <a href="/grupos-catalogo.html">
+        Gestionar grupos de catálogo
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/crear-producto.html">
-    Crear producto
-</a>
+    <a href="/crear-producto.html">
+        Crear producto
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/productos-stock.html">
-    Consultar productos y stock
-</a>
+    <a href="/productos-stock.html">
+        Consultar productos y stock
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/admin/medios-pago.html">
-    Gestionar medios de pago
-</a>
+    <a href="/admin/medios-pago.html">
+        Gestionar medios de pago
+    </a>
 
 
-<br>
+    <br>
 
 
-<a href="/admin/monto-minimo-envio.html">
-    Configurar monto mínimo de envío
-</a>
+    <a href="/admin/monto-minimo-envio.html">
+        Configurar monto mínimo de envío
+    </a>
 
-<br>
-<a href="/admin/localidades-envio.html">
-    Configurar localidades de envío
-</a>
-
-
-<br>
-<br>
+    <br>
+    <a href="/admin/localidades-envio.html">
+        Configurar localidades de envío
+    </a>
 
 
+    <br>
+
+    <br>
+    <a href="/vendedor/pedidos-pendientes.html">
+        Consultar pedidos online pendientes
+    </a>
+
+    <br>
 
 
-<a href="/vendedor/estado-pago-pedido.html">
-    Actualizar estado de pago de pedido
-</a>
-<br>
-<br>
 
-<label for="productoEditar">
-    ID del producto a modificar:
-</label>
+    <a href="/vendedor/estado-pago-pedido.html">
+        Actualizar estado de pago de pedido
+    </a>
+    <br>
+    <br>
 
-
-<input
-    type="number"
-    id="productoEditar"
-    min="1"
-    step="1"
->
+    <label for="productoEditar">
+        ID del producto a modificar:
+    </label>
 
 
-<button
-    type="button"
-    id="btnEditarProducto"
->
-    Modificar producto
-</button>
+    <input type="number" id="productoEditar" min="1" step="1">
 
 
-<br>
-<br>
+    <button type="button" id="btnEditarProducto">
+        Modificar producto
+    </button>
 
 
-<button id="logout">
-    Cerrar sesión
-</button>
+    <br>
+    <br>
 
 
-<script src="/js/auth.js"></script>
+    <button id="logout">
+        Cerrar sesión
+    </button>
 
 
-<script>
+    <script src="/js/auth.js"></script>
 
-    if (
-        Auth.requerirRol(
-            'ADMINISTRADOR'
-        )
-    ) {
 
-        const usuario =
-            Auth.obtenerUsuario();
-
+    <script>
 
         if (
-            usuario
-            &&
-            usuario.nombre
+            Auth.requerirRol(
+                'ADMINISTRADOR'
+            )
         ) {
 
-            document.getElementById(
-                'usuario'
-            ).textContent =
-                `Bienvenido, ${usuario.nombre}`;
-
-        }
-
-    }
-
-
-    document.getElementById(
-        'logout'
-    ).addEventListener(
-        'click',
-        Auth.cerrarSesion
-    );
-
-
-    document.getElementById(
-        'btnEditarProducto'
-    ).addEventListener(
-        'click',
-        () => {
-
-            const input =
-                document.getElementById(
-                    'productoEditar'
-                );
-
-
-            const id =
-                Number(
-                    input.value
-                );
+            const usuario =
+                Auth.obtenerUsuario();
 
 
             if (
-                !Number.isInteger(
-                    id
-                )
-                ||
-                id <= 0
+                usuario
+                &&
+                usuario.nombre
             ) {
 
-                alert(
-                    'Ingresá un ID de producto válido.'
-                );
+                document.getElementById(
+                    'usuario'
+                ).textContent =
+                    `Bienvenido, ${usuario.nombre}`;
 
-
-                return;
             }
 
-
-            window.location.href =
-                `/editar-producto.html?id=${id}`;
         }
-    );
 
-</script>
+
+        document.getElementById(
+            'logout'
+        ).addEventListener(
+            'click',
+            Auth.cerrarSesion
+        );
+
+
+        document.getElementById(
+            'btnEditarProducto'
+        ).addEventListener(
+            'click',
+            () => {
+
+                const input =
+                    document.getElementById(
+                        'productoEditar'
+                    );
+
+
+                const id =
+                    Number(
+                        input.value
+                    );
+
+
+                if (
+                    !Number.isInteger(
+                        id
+                    )
+                    ||
+                    id <= 0
+                ) {
+
+                    alert(
+                        'Ingresá un ID de producto válido.'
+                    );
+
+
+                    return;
+                }
+
+
+                window.location.href =
+                    `/editar-producto.html?id=${id}`;
+            }
+        );
+
+    </script>
 
 
 </body>

@@ -1,0 +1,165 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Pedidos pendientes | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/pedidos-pendientes.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Gestión de pedidos online
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Pedidos / Pendientes
+            </p>
+
+            <h2>
+                Pedidos online pendientes
+            </h2>
+
+            <p class="subtitulo">
+                Consultá las compras online que todavía
+                están pendientes de aprobación.
+            </p>
+
+        </div>
+
+
+        <button
+            id="btnVolverPanel"
+            class="btn btn-light"
+            type="button"
+        >
+            ← Volver al panel
+        </button>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        role="alert"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <section
+        id="cargando"
+        class="card estado-contenedor"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Cargando pedidos pendientes...
+        </p>
+
+    </section>
+
+
+    <section
+        id="sinPedidos"
+        class="card estado-contenedor oculto"
+    >
+
+        <h3>
+            No hay pedidos pendientes
+        </h3>
+
+        <p>
+            En este momento no existen pedidos online
+            pendientes de aprobación.
+        </p>
+
+    </section>
+
+
+    <section
+        id="contenedorPedidos"
+        class="pedidos-grid oculto"
+    >
+    </section>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/pedidos-pendientes.js"></script>
+
+
+</body>
+
+</html>
