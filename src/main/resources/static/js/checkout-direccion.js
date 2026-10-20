@@ -11,6 +11,9 @@
         '/api/public/configuracion-comercio/envio';
 
 
+    const CLAVE_ENTREGA =
+        'checkout_medio_entrega';
+
     const CLAVE_DIRECCION =
         'checkout_direccion_envio_id';
 
@@ -259,6 +262,34 @@
         }
 
 
+        const medioEntrega =
+            sessionStorage.getItem(
+                CLAVE_ENTREGA
+            );
+
+
+        /*
+        * La dirección solamente corresponde
+        * cuando US12 seleccionó ENVIO.
+        */
+
+        if (
+            medioEntrega !== 'ENVIO'
+        ) {
+
+            sessionStorage.removeItem(
+                CLAVE_DIRECCION
+            );
+
+
+            window.location.href =
+                '/cliente/checkout-entrega.html';
+
+
+            return;
+        }
+
+
         await cargarDatos();
     }
 
@@ -488,6 +519,64 @@
 
 
         actualizarOpcionesLocalidad();
+    }
+
+
+
+    function cumpleCondicionesGeneralesEnvio() {
+
+        if (
+            !configuracionEnvio
+        ) {
+
+            return false;
+        }
+
+
+        const subtotal =
+            Number(
+                Carrito.obtenerSubtotal()
+            );
+
+
+        const montoMinimo =
+            Number(
+                configuracionEnvio
+                    .montoMinimoEnvio
+            );
+
+
+        if (
+            !Number.isFinite(
+                subtotal
+            )
+            ||
+            !Number.isFinite(
+                montoMinimo
+            )
+        ) {
+
+            return false;
+        }
+
+
+        if (
+            subtotal < montoMinimo
+        ) {
+
+            return false;
+        }
+
+
+        const hayLocalidadHabilitada =
+            configuracionEnvio
+                .permiteEnvioVillaMaria
+            ||
+            configuracionEnvio
+                .permiteEnvioVillaNueva;
+
+
+        return hayLocalidadHabilitada;
     }
 
 
@@ -1543,6 +1632,24 @@
 
 
         try {
+                await cargarConfiguracionEnvio();
+
+
+            if (
+                !cumpleCondicionesGeneralesEnvio()
+            ) {
+
+                sessionStorage.removeItem(
+                    CLAVE_DIRECCION
+                );
+
+
+                window.location.href =
+                    '/cliente/checkout-entrega.html';
+
+
+                return;
+            }
 
             const response =
                 await Auth.fetchAutenticado(
@@ -1574,6 +1681,24 @@
 
 
                 await cargarConfiguracionEnvio();
+
+
+                if (
+                    !cumpleCondicionesGeneralesEnvio()
+                ) {
+
+                    sessionStorage.removeItem(
+                        CLAVE_DIRECCION
+                    );
+
+
+                    window.location.href =
+                        '/cliente/checkout-entrega.html';
+
+
+                    return;
+                }
+
 
                 await cargarDirecciones();
 
