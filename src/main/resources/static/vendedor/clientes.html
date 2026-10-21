@@ -1,0 +1,209 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Clientes | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/clientes.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Gestión de clientes
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Clientes / Consulta
+            </p>
+
+            <h2>
+                Clientes
+            </h2>
+
+            <p class="subtitulo">
+                Consultá los clientes registrados y sus
+                datos principales.
+            </p>
+
+        </div>
+
+
+        <button
+            id="btnVolverPanel"
+            class="btn btn-light"
+            type="button"
+        >
+            ← Volver al panel
+        </button>
+
+    </section>
+
+
+    <section class="card buscador-card">
+
+        <form
+            id="formBusqueda"
+            class="buscador"
+            novalidate
+        >
+
+            <div class="campo-busqueda">
+
+                <label for="busqueda">
+                    Buscar cliente
+                </label>
+
+                <input
+                    type="text"
+                    id="busqueda"
+                    autocomplete="off"
+                    placeholder="Nombre, apellido, DNI, correo o teléfono"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Buscar
+            </button>
+
+
+            <button
+                id="btnLimpiar"
+                type="button"
+                class="btn btn-light"
+            >
+                Limpiar
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        role="alert"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <section
+        id="cargando"
+        class="card estado-contenedor"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Cargando clientes...
+        </p>
+
+    </section>
+
+
+    <section
+        id="sinClientes"
+        class="card estado-contenedor oculto"
+    >
+
+        <h3 id="tituloSinClientes">
+            No hay clientes registrados
+        </h3>
+
+        <p id="textoSinClientes">
+            Todavía no existen clientes cargados.
+        </p>
+
+    </section>
+
+
+    <section
+        id="contenedorClientes"
+        class="clientes-grid oculto"
+    >
+    </section>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/clientes.js"></script>
+
+
+</body>
+
+</html>

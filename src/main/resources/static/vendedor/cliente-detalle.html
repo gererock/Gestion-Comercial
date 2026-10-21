@@ -1,0 +1,249 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Detalle de cliente | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/clientes.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Gestión de clientes
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Usuario
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Clientes / Detalle
+            </p>
+
+            <h2>
+                Detalle del cliente
+            </h2>
+
+            <p class="subtitulo">
+                Consulta de información personal y comercial.
+            </p>
+
+        </div>
+
+
+        <a
+            href="/vendedor/clientes.html"
+            class="btn btn-light"
+        >
+            ← Volver a clientes
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        role="alert"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <section
+        id="cargando"
+        class="card estado-contenedor"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Cargando cliente...
+        </p>
+
+    </section>
+
+
+    <section
+        id="detalle"
+        class="card detalle-card oculto"
+    >
+
+        <div class="cliente-header">
+
+            <h3 id="nombreCliente">
+                -
+            </h3>
+
+            <span
+                id="estadoCliente"
+                class="badge"
+            >
+                -
+            </span>
+
+        </div>
+
+
+        <div class="seccion-detalle">
+
+            <h3>
+                Datos personales
+            </h3>
+
+            <div class="dato">
+                <span>DNI</span>
+                <strong id="dni">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Teléfono</span>
+                <strong id="telefono">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Correo</span>
+                <strong id="correo">-</strong>
+            </div>
+
+        </div>
+
+
+        <div class="seccion-detalle">
+
+            <h3>
+                Datos comerciales
+            </h3>
+
+            <div class="dato">
+                <span>Razón social</span>
+                <strong id="razonSocial">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>CUIT</span>
+                <strong id="cuit">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Condición frente al IVA</span>
+                <strong id="condicionIva">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Dirección de facturación</span>
+                <strong id="direccionFacturacion">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Localidad</span>
+                <strong id="localidadFacturacion">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Provincia</span>
+                <strong id="provinciaFacturacion">-</strong>
+            </div>
+
+        </div>
+
+
+        <div class="seccion-detalle">
+
+            <h3>
+                Información interna
+            </h3>
+
+            <div class="dato">
+                <span>Descuento</span>
+                <strong id="descuento">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Nota interna</span>
+                <strong id="notaInterna">-</strong>
+            </div>
+
+            <div class="dato">
+                <span>Fecha de alta</span>
+                <strong id="fechaAlta">-</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/cliente-detalle.js"></script>
+
+
+</body>
+
+</html>
