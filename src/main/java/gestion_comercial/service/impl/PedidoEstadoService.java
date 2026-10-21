@@ -31,13 +31,7 @@ public class PedidoEstadoService implements IPedidoEstadoService {
             ActualizarEstadoPedidoRequest request
     ) {
         Pedido pedido = obtenerPedido(idPedido);
-        EstadoPedido nuevoEstado = request.estadoPedido();
-
-        if (nuevoEstado == null) {
-            throw new EstadoPedidoInvalidoException(
-                    "El nuevo estado es obligatorio"
-            );
-        }
+        EstadoPedido nuevoEstado = convertirEstado(request.estadoPedido());
 
         EstadoPedido estadoPermitido = siguienteEstadoPermitido(pedido);
 
@@ -124,6 +118,22 @@ public class PedidoEstadoService implements IPedidoEstadoService {
 
             case PENDIENTE_APROBACION, ENTREGADO, CANCELADO -> null;
         };
+    }
+
+    private EstadoPedido convertirEstado(String estado) {
+        if (estado == null || estado.isBlank()) {
+            throw new EstadoPedidoInvalidoException(
+                    "El nuevo estado es obligatorio"
+            );
+        }
+
+        try {
+            return EstadoPedido.valueOf(estado);
+        } catch (IllegalArgumentException exception) {
+            throw new EstadoPedidoInvalidoException(
+                    "El estado indicado no es válido"
+            );
+        }
     }
 
     private String mensajeSinTransicion(EstadoPedido estadoActual) {

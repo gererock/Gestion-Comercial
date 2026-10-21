@@ -99,6 +99,7 @@ body {
 .btn-danger { border-color: var(--danger); background: #fff; color: var(--danger); }
 .btn:disabled { opacity: .6; cursor: wait; }
 .card {
+    min-width: 0;
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--surface);
@@ -206,7 +207,7 @@ td:first-child { min-width: 180px; white-space: normal; font-weight: 700; }
 
 @keyframes girar { to { transform: rotate(360deg); } }
 
-@media (max-width: 760px) {
+@media (max-width: 820px) {
     .columnas { grid-template-columns: 1fr; }
     .header-contenido { align-items: flex-start; padding: 14px 0; }
     .usuario { flex-direction: column; align-items: flex-end; }
@@ -215,6 +216,12 @@ td:first-child { min-width: 180px; white-space: normal; font-weight: 700; }
     .botones-accion { justify-content: stretch; }
     .botones-accion .btn { flex: 1; }
     .actualizacion-estado { width: 100%; }
+
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    tr { padding: 10px 0; border-bottom: 1px solid var(--border); }
+    td { display: grid; grid-template-columns: 42% 1fr; gap: 10px; padding: 8px 0; border: 0; white-space: normal; }
+    td::before { color: var(--text-soft); font-size: 12px; font-weight: 700; text-transform: uppercase; content: attr(data-label); }
 }
 
 @media (max-width: 560px) {
@@ -231,9 +238,4 @@ td:first-child { min-width: 180px; white-space: normal; font-weight: 700; }
     .datos > div { flex-direction: column; gap: 5px; }
     dd { text-align: left; }
 
-    table, thead, tbody, tr, th, td { display: block; }
-    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    tr { padding: 10px 0; border-bottom: 1px solid var(--border); }
-    td { display: grid; grid-template-columns: 42% 1fr; gap: 10px; padding: 8px 0; border: 0; white-space: normal; }
-    td::before { color: var(--text-soft); font-size: 12px; font-weight: 700; text-transform: uppercase; content: attr(data-label); }
 }
