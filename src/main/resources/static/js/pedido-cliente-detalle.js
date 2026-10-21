@@ -7,10 +7,16 @@
 
     const mensaje = document.getElementById('mensaje');
     const detalle = document.getElementById('detalle');
+    const parametros = new URLSearchParams(window.location.search);
+    const vieneDelHistorial = parametros.get('origen') === 'historial';
+    const API = vieneDelHistorial
+        ? '/api/cliente/historial-compras'
+        : '/api/cliente/pedidos';
 
     iniciar();
 
     function iniciar() {
+        configurarOrigen();
         const usuario = Auth.obtenerUsuario();
         if (usuario?.nombre) {
             document.getElementById('nombreUsuario').textContent = usuario.nombre;
@@ -28,15 +34,27 @@
         cargarPedido(idPedido);
     }
 
+    function configurarOrigen() {
+        if (!vieneDelHistorial) {
+            return;
+        }
+
+        document.getElementById('rutaDetalle').textContent =
+            'Historial de compras / Detalle';
+        const volver = document.getElementById('volverDetalle');
+        volver.href = '/cliente/historial-compras.html';
+        volver.textContent = '← Volver al historial';
+    }
+
     function obtenerIdPedido() {
-        const valor = Number(new URLSearchParams(window.location.search).get('id'));
+        const valor = Number(parametros.get('id'));
         return Number.isInteger(valor) && valor > 0 ? valor : null;
     }
 
     async function cargarPedido(idPedido) {
         try {
             const response = await Auth.fetchAutenticado(
-                `/api/cliente/pedidos/${idPedido}`
+                `${API}/${idPedido}`
             );
             if (!response) {
                 return;
