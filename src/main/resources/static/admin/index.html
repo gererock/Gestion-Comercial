@@ -2,45 +2,101 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Panel administrador</title>
+    <title>
+        Panel administrador
+    </title>
+
 </head>
+
 
 <body>
 
-    <h1>Panel administrador</h1>
+
+    <h1>
+        Panel administrador
+    </h1>
+
 
     <p id="usuario"></p>
+
 
     <a href="/categorias.html">
         Gestionar categorías
     </a>
 
+
     <br>
+
 
     <a href="/marcas.html">
         Gestionar marcas
     </a>
 
+
     <br>
+
 
     <a href="/grupos-catalogo.html">
         Gestionar grupos de catálogo
     </a>
+
+
     <br>
+
 
     <a href="/crear-producto.html">
         Crear producto
     </a>
 
+
     <br>
+
 
     <a href="/productos-stock.html">
         Consultar productos y stock
     </a>
 
+
+    <br>
+
+
+    <a href="/admin/medios-pago.html">
+        Gestionar medios de pago
+    </a>
+
+
+    <br>
+
+
+    <a href="/admin/monto-minimo-envio.html">
+        Configurar monto mínimo de envío
+    </a>
+
+    <br>
+    <a href="/admin/localidades-envio.html">
+        Configurar localidades de envío
+    </a>
+
+
+    <br>
+
+    <br>
+    <a href="/vendedor/pedidos-pendientes.html">
+        Consultar pedidos online pendientes
+    </a>
+
+    <br>
+
+
+
+    <a href="/vendedor/estado-pago-pedido.html">
+        Actualizar estado de pago de pedido
+    </a>
     <br>
     <br>
 
@@ -48,35 +104,54 @@
         ID del producto a modificar:
     </label>
 
+
     <input type="number" id="productoEditar" min="1" step="1">
+
 
     <button type="button" id="btnEditarProducto">
         Modificar producto
     </button>
 
 
-
     <br>
+    <br>
+
 
     <button id="logout">
         Cerrar sesión
     </button>
 
 
-    <script src="../js/auth.js"></script>
+    <script src="/js/auth.js"></script>
+
 
     <script>
 
-        if (Auth.requerirRol('ADMINISTRADOR')) {
+        if (
+            Auth.requerirRol(
+                'ADMINISTRADOR'
+            )
+        ) {
 
             const usuario =
                 Auth.obtenerUsuario();
 
-            document.getElementById(
-                'usuario'
-            ).textContent =
-                `Bienvenido, ${usuario.nombre}`;
+
+            if (
+                usuario
+                &&
+                usuario.nombre
+            ) {
+
+                document.getElementById(
+                    'usuario'
+                ).textContent =
+                    `Bienvenido, ${usuario.nombre}`;
+
+            }
+
         }
+
 
         document.getElementById(
             'logout'
@@ -84,6 +159,7 @@
             'click',
             Auth.cerrarSesion
         );
+
 
         document.getElementById(
             'btnEditarProducto'
@@ -104,7 +180,9 @@
 
 
                 if (
-                    !Number.isInteger(id)
+                    !Number.isInteger(
+                        id
+                    )
                     ||
                     id <= 0
                 ) {
@@ -112,6 +190,7 @@
                     alert(
                         'Ingresá un ID de producto válido.'
                     );
+
 
                     return;
                 }
@@ -123,6 +202,7 @@
         );
 
     </script>
+
 
 </body>
 

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalle de mi pedido | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/pedido-cliente-detalle.css">
+</head>
+<body>
+<header class="header">
+    <div class="contenedor header-contenido">
+        <div>
+            <strong>Todo Descartable</strong>
+            <p>Seguimiento de compras online</p>
+        </div>
+        <div class="usuario">
+            <span id="nombreUsuario">Cliente</span>
+            <button id="btnCerrarSesion" class="btn btn-secundario" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor principal">
+    <section class="titulo">
+        <div>
+            <p id="rutaDetalle" class="etiqueta">Mis pedidos / Detalle</p>
+            <h1>Detalle del pedido</h1>
+            <p>Productos, entrega, importes y estado actual.</p>
+        </div>
+        <a id="volverDetalle" class="btn btn-secundario" href="/cliente/mis-pedidos.html">
+            ← Volver a mis pedidos
+        </a>
+    </section>
+
+    <div id="mensaje" class="mensaje" role="alert" aria-live="polite">
+        Cargando pedido...
+    </div>
+
+    <div id="detalle" class="detalle oculto">
+        <section class="card encabezado-pedido">
+            <div>
+                <p class="etiqueta">Pedido</p>
+                <h2 id="numeroPedido">-</h2>
+                <p id="fechas" class="texto-suave">-</p>
+            </div>
+            <div class="badges">
+                <span id="estadoPedido" class="badge">-</span>
+                <span id="estadoPago" class="badge badge-pago">-</span>
+            </div>
+        </section>
+
+        <section class="card seccion">
+            <h2>Entrega y pago</h2>
+            <dl class="datos">
+                <div><dt>Medio de pago</dt><dd id="medioPago">-</dd></div>
+                <div><dt>Modalidad</dt><dd id="medioEntrega">-</dd></div>
+                <div id="filaLocalidad"><dt>Localidad</dt><dd id="localidad">-</dd></div>
+                <div id="filaDireccion"><dt>Dirección</dt><dd id="direccion">-</dd></div>
+            </dl>
+        </section>
+
+        <section class="card seccion">
+            <h2>Productos</h2>
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Descuento</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productos"></tbody>
+                </table>
+            </div>
+            <p id="sinProductos" class="texto-suave oculto">
+                Este pedido no contiene productos.
+            </p>
+        </section>
+
+        <div class="columnas">
+            <section class="card seccion">
+                <h2>Observaciones</h2>
+                <p id="observaciones" class="observaciones">Sin observaciones.</p>
+            </section>
+
+            <section class="card seccion">
+                <h2>Resumen</h2>
+                <dl class="datos totales">
+                    <div><dt>Subtotal</dt><dd id="subtotal">-</dd></div>
+                    <div><dt>Descuento por oferta</dt><dd id="descuentoOferta">-</dd></div>
+                    <div><dt>Descuento mayorista</dt><dd id="descuentoMayorista">-</dd></div>
+                    <div><dt>Descuento cliente</dt><dd id="descuentoCliente">-</dd></div>
+                    <div class="total"><dt>Total</dt><dd id="total">-</dd></div>
+                </dl>
+            </section>
+        </div>
+    </div>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/pedido-cliente-detalle.js"></script>
+</body>
+</html>

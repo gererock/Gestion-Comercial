@@ -294,6 +294,8 @@ public class CatalogoPublicoService
 
                                 disponible,
 
+                                producto.getStockActual(),
+
                                 enOferta,
 
                                 enOferta

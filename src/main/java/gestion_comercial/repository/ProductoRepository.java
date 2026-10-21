@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.repository.query.Param;
 
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -201,4 +204,16 @@ public interface ProductoRepository
             @Param("estado")
             EstadoProducto estado
     );
+
+
+            
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        @Query("""
+            SELECT p FROM Producto p
+            WHERE p.idProducto = :idProducto
+            """)
+        Optional<Producto> buscarParaReservar(
+                @Param("idProducto") Integer idProducto
+        );
+
 }

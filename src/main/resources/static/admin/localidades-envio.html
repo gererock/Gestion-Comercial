@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Localidades de envío | Todo Descartable
+    </title>
+
+    <link rel="stylesheet" href="/css/localidades-envio.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         ENCABEZADO
+    ========================================== -->
+
+    <header class="encabezado">
+
+        <div class="encabezado-contenido">
+
+            <div class="marca">
+
+                <div class="logo-simbolo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button id="botonCerrarSesion" class="boton boton-contorno" type="button">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         CONTENIDO PRINCIPAL
+    ========================================== -->
+
+    <main class="contenedor">
+
+
+        <!-- =====================================
+             TÍTULO
+        ====================================== -->
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Configuración de envíos
+                </p>
+
+
+                <h2>
+                    Localidades habilitadas
+                </h2>
+
+
+                <p class="subtitulo">
+                    Configurá en qué localidades el comercio
+                    permite realizar entregas a domicilio.
+                </p>
+
+            </div>
+
+
+            <a href="/admin/index.html" class="boton boton-claro">
+                ← Volver al panel
+            </a>
+
+        </section>
+
+
+        <!-- =====================================
+             MENSAJES
+        ====================================== -->
+
+        <div id="mensaje" class="mensaje oculto" role="alert">
+        </div>
+
+
+        <!-- =====================================
+             CARGANDO
+        ====================================== -->
+
+        <section id="cargando" class="tarjeta estado-contenedor">
+
+            <div class="cargador">
+            </div>
+
+
+            <p>
+                Cargando configuración...
+            </p>
+
+        </section>
+
+
+        <!-- =====================================
+             ERROR DE CARGA
+        ====================================== -->
+
+        <section id="errorCarga" class="tarjeta estado-contenedor oculto">
+
+            <div class="estado-icono">
+                !
+            </div>
+
+
+            <h3>
+                No se pudo cargar la configuración
+            </h3>
+
+
+            <p>
+                Verificá la conexión e intentá nuevamente.
+            </p>
+
+
+            <button id="botonReintentar" class="boton boton-primario" type="button">
+                Reintentar
+            </button>
+
+        </section>
+
+        <!-- =====================================
+             CONFIGURACIÓN DE LOCALIDADES
+        ====================================== -->
+
+        <section id="seccionConfiguracion" class="configuracion-localidades oculto">
+
+
+            <!-- =================================
+                 ESTADO ACTUAL
+            ================================== -->
+
+            <article class="tarjeta tarjeta-resumen">
+
+                <p class="resumen-etiqueta">
+                    Estado actual
+                </p>
+
+
+                <div class="estado-localidad">
+
+                    <div>
+
+                        <strong>
+                            Villa María
+                        </strong>
+
+                        <p>
+                            Envíos a domicilio dentro de Villa María.
+                        </p>
+
+                    </div>
+
+
+                    <span id="estadoVillaMaria" class="estado-localidad-badge">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="estado-localidad">
+
+                    <div>
+
+                        <strong>
+                            Villa Nueva
+                        </strong>
+
+                        <p>
+                            Envíos a domicilio dentro de Villa Nueva.
+                        </p>
+
+                    </div>
+
+
+                    <span id="estadoVillaNueva" class="estado-localidad-badge">
+                        -
+                    </span>
+
+                </div>
+
+
+                <div class="ultima-actualizacion">
+
+                    <span>
+                        Última actualización
+                    </span>
+
+
+                    <strong id="fechaActualizacion">
+                        -
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================
+                 FORMULARIO
+            ================================== -->
+
+            <article class="tarjeta tarjeta-formulario">
+
+                <div class="encabezado-tarjeta">
+
+                    <h3>
+                        Configurar localidades
+                    </h3>
+
+
+                    <p>
+                        Activá o desactivá las localidades
+                        disponibles para envío.
+                    </p>
+
+                </div>
+
+
+                <form id="formularioLocalidades" novalidate>
+
+
+                    <!-- VILLA MARÍA -->
+
+                    <label class="opcion-localidad">
+
+                        <div>
+
+                            <strong>
+                                Villa María
+                            </strong>
+
+
+                            <span>
+                                Permitir entregas a domicilio
+                                en Villa María.
+                            </span>
+
+                        </div>
+
+
+                        <input type="checkbox" id="casillaVillaMaria">
+
+                    </label>
+
+
+                    <!-- VILLA NUEVA -->
+
+                    <label class="opcion-localidad">
+
+                        <div>
+
+                            <strong>
+                                Villa Nueva
+                            </strong>
+
+
+                            <span>
+                                Permitir entregas a domicilio
+                                en Villa Nueva.
+                            </span>
+
+                        </div>
+
+
+                        <input type="checkbox" id="casillaVillaNueva">
+
+                    </label>
+
+
+                    <p class="texto-ayuda">
+                        Podés habilitar una localidad,
+                        ambas o ninguna.
+                    </p>
+
+
+                    <div class="acciones-formulario">
+
+                        <button id="botonCancelar" class="boton boton-claro" type="button">
+                            Cancelar cambios
+                        </button>
+
+
+                        <button id="botonGuardar" class="boton boton-primario" type="submit">
+                            Guardar configuración
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </article>
+
+            <!-- =================================
+                 INFORMACIÓN
+            ================================== -->
+
+            <article class="tarjeta tarjeta-informacion">
+
+                <h3>
+                    ¿Cómo funciona?
+                </h3>
+
+
+                <!-- LOCALIDAD HABILITADA -->
+
+                <div class="informacion-item">
+
+                    <div class="informacion-numero">
+                        1
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Localidad habilitada
+                        </strong>
+
+
+                        <p>
+                            Los clientes podrán seleccionar
+                            esa localidad para nuevos envíos,
+                            siempre que cumplan el monto mínimo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCALIDAD DESHABILITADA -->
+
+                <div class="informacion-item">
+
+                    <div class="informacion-numero">
+                        2
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Localidad deshabilitada
+                        </strong>
+
+
+                        <p>
+                            Los clientes no podrán seleccionar
+                            esa localidad para nuevos envíos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AMBAS DESHABILITADAS -->
+
+                <div class="informacion-item">
+
+                    <div class="informacion-numero">
+                        3
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Ambas localidades deshabilitadas
+                        </strong>
+
+
+                        <p>
+                            El envío a domicilio no estará disponible,
+                            pero el retiro en el local podrá seguir
+                            utilizándose.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACLARACIÓN -->
+
+                <div class="nota-informativa">
+
+                    Los cambios se aplicarán solamente a nuevos pedidos.
+                    Los pedidos ya confirmados conservarán
+                    la localidad que tenían al momento de confirmarse.
+
+                </div>
+
+            </article>
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/localidades-envio.js"></script>
+
+
+</body>
+
+</html>

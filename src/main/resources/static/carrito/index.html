@@ -1,0 +1,350 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <meta
+        name="description"
+        content="Carrito de compras de Todo Descartables"
+    >
+
+    <title>
+        Carrito | Todo Descartables
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="/css/home.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/carrito.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/carrito-pagina.css"
+    >
+
+</head>
+
+
+<body class="cart-page">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="cart-page-header">
+
+        <div class="container cart-page-header__content">
+
+            <a
+                href="/"
+                class="cart-page-brand"
+            >
+
+                <span class="cart-page-brand__mark">
+                    TD
+                </span>
+
+                <span>
+                    Todo Descartables
+                </span>
+
+            </a>
+
+
+            <nav class="cart-page-nav">
+
+                <a href="/">
+                    Inicio
+                </a>
+
+                <a href="/catalogo/index.html">
+                    Catálogo
+                </a>
+
+                <a
+                    id="cart-page-account-link"
+                    href="/login/index.html"
+                >
+                    Ingresar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         CONTENIDO
+    ========================================== -->
+
+    <main>
+
+        <section class="cart-page-content">
+
+            <div class="container">
+
+
+                <!-- ENCABEZADO -->
+
+                <div class="cart-page-heading">
+
+                    <div>
+
+                        <span class="cart-page-label">
+                            Tu compra
+                        </span>
+
+                        <h1>
+                            Carrito
+                        </h1>
+
+                        <p>
+                            Revisá tus productos antes de continuar con el pedido.
+                        </p>
+
+                    </div>
+
+
+                    <a
+                        href="/catalogo/index.html"
+                        class="cart-page-continue"
+                    >
+                        ← Continuar comprando
+                    </a>
+
+                </div>
+
+
+                <!-- MENSAJE GENERAL -->
+
+                <p
+                    id="cart-page-message"
+                    class="cart-page-message hidden"
+                    aria-live="polite"
+                >
+                </p>
+
+
+                <!-- CARRITO VACÍO -->
+
+                <section
+                    id="cart-page-empty"
+                    class="cart-empty hidden"
+                >
+
+                    <div class="cart-empty__icon">
+                        TD
+                    </div>
+
+                    <h2>
+                        Tu carrito está vacío
+                    </h2>
+
+                    <p>
+                        Todavía no agregaste productos.
+                    </p>
+
+                    <a
+                        href="/catalogo/index.html"
+                        class="cart-primary-button"
+                    >
+                        Ver productos
+                    </a>
+
+                </section>
+
+
+                <!-- CARRITO CON PRODUCTOS -->
+
+                <div
+                    id="cart-page-layout"
+                    class="cart-page-layout hidden"
+                >
+
+
+                    <!-- LISTA DE PRODUCTOS -->
+
+                    <section class="cart-products">
+
+                        <div class="cart-products__header">
+
+                            <h2>
+                                Productos
+                            </h2>
+
+                            <button
+                                type="button"
+                                id="cart-clear-button"
+                                class="cart-clear-button"
+                            >
+                                Vaciar carrito
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="cart-products-list"
+                            class="cart-products__list"
+                        >
+                        </div>
+
+                    </section>
+
+
+                    <!-- RESUMEN -->
+
+                    <aside class="cart-summary">
+
+                        <h2>
+                            Resumen
+                        </h2>
+
+
+                        <div class="cart-summary__row">
+
+                            <span>
+                                Productos
+                            </span>
+
+                            <strong id="cart-summary-quantity">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="cart-summary__row cart-summary__row--total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong id="cart-summary-total">
+                                $0
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="cart-checkout-button"
+                            class="cart-primary-button cart-primary-button--full"
+                        >
+                            Continuar con el pedido
+                        </button>
+
+
+                        <a
+                            href="/catalogo/index.html"
+                            class="cart-secondary-button"
+                        >
+                            Continuar comprando
+                        </a>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         MODAL VACIAR CARRITO
+    ========================================== -->
+
+    <div
+        id="cart-clear-modal"
+        class="cart-confirm-overlay hidden"
+    >
+
+        <div
+            class="cart-confirm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-clear-title"
+        >
+
+            <h2 id="cart-clear-title">
+                ¿Vaciar carrito?
+            </h2>
+
+            <p>
+                Se eliminarán todos los productos que agregaste.
+            </p>
+
+
+            <div class="cart-confirm__actions">
+
+                <button
+                    type="button"
+                    id="cart-clear-cancel"
+                    class="cart-secondary-button"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    id="cart-clear-confirm"
+                    class="cart-danger-button"
+                >
+                    Vaciar carrito
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         SCRIPTS
+    ========================================== -->
+
+        <script
+            src="/js/auth.js"
+            defer
+        ></script>
+
+        <script
+            src="/js/carrito.js"
+            defer
+        ></script>
+
+        <script
+            src="/js/carrito-pagina.js"
+            defer
+        ></script>
+
+        <script
+            src="/js/carrito-checkout.js"
+            defer
+        ></script>
+
+</body>
+
+</html>

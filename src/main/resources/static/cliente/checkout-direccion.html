@@ -1,0 +1,557 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Dirección de envío | Todo Descartables
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="/css/home.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/checkout-direccion.css"
+    >
+
+</head>
+
+
+<body class="checkout-page">
+
+
+<header class="checkout-header">
+
+    <div class="container checkout-header__content">
+
+        <a
+            href="/"
+            class="checkout-brand"
+        >
+
+            <span class="checkout-brand__mark">
+                TD
+            </span>
+
+            <span>
+                Todo Descartables
+            </span>
+
+        </a>
+
+
+        <div class="checkout-user">
+
+            <span id="nombreUsuario">
+                Cliente
+            </span>
+
+            <button
+                type="button"
+                id="botonCerrarSesion"
+                class="checkout-link-button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="checkout-main">
+
+    <div class="container">
+
+
+        <div class="checkout-heading">
+
+            <div>
+
+                <span class="checkout-label">
+                    Confirmación del pedido
+                </span>
+
+                <h1>
+                    Dirección de envío
+                </h1>
+
+                <p>
+                    Seleccioná una dirección guardada
+                    o registrá una nueva.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/cliente/checkout-entrega.html"
+                class="checkout-back"
+            >
+                ← Volver
+            </a>
+
+        </div>
+
+
+        <p
+            id="mensaje"
+            class="checkout-message hidden"
+            aria-live="polite"
+        >
+        </p>
+
+
+        <div class="checkout-layout">
+
+
+            <section class="checkout-card">
+
+                <div class="checkout-card__header">
+
+                    <span class="checkout-step">
+                        Dirección de entrega
+                    </span>
+
+                    <h2>
+                        ¿Dónde querés recibir tu pedido?
+                    </h2>
+
+                    <p>
+                        Podés elegir una dirección guardada
+                        o agregar una nueva.
+                    </p>
+
+                </div>
+
+
+                <!-- CARGANDO -->
+
+                <div
+                    id="cargando"
+                    class="checkout-state"
+                >
+
+                    <div class="checkout-spinner">
+                    </div>
+
+                    <p>
+                        Cargando tus direcciones...
+                    </p>
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="errorCarga"
+                    class="checkout-state hidden"
+                >
+
+                    <strong>
+                        No pudimos cargar tus direcciones.
+                    </strong>
+
+                    <p>
+                        Intentá nuevamente.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="botonReintentar"
+                        class="checkout-secondary-button"
+                    >
+                        Reintentar
+                    </button>
+
+                </div>
+
+
+                <!-- CONTENIDO -->
+
+                <div
+                    id="contenidoDirecciones"
+                    class="hidden"
+                >
+
+
+                    <!-- DIRECCIONES GUARDADAS -->
+
+                    <section class="seccion-direcciones">
+
+                        <div class="seccion-titulo">
+
+                            <div>
+
+                                <h3>
+                                    Tus direcciones
+                                </h3>
+
+                                <p>
+                                    Seleccioná una dirección habilitada
+                                    para continuar.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="sinDirecciones"
+                            class="estado-vacio hidden"
+                        >
+
+                            <strong>
+                                Todavía no tenés direcciones guardadas.
+                            </strong>
+
+                            <p>
+                                Podés registrar una nueva
+                                desde el formulario de abajo.
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            id="listaDirecciones"
+                            class="lista-direcciones"
+                        >
+                        </div>
+
+                    </section>
+
+
+                    <!-- NUEVA DIRECCIÓN -->
+
+                    <section class="seccion-nueva-direccion">
+
+                        <button
+                            type="button"
+                            id="botonMostrarFormulario"
+                            class="boton-agregar-direccion"
+                        >
+                            + Agregar nueva dirección
+                        </button>
+
+
+                        <form
+                            id="formularioDireccion"
+                            class="formulario-direccion hidden"
+                            novalidate
+                        >
+
+                            <div class="formulario-encabezado">
+
+                                <div>
+
+                                    <h3>
+                                        Nueva dirección
+                                    </h3>
+
+                                    <p>
+                                        Los campos marcados con *
+                                        son obligatorios.
+                                    </p>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    id="botonCerrarFormulario"
+                                    class="boton-cerrar-formulario"
+                                    aria-label="Cerrar formulario"
+                                >
+                                    ×
+                                </button>
+
+                            </div>
+
+
+                            <div class="formulario-grid">
+
+
+                                <div class="campo campo-completo">
+
+                                    <label for="calle">
+                                        Calle *
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="calle"
+                                        name="calle"
+                                        maxlength="100"
+                                        autocomplete="address-line1"
+                                        placeholder="Ej. San Martín"
+                                    >
+
+                                    <small
+                                        id="errorCalle"
+                                        class="campo-error"
+                                    >
+                                    </small>
+
+                                </div>
+
+
+                                <div class="campo">
+
+                                    <label for="numero">
+                                        Número *
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="numero"
+                                        name="numero"
+                                        maxlength="20"
+                                        inputmode="numeric"
+                                        placeholder="Ej. 1250 o S/N"
+                                    >
+
+                                    <small
+                                        id="errorNumero"
+                                        class="campo-error"
+                                    >
+                                    </small>
+
+                                </div>
+
+
+                                <div class="campo">
+
+                                    <label for="pisoDepartamento">
+                                        Piso / Departamento
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="pisoDepartamento"
+                                        name="pisoDepartamento"
+                                        maxlength="50"
+                                        placeholder="Ej. 2B"
+                                    >
+
+                                    <small
+                                        id="errorPisoDepartamento"
+                                        class="campo-error"
+                                    >
+                                    </small>
+
+                                </div>
+
+
+                                <div class="campo campo-completo">
+
+                                    <label for="localidad">
+                                        Localidad *
+                                    </label>
+
+                                    <select
+                                        id="localidad"
+                                        name="localidad"
+                                    >
+
+                                        <option value="">
+                                            Seleccioná una localidad
+                                        </option>
+
+                                        <option
+                                            value="VILLA_MARIA"
+                                            id="opcionVillaMaria"
+                                        >
+                                            Villa María
+                                        </option>
+
+                                        <option
+                                            value="VILLA_NUEVA"
+                                            id="opcionVillaNueva"
+                                        >
+                                            Villa Nueva
+                                        </option>
+
+                                    </select>
+
+                                    <small
+                                        id="errorLocalidad"
+                                        class="campo-error"
+                                    >
+                                    </small>
+
+                                </div>
+
+
+                                <div class="campo campo-completo">
+
+                                    <label for="referencia">
+                                        Referencia
+                                    </label>
+
+                                    <textarea
+                                        id="referencia"
+                                        name="referencia"
+                                        rows="3"
+                                        placeholder="Ej. Portón negro"
+                                    ></textarea>
+
+                                    <small
+                                        class="texto-ayuda"
+                                    >
+                                        Opcional. Podés indicar una referencia
+                                        que facilite encontrar el domicilio.
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="acciones-formulario">
+
+                                <button
+                                    type="button"
+                                    id="botonCancelarDireccion"
+                                    class="checkout-secondary-button"
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    id="botonGuardarDireccion"
+                                    class="checkout-primary-button"
+                                >
+                                    Guardar dirección
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </section>
+
+
+                    <!-- CONTINUAR -->
+
+                    <div class="checkout-actions">
+
+                        <a
+                            href="/cliente/checkout-entrega.html"
+                            class="checkout-secondary-button"
+                        >
+                            Volver
+                        </a>
+
+                        <button
+                            type="button"
+                            id="botonContinuar"
+                            class="checkout-primary-button"
+                        >
+                            Continuar
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- RESUMEN -->
+
+            <aside class="checkout-card checkout-summary">
+
+                <h2>
+                    Resumen de compra
+                </h2>
+
+
+                <div class="checkout-summary__row">
+
+                    <span>
+                        Productos
+                    </span>
+
+                    <strong id="cantidadProductos">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-summary__row">
+
+                    <span>
+                        Dirección
+                    </span>
+
+                    <strong
+                        id="resumenDireccion"
+                        class="resumen-direccion"
+                    >
+                        Sin seleccionar
+                    </strong>
+
+                </div>
+
+
+                <div class="checkout-summary__row checkout-summary__total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="totalCompra">
+                        $0
+                    </strong>
+
+                </div>
+
+
+                <p class="checkout-summary__note">
+
+                    El pedido todavía no será generado.
+                    La dirección seleccionada se utilizará
+                    al confirmar el pedido.
+
+                </p>
+
+            </aside>
+
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/carrito.js"></script>
+
+<script src="/js/checkout-direccion.js"></script>
+
+
+</body>
+
+</html>
