@@ -1,0 +1,439 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Crear cliente | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/clientes.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/cliente-crear.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="header-contenido">
+
+        <div class="marca">
+
+            <div class="logo">
+                TD
+            </div>
+
+            <div>
+
+                <h1>
+                    Todo Descartable
+                </h1>
+
+                <p>
+                    Alta de cliente
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="usuario">
+
+            <span id="nombreUsuario">
+                Administrador
+            </span>
+
+            <button
+                id="btnCerrarSesion"
+                class="btn btn-outline"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="contenedor">
+
+
+    <section class="titulo-pagina">
+
+        <div>
+
+            <p class="ruta">
+                Clientes / Nuevo
+            </p>
+
+            <h2>
+                Crear cliente
+            </h2>
+
+            <p class="subtitulo">
+                Registrá un nuevo cliente en el sistema.
+            </p>
+
+        </div>
+
+
+        <a
+            href="/vendedor/clientes.html"
+            class="btn btn-light"
+        >
+            ← Volver a clientes
+        </a>
+
+    </section>
+
+
+    <div
+        id="mensaje"
+        class="mensaje oculto"
+        aria-live="polite"
+    >
+    </div>
+
+
+    <form
+        id="formCliente"
+        class="form-cliente"
+        novalidate
+    >
+
+
+        <section class="card formulario-seccion">
+
+            <h3>
+                Datos personales
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label for="nombre">
+                        Nombre *
+                    </label>
+
+                    <input
+                        id="nombre"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="apellido">
+                        Apellido
+                    </label>
+
+                    <input
+                        id="apellido"
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="dni">
+                        DNI
+                    </label>
+
+                    <input
+                        id="dni"
+                        inputmode="numeric"
+                        maxlength="8"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="telefono">
+                        Teléfono
+                    </label>
+
+                    <input
+                        id="telefono"
+                        inputmode="numeric"
+                        maxlength="15"
+                    >
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label for="correo">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        id="correo"
+                        type="email"
+                        maxlength="120"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="card formulario-seccion">
+
+            <h3>
+                Datos fiscales
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label for="razonSocial">
+                        Razón social
+                    </label>
+
+                    <input
+                        id="razonSocial"
+                        maxlength="150"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="cuit">
+                        CUIT
+                    </label>
+
+                    <input
+                        id="cuit"
+                        inputmode="numeric"
+                        maxlength="11"
+                    >
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label for="condicionIva">
+                        Condición frente al IVA
+                    </label>
+
+                    <select id="condicionIva">
+
+                        <option value="">
+                            Sin especificar
+                        </option>
+
+                        <option value="Consumidor Final">
+                            Consumidor Final
+                        </option>
+
+                        <option value="Responsable Inscripto">
+                            Responsable Inscripto
+                        </option>
+
+                        <option value="Monotributista">
+                            Monotributista
+                        </option>
+
+                        <option value="Exento">
+                            Exento
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="card formulario-seccion">
+
+            <h3>
+                Facturación
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="campo campo-completo">
+
+                    <label for="direccionFacturacion">
+                        Dirección
+                    </label>
+
+                    <input
+                        id="direccionFacturacion"
+                        maxlength="200"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="localidadFacturacion">
+                        Localidad
+                    </label>
+
+                    <input
+                        id="localidadFacturacion"
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="provinciaFacturacion">
+                        Provincia
+                    </label>
+
+                    <input
+                        id="provinciaFacturacion"
+                        maxlength="100"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="card formulario-seccion">
+
+            <h3>
+                Información interna
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label for="descuento">
+                        Descuento (%)
+                    </label>
+
+                    <input
+                        id="descuento"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                    >
+
+                </div>
+
+
+                <div class="campo campo-check">
+
+                    <label>
+
+                        <input
+                            id="estado"
+                            type="checkbox"
+                            checked
+                        >
+
+                        Cliente activo
+
+                    </label>
+
+                </div>
+
+
+                <div class="campo campo-completo">
+
+                    <label for="notaInterna">
+                        Nota interna
+                    </label>
+
+                    <textarea
+                        id="notaInterna"
+                        maxlength="1000"
+                        rows="5"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="form-acciones">
+
+            <a
+                href="/vendedor/clientes.html"
+                class="btn btn-light"
+            >
+                Cancelar
+            </a>
+
+
+            <button
+                id="btnGuardar"
+                type="submit"
+                class="btn btn-primary"
+            >
+                Guardar cliente
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+</main>
+
+
+<script src="/js/auth.js"></script>
+<script src="/js/cliente-crear.js"></script>
+
+
+</body>
+
+</html>
