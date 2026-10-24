@@ -297,6 +297,46 @@
 
 
         document.getElementById(
+            'usuarioAsociado'
+        ).textContent =
+            obtenerNombreUsuario(
+                cliente
+            );
+
+
+        document.getElementById(
+            'emailUsuarioAsociado'
+        ).textContent =
+            cliente.emailUsuario
+            ||
+            'No informado';
+
+
+        if (
+            Auth.obtenerRol() === 'ADMINISTRADOR'
+            &&
+            cliente.estado === true
+            &&
+            !cliente.idUsuario
+        ) {
+
+            const btnAsociar =
+                document.getElementById(
+                    'btnAsociarUsuario'
+                );
+
+
+            btnAsociar.href =
+                `/admin/cliente-asociar-usuario.html?idCliente=${cliente.idCliente}`;
+
+
+            btnAsociar.classList.remove(
+                'oculto'
+            );
+        }
+
+
+        document.getElementById(
             'fechaAlta'
         ).textContent =
             formatearFecha(
@@ -336,6 +376,29 @@
         return completo
             ||
             `Cliente #${cliente.idCliente}`;
+    }
+
+
+    function obtenerNombreUsuario(
+            cliente
+    ) {
+
+        if (
+            !cliente.idUsuario
+        ) {
+
+            return 'Sin usuario asociado';
+        }
+
+
+        const nombre =
+            `${cliente.nombreUsuario || ''} ${cliente.apellidoUsuario || ''}`
+                    .trim();
+
+
+        return nombre
+            ||
+            `Usuario #${cliente.idUsuario}`;
     }
 
 

@@ -206,7 +206,23 @@ public class ClienteConsultaService
 
                 cliente.getNotaInterna(),
 
-                cliente.getFechaAlta()
+                cliente.getFechaAlta(),
+
+                cliente.getUsuario() == null
+                        ? null
+                        : cliente.getUsuario().getIdUsuario(),
+
+                cliente.getUsuario() == null
+                        ? null
+                        : cliente.getUsuario().getNombre(),
+
+                cliente.getUsuario() == null
+                        ? null
+                        : cliente.getUsuario().getApellido(),
+
+                cliente.getUsuario() == null
+                        ? null
+                        : cliente.getUsuario().getEmail()
         );
     }
 }

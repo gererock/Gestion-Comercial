@@ -524,6 +524,34 @@
             acciones.appendChild(
                 enlaceEditar
             );
+
+
+            if (
+                cliente.estado === true
+                &&
+                !cliente.idUsuario
+            ) {
+
+                const enlaceAsociar =
+                    document.createElement(
+                        'a'
+                    );
+
+
+                enlaceAsociar.className =
+                    'btn btn-light';
+
+                enlaceAsociar.textContent =
+                    'Asociar usuario';
+
+                enlaceAsociar.href =
+                    `/admin/cliente-asociar-usuario.html?idCliente=${cliente.idCliente}`;
+
+
+                acciones.appendChild(
+                    enlaceAsociar
+                );
+            }
         }
 
 
