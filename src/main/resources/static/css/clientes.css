@@ -354,6 +354,16 @@ a {
 
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.titulo-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
 
@@ -530,6 +540,12 @@ a {
 
     .titulo-pagina .btn {
         width: 100%;
+    }
+
+
+    .titulo-acciones {
+        width: 100%;
+        flex-direction: column;
     }
 
 
