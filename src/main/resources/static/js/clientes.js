@@ -499,6 +499,34 @@
             enlace
         );
 
+
+        if (
+            Auth.obtenerRol() ===
+            'ADMINISTRADOR'
+        ) {
+
+            const enlaceEditar =
+                document.createElement(
+                    'a'
+                );
+
+
+            enlaceEditar.className =
+                'btn btn-light';
+
+            enlaceEditar.textContent =
+                'Editar';
+
+            enlaceEditar.href =
+                `/admin/cliente-editar.html?id=${cliente.idCliente}`;
+
+
+            acciones.appendChild(
+                enlaceEditar
+            );
+        }
+
+
         article.appendChild(
             acciones
         );

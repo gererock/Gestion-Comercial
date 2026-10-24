@@ -70,6 +70,27 @@
         }
 
 
+        if (
+            Auth.obtenerRol() ===
+            'ADMINISTRADOR'
+        ) {
+
+            const btnEditarCliente =
+                document.getElementById(
+                    'btnEditarCliente'
+                );
+
+
+            btnEditarCliente.href =
+                `/admin/cliente-editar.html?id=${idCliente}`;
+
+
+            btnEditarCliente.classList.remove(
+                'oculto'
+            );
+        }
+
+
         cargarCliente(
             idCliente
         );
