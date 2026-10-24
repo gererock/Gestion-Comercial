@@ -67,6 +67,12 @@ public interface ClienteRepository
             @Param("idCliente") Integer idCliente
     );
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT c FROM Cliente c WHERE c.idCliente = :idCliente")
+    Optional<Cliente> buscarPorIdParaModificarDescuento(
+            @Param("idCliente") Integer idCliente
+    );
+
     boolean existsByUsuario_IdUsuario(
             Integer idUsuario
     );

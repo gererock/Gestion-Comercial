@@ -528,6 +528,32 @@
 
             if (
                 cliente.estado === true
+            ) {
+
+                const enlaceDescuento =
+                    document.createElement(
+                        'a'
+                    );
+
+
+                enlaceDescuento.className =
+                    'btn btn-light';
+
+                enlaceDescuento.textContent =
+                    'Gestionar descuento';
+
+                enlaceDescuento.href =
+                    `/admin/cliente-descuento.html?id=${cliente.idCliente}`;
+
+
+                acciones.appendChild(
+                    enlaceDescuento
+                );
+            }
+
+
+            if (
+                cliente.estado === true
                 &&
                 !cliente.idUsuario
             ) {

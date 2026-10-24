@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestionar descuento | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/clientes.css">
+    <link rel="stylesheet" href="/css/cliente-descuento.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de clientes</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor descuento-contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Clientes / Descuento</p>
+            <h2>Gestionar descuento</h2>
+            <p class="subtitulo">
+                Asigná, modificá o quitá el beneficio comercial del cliente.
+            </p>
+        </div>
+
+        <a id="btnVolver" href="/vendedor/clientes.html" class="btn btn-light">
+            ← Volver
+        </a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section id="cargando" class="card estado-contenedor">
+        <div class="spinner"></div>
+        <p>Cargando cliente...</p>
+    </section>
+
+    <section id="contenido" class="oculto">
+        <article class="card cliente-resumen">
+            <div>
+                <span class="etiqueta">Cliente</span>
+                <h3 id="nombreCliente">-</h3>
+                <p id="identificacionCliente">-</p>
+            </div>
+            <span id="estadoCliente" class="badge">-</span>
+        </article>
+
+        <form id="formDescuento" class="card descuento-card" novalidate>
+            <div class="descuento-actual">
+                <span>Descuento actual</span>
+                <strong id="descuentoActual">Sin descuento</strong>
+            </div>
+
+            <div class="campo-descuento">
+                <label for="descuento">Nuevo descuento (%)</label>
+                <div class="input-porcentaje">
+                    <input id="descuento" name="descuento" type="text" inputmode="decimal"
+                           maxlength="6" autocomplete="off" placeholder="Ej.: 10.5">
+                    <span>%</span>
+                </div>
+                <small>
+                    Ingresá un valor entre 0 y 100, con hasta dos decimales.
+                    Dejá el campo vacío para quitar el descuento.
+                </small>
+            </div>
+
+            <div class="aviso">
+                El cambio se aplicará solamente a pedidos y ventas nuevas.
+                Las compras anteriores conservarán sus importes.
+            </div>
+
+            <div class="acciones descuento-acciones">
+                <a id="btnCancelar" href="/vendedor/clientes.html" class="btn btn-light">
+                    Cancelar
+                </a>
+                <button id="btnGuardar" class="btn btn-primary" type="submit">
+                    Guardar descuento
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/cliente-descuento.js"></script>
+
+</body>
+</html>
