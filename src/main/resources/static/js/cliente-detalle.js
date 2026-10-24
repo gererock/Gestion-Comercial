@@ -288,6 +288,28 @@
             );
 
 
+        if (
+            Auth.obtenerRol() === 'ADMINISTRADOR'
+            &&
+            cliente.estado === true
+        ) {
+
+            const btnDescuento =
+                document.getElementById(
+                    'btnGestionarDescuento'
+                );
+
+
+            btnDescuento.href =
+                `/admin/cliente-descuento.html?id=${cliente.idCliente}`;
+
+
+            btnDescuento.classList.remove(
+                'oculto'
+            );
+        }
+
+
         document.getElementById(
             'notaInterna'
         ).textContent =

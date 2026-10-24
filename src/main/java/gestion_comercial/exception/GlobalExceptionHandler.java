@@ -20,6 +20,22 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+        @ExceptionHandler(DescuentoClienteException.class)
+        public ResponseEntity<ApiErrorResponse> handleDescuentoCliente(
+                        DescuentoClienteException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                exception.getStatus().value(),
+                                exception.getStatus().getReasonPhrase(),
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(exception.getStatus())
+                                .body(body);
+        }
+
         @ExceptionHandler(ClienteUsuarioAsociacionException.class)
         public ResponseEntity<ApiErrorResponse> handleClienteUsuarioAsociacion(
                         ClienteUsuarioAsociacionException exception,
