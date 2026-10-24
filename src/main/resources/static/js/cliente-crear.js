@@ -467,9 +467,9 @@
         // =========================================
 
         const dni =
-            obtenerValor(
+            document.getElementById(
                 'dni'
-            );
+            ).value;
 
 
         if (
@@ -489,9 +489,9 @@
         // =========================================
 
         const telefono =
-            obtenerValor(
+            document.getElementById(
                 'telefono'
-            );
+            ).value;
 
 
         if (
@@ -511,9 +511,9 @@
         // =========================================
 
         const correo =
-            obtenerValor(
+            document.getElementById(
                 'correo'
-            );
+            ).value;
 
 
         if (
@@ -571,9 +571,9 @@
         // =========================================
 
         const cuit =
-            obtenerValor(
+            document.getElementById(
                 'cuit'
-            );
+            ).value;
 
 
         if (
