@@ -36,7 +36,15 @@ public record ClienteConsultaResponse(
 
         String notaInterna,
 
-        LocalDateTime fechaAlta
+        LocalDateTime fechaAlta,
+
+        Integer idUsuario,
+
+        String nombreUsuario,
+
+        String apellidoUsuario,
+
+        String emailUsuario
 
 ) {
 }

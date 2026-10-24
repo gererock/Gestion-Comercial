@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asociar cliente con usuario | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/clientes.css">
+    <link rel="stylesheet" href="/css/cliente-asociar-usuario.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de clientes</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Clientes / Asociar usuario</p>
+            <h2>Asociar cliente con usuario</h2>
+            <p class="subtitulo">
+                Vinculá una ficha de cliente existente con una cuenta registrada.
+            </p>
+        </div>
+
+        <a href="/vendedor/clientes.html" class="btn btn-light">
+            ← Volver a clientes
+        </a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section class="asociacion-grid">
+        <article class="card selector-card">
+            <div class="selector-titulo">
+                <span class="paso">1</span>
+                <div>
+                    <h3>Seleccionar cliente</h3>
+                    <p>Buscá por nombre, apellido, DNI o correo.</p>
+                </div>
+            </div>
+
+            <form id="formBuscarCliente" class="buscador buscador-asociacion" novalidate>
+                <div class="campo-busqueda">
+                    <label for="buscarCliente">Buscar cliente</label>
+                    <input id="buscarCliente" type="search" maxlength="120" autocomplete="off"
+                           placeholder="Ej.: Ana, Pérez o 30111222">
+                </div>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+                <button id="btnLimpiarClientes" class="btn btn-light" type="button">Limpiar</button>
+            </form>
+
+            <div id="cargandoClientes" class="estado-lista">Cargando clientes...</div>
+            <div id="sinClientes" class="estado-lista oculto">No se encontraron clientes.</div>
+            <div id="listaClientes" class="opciones-lista oculto"></div>
+        </article>
+
+        <article class="card selector-card">
+            <div class="selector-titulo">
+                <span class="paso">2</span>
+                <div>
+                    <h3>Seleccionar usuario</h3>
+                    <p>Buscá por nombre, apellido o correo electrónico.</p>
+                </div>
+            </div>
+
+            <form id="formBuscarUsuario" class="buscador buscador-asociacion" novalidate>
+                <div class="campo-busqueda">
+                    <label for="buscarUsuario">Buscar usuario</label>
+                    <input id="buscarUsuario" type="search" maxlength="120" autocomplete="off"
+                           placeholder="Ej.: Juan o cliente@email.com">
+                </div>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+                <button id="btnLimpiarUsuarios" class="btn btn-light" type="button">Limpiar</button>
+            </form>
+
+            <div id="cargandoUsuarios" class="estado-lista">Cargando usuarios...</div>
+            <div id="sinUsuarios" class="estado-lista oculto">No se encontraron usuarios.</div>
+            <div id="listaUsuarios" class="opciones-lista oculto"></div>
+        </article>
+    </section>
+
+    <section class="card confirmacion-card">
+        <div class="selector-titulo">
+            <span class="paso">3</span>
+            <div>
+                <h3>Confirmar asociación</h3>
+                <p>Revisá ambas selecciones antes de guardar.</p>
+            </div>
+        </div>
+
+        <div class="resumen-grid">
+            <div class="resumen-item">
+                <span>Cliente seleccionado</span>
+                <strong id="clienteSeleccionado">Ninguno</strong>
+                <small id="clienteSeleccionadoDetalle">Seleccioná una ficha de cliente.</small>
+            </div>
+            <div class="resumen-item">
+                <span>Usuario seleccionado</span>
+                <strong id="usuarioSeleccionado">Ninguno</strong>
+                <small id="usuarioSeleccionadoDetalle">Seleccioná una cuenta de usuario.</small>
+            </div>
+        </div>
+
+        <div class="acciones confirmacion-acciones">
+            <a id="btnCancelar" href="/vendedor/clientes.html" class="btn btn-light">Cancelar</a>
+            <button id="btnConfirmar" class="btn btn-primary" type="button" disabled>
+                Confirmar asociación
+            </button>
+        </div>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/cliente-asociar-usuario.js"></script>
+
+</body>
+</html>

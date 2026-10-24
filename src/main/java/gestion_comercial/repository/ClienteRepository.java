@@ -60,4 +60,14 @@ public interface ClienteRepository
     List<Cliente> buscarClientes(
             @Param("busqueda") String busqueda
     );
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT c FROM Cliente c LEFT JOIN FETCH c.usuario WHERE c.idCliente = :idCliente")
+    Optional<Cliente> buscarPorIdParaAsociar(
+            @Param("idCliente") Integer idCliente
+    );
+
+    boolean existsByUsuario_IdUsuario(
+            Integer idUsuario
+    );
 }

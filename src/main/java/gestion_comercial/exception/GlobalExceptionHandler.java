@@ -20,6 +20,22 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+        @ExceptionHandler(ClienteUsuarioAsociacionException.class)
+        public ResponseEntity<ApiErrorResponse> handleClienteUsuarioAsociacion(
+                        ClienteUsuarioAsociacionException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                exception.getStatus().value(),
+                                exception.getStatus().getReasonPhrase(),
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(exception.getStatus())
+                                .body(body);
+        }
+
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleValidationException(
                         MethodArgumentNotValidException exception,
