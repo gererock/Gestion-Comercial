@@ -39,7 +39,14 @@
         document.getElementById('btnCancelar').addEventListener('click', cancelarSeleccion);
         formBuscar.addEventListener('submit', buscarProductos);
         formReposicion.addEventListener('submit', registrarReposicion);
-        cargarProductos('');
+        const idProductoInicial = obtenerProductoInicial();
+
+        if (idProductoInicial) {
+            busqueda.value = idProductoInicial;
+            cargarProductos(idProductoInicial, true);
+        } else {
+            cargarProductos('');
+        }
     }
 
     function mostrarUsuario() {
@@ -62,7 +69,7 @@
         cargarProductos(busqueda.value.trim());
     }
 
-    async function cargarProductos(termino) {
+    async function cargarProductos(termino, seleccionarAutomaticamente = false) {
         ocultarMensaje();
         cargandoProductos.classList.remove('oculto');
         sinResultados.classList.add('oculto');
@@ -83,7 +90,20 @@
             if (!response) return;
             if (!response.ok) throw new Error(await obtenerMensajeError(response));
 
-            renderizarProductos(await response.json(), Boolean(termino));
+            const productos = await response.json();
+            renderizarProductos(productos, Boolean(termino));
+
+            if (seleccionarAutomaticamente) {
+                const producto = productos.find(
+                        item => String(item.idProducto) === String(termino)
+                );
+
+                if (producto) {
+                    seleccionarProducto(producto);
+                } else {
+                    mostrarError('El producto seleccionado ya no se encuentra disponible.');
+                }
+            }
         } catch (error) {
             mostrarError(error.message || 'No se pudieron consultar los productos.');
         } finally {
@@ -276,6 +296,19 @@
             const valor = caracter === 'x' ? aleatorio : (aleatorio & 0x3) | 0x8;
             return valor.toString(16);
         });
+    }
+
+    function obtenerProductoInicial() {
+        const valor = new URLSearchParams(window.location.search).get('idProducto');
+
+        if (!valor || !/^[1-9][0-9]*$/.test(valor)) {
+            return null;
+        }
+
+        const numero = Number(valor);
+        return Number.isSafeInteger(numero) && numero <= 2147483647
+                ? valor
+                : null;
     }
 
     function textoEstado(estado) {

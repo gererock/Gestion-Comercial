@@ -78,6 +78,28 @@ public interface ProductoRepository
             boolean bajoStock
     );
 
+    @Query("""
+            SELECT p
+            FROM Producto p
+            LEFT JOIN FETCH p.categoria c
+            LEFT JOIN FETCH p.marca m
+            WHERE p.stockActual <= p.stockMinimo
+              AND (:idProducto IS NULL OR p.idProducto = :idProducto)
+              AND (:nombre IS NULL
+                   OR LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))
+              AND (:idCategoria IS NULL OR c.id = :idCategoria)
+              AND (:idMarca IS NULL OR m.id = :idMarca)
+              AND (:estado IS NULL OR p.estado = :estado)
+            ORDER BY p.stockActual ASC, p.nombre ASC, p.idProducto ASC
+            """)
+    List<Producto> consultarProductosConStockBajo(
+            @Param("idProducto") Integer idProducto,
+            @Param("nombre") String nombre,
+            @Param("idCategoria") Integer idCategoria,
+            @Param("idMarca") Integer idMarca,
+            @Param("estado") EstadoProducto estado
+    );
+
 
     // =========================================
     // CATÁLOGO PÚBLICO - US02
