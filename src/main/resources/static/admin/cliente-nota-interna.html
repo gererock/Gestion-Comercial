@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestionar nota interna | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/clientes.css">
+    <link rel="stylesheet" href="/css/cliente-nota-interna.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de clientes</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor nota-contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Clientes / Nota interna</p>
+            <h2>Gestionar nota interna</h2>
+            <p class="subtitulo">
+                Registrá observaciones privadas para la atención del cliente.
+            </p>
+        </div>
+
+        <a id="btnVolver" href="/vendedor/clientes.html" class="btn btn-light">
+            ← Volver
+        </a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section id="cargando" class="card estado-contenedor">
+        <div class="spinner"></div>
+        <p>Cargando cliente...</p>
+    </section>
+
+    <section id="contenido" class="oculto">
+        <article class="card cliente-resumen">
+            <div>
+                <span class="etiqueta">Cliente</span>
+                <h3 id="nombreCliente">-</h3>
+                <p id="identificacionCliente">-</p>
+            </div>
+            <span id="estadoCliente" class="badge">-</span>
+        </article>
+
+        <form id="formNota" class="card nota-card" novalidate>
+            <div class="nota-actual">
+                <span>Nota interna actual</span>
+                <p id="notaActual">Sin nota interna</p>
+            </div>
+
+            <div class="campo-nota">
+                <div class="campo-encabezado">
+                    <label for="notaInterna">Nueva nota interna</label>
+                    <span id="contador" aria-live="polite">0 / 1000</span>
+                </div>
+                <textarea id="notaInterna" name="notaInterna" rows="8"
+                          maxlength="1000" autocomplete="off"
+                          placeholder="Ej.: Cliente retira generalmente por la tarde"></textarea>
+                <small>
+                    Podés usar texto, números, puntuación y saltos de línea.
+                    Dejá el campo vacío para eliminar la nota.
+                </small>
+            </div>
+
+            <div class="aviso">
+                Esta información es interna. No se muestra en la cuenta del cliente
+                ni modifica sus pedidos, ventas o datos de acceso.
+            </div>
+
+            <div class="acciones nota-acciones">
+                <a id="btnCancelar" href="/vendedor/clientes.html" class="btn btn-light">
+                    Cancelar
+                </a>
+                <button id="btnGuardar" class="btn btn-primary" type="submit">
+                    Guardar nota
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/cliente-nota-interna.js"></script>
+
+</body>
+</html>

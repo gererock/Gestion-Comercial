@@ -290,6 +290,26 @@
 
         if (
             Auth.obtenerRol() === 'ADMINISTRADOR'
+        ) {
+
+            const btnNota =
+                document.getElementById(
+                    'btnGestionarNota'
+                );
+
+
+            btnNota.href =
+                `/admin/cliente-nota-interna.html?id=${cliente.idCliente}`;
+
+
+            btnNota.classList.remove(
+                'oculto'
+            );
+        }
+
+
+        if (
+            Auth.obtenerRol() === 'ADMINISTRADOR'
             &&
             cliente.estado === true
         ) {
