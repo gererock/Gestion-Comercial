@@ -1,0 +1,144 @@
+.form-cliente {
+    display: grid;
+    gap: 22px;
+}
+
+
+.formulario-seccion h3 {
+    margin: 0 0 22px;
+}
+
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 20px;
+}
+
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+
+.campo-completo {
+    grid-column: 1 / -1;
+}
+
+
+.campo label {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    font: inherit;
+}
+
+
+.campo input,
+.campo select {
+    min-height: 42px;
+}
+
+
+.campo textarea {
+    resize: vertical;
+}
+
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+.campo-check {
+    justify-content: center;
+}
+
+
+.campo-check label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+
+.campo-check input {
+    width: auto;
+    min-height: auto;
+}
+
+
+.form-acciones {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+
+.mensaje-exito {
+    border: 1px solid #b7e1bf;
+
+    background: #effaf1;
+
+    color: #1e6b2d;
+}
+
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+@media (max-width: 700px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .campo-completo {
+        grid-column: auto;
+    }
+
+
+    .form-acciones {
+        flex-direction: column-reverse;
+    }
+
+
+    .form-acciones .btn {
+        width: 100%;
+    }
+}

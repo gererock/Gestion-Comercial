@@ -1,0 +1,48 @@
+.stock-bajo-contenedor {
+    max-width: 1450px;
+}
+
+.fila-sin-stock {
+    background: #fff9f9;
+}
+
+.acciones-producto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.acciones-producto .btn {
+    min-height: 34px;
+    padding: 7px 10px;
+    white-space: nowrap;
+}
+
+.acciones-detalle {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.mensaje-exito {
+    color: #166534;
+    border: 1px solid #b7dfc0;
+    background: #f1fbf3;
+}
+
+@media (max-width: 720px) {
+    .acciones-producto {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .acciones-producto .btn,
+    .acciones-detalle .btn {
+        width: 100%;
+    }
+
+    .acciones-detalle {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

@@ -45,6 +45,9 @@ public class MovimientoStock {
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
+    @Column(name = "clave_operacion", length = 36, unique = true)
+    private String claveOperacion;
+
     public MovimientoStock() {
     }
 }

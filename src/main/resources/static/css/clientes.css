@@ -1,0 +1,566 @@
+:root {
+    --primary: #2563eb;
+    --secondary: #ed3a3a;
+    --gradient: linear-gradient(
+        135deg,
+        #2563eb,
+        #ed3a3a
+    );
+
+    --text: #202124;
+    --text-soft: #6b7280;
+    --border: #e5e7eb;
+    --background: #f5f6f8;
+    --success: #238636;
+    --danger: #b42318;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+button,
+input {
+    font: inherit;
+}
+
+
+button {
+    cursor: pointer;
+}
+
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================
+   UTILIDADES
+========================================= */
+
+.oculto {
+    display: none !important;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+}
+
+
+.header-contenido {
+    width: min(
+        1100px,
+        calc(100% - 40px)
+    );
+
+    min-height: 78px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.logo {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    background: var(--gradient);
+    color: #ffffff;
+
+    font-weight: 800;
+}
+
+
+.marca h1 {
+    margin: 0 0 3px;
+    font-size: 17px;
+}
+
+
+.marca p {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+
+.usuario {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+
+/* =========================================
+   CONTENIDO
+========================================= */
+
+.contenedor {
+    width: min(
+        1100px,
+        calc(100% - 40px)
+    );
+
+    margin: 0 auto;
+
+    padding: 45px 0 80px;
+}
+
+
+.titulo-pagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 25px;
+
+    margin-bottom: 28px;
+}
+
+
+.ruta {
+    margin: 0 0 9px;
+
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+
+.titulo-pagina h2 {
+    margin: 0 0 8px;
+    font-size: 32px;
+}
+
+
+.subtitulo {
+    margin: 0;
+    color: var(--text-soft);
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.card {
+    padding: 24px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+
+/* =========================================
+   BUSCADOR
+========================================= */
+
+.buscador-card {
+    margin-bottom: 25px;
+}
+
+
+.buscador {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        auto;
+
+    align-items: end;
+
+    gap: 10px;
+}
+
+
+.campo-busqueda label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.campo-busqueda input {
+    width: 100%;
+    min-height: 42px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    outline: none;
+}
+
+
+.campo-busqueda input:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================
+   CLIENTES
+========================================= */
+
+.clientes-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 20px;
+}
+
+
+.cliente-card {
+    padding: 24px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+
+.cliente-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.cliente-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+
+.dato {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.dato span {
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+
+.dato strong {
+    text-align: right;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   ESTADOS
+========================================= */
+
+.badge {
+    display: inline-flex;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.badge-activo {
+    background: #ecf8ef;
+    color: var(--success);
+}
+
+
+.badge-inactivo {
+    background: #fff1f1;
+    color: var(--danger);
+}
+
+
+/* =========================================
+   ACCIONES
+========================================= */
+
+.acciones {
+    margin-top: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.titulo-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.btn {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 16px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    font-weight: 700;
+}
+
+
+.btn-primary {
+    border: 0;
+
+    background: var(--gradient);
+    color: #ffffff;
+}
+
+
+.btn-light,
+.btn-outline {
+    border-color: #d1d5db;
+
+    background: #ffffff;
+    color: #444444;
+}
+
+
+/* =========================================
+   MENSAJES
+========================================= */
+
+.mensaje {
+    margin-bottom: 22px;
+
+    padding: 14px 16px;
+
+    border-radius: 8px;
+}
+
+
+.mensaje-error {
+    border: 1px solid #efc2c2;
+
+    background: #fff6f6;
+    color: #9e3030;
+}
+
+
+/* =========================================
+   ESTADOS DE CARGA
+========================================= */
+
+.estado-contenedor {
+    text-align: center;
+    color: var(--text-soft);
+}
+
+
+.estado-contenedor h3 {
+    color: var(--text);
+}
+
+
+/* =========================================
+   SPINNER
+========================================= */
+
+.spinner {
+    width: 34px;
+    height: 34px;
+
+    margin: 0 auto 12px;
+
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--primary);
+
+    border-radius: 50%;
+
+    animation: girar 0.8s linear infinite;
+}
+
+
+@keyframes girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================
+   DETALLE
+========================================= */
+
+.detalle-card {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+
+.seccion-detalle {
+    margin-top: 30px;
+}
+
+
+.seccion-detalle h3 {
+    margin: 0 0 12px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 800px) {
+
+    .clientes-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .buscador {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .header-contenido {
+        width: calc(100% - 28px);
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        padding: 14px 0;
+    }
+
+
+    .usuario {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+
+    .contenedor {
+        width: calc(100% - 28px);
+        padding: 30px 0 60px;
+    }
+
+
+    .titulo-pagina {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .titulo-pagina h2 {
+        font-size: 27px;
+    }
+
+
+    .titulo-pagina .btn {
+        width: 100%;
+    }
+
+
+    .titulo-acciones {
+        width: 100%;
+        flex-direction: column;
+    }
+
+
+    .dato {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+
+    .dato strong {
+        text-align: left;
+    }
+
+
+    .acciones .btn {
+        width: 100%;
+    }
+}

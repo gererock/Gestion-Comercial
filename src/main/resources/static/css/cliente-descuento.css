@@ -1,0 +1,129 @@
+.descuento-contenedor {
+    max-width: 850px;
+}
+
+.cliente-resumen {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.cliente-resumen h3 {
+    margin: 5px 0;
+    font-size: 24px;
+}
+
+.cliente-resumen p,
+.etiqueta {
+    margin: 0;
+    color: var(--text-soft);
+}
+
+.etiqueta {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.descuento-card {
+    display: grid;
+    gap: 24px;
+}
+
+.descuento-actual {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.descuento-actual span {
+    color: var(--text-soft);
+}
+
+.descuento-actual strong {
+    font-size: 20px;
+}
+
+.campo-descuento label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.campo-descuento small {
+    display: block;
+    margin-top: 8px;
+    color: var(--text-soft);
+    line-height: 1.45;
+}
+
+.input-porcentaje {
+    max-width: 280px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.input-porcentaje:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+}
+
+.input-porcentaje input {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px;
+    border: 0;
+    outline: 0;
+}
+
+.input-porcentaje span {
+    padding: 0 14px;
+    color: var(--text-soft);
+    font-weight: 800;
+}
+
+.aviso {
+    padding: 14px 16px;
+    border-left: 4px solid var(--primary);
+    border-radius: 6px;
+    background: #f5f8ff;
+    color: #334155;
+    line-height: 1.45;
+}
+
+.descuento-acciones {
+    margin-top: 0;
+}
+
+.mensaje-exito {
+    border: 1px solid #b7dfc0;
+    background: #f1fbf3;
+    color: var(--success);
+}
+
+@media (max-width: 600px) {
+    .cliente-resumen,
+    .descuento-actual {
+        flex-direction: column;
+    }
+
+    .input-porcentaje {
+        max-width: none;
+    }
+
+    .descuento-acciones {
+        flex-direction: column-reverse;
+    }
+
+    .descuento-acciones .btn {
+        width: 100%;
+    }
+}

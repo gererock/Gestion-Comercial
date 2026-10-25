@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registrar reposición de stock | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/productos-stock.css">
+    <link rel="stylesheet" href="/css/reposicion-stock.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo-simbolo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de stock</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" type="button" class="btn btn-outline">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor reposicion-contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Gestión / Stock / Reposición</p>
+            <h2>Registrar reposición de stock</h2>
+            <p class="subtitulo">
+                Seleccioná un producto y registrá el ingreso de nueva mercadería.
+            </p>
+        </div>
+
+        <a href="/admin/index.html" class="btn btn-light">Volver al panel</a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section class="card">
+        <div class="card-header">
+            <h3>1. Buscar producto</h3>
+            <p>Buscá por ID o por una parte del nombre.</p>
+        </div>
+
+        <form id="formBuscar" class="busqueda-reposicion" novalidate>
+            <div class="campo">
+                <label for="busqueda">ID o nombre del producto</label>
+                <input id="busqueda" type="search" maxlength="120" autocomplete="off"
+                       placeholder="Ej.: 15 o vaso">
+            </div>
+
+            <div class="acciones-filtros acciones-busqueda">
+                <button id="btnLimpiar" type="button" class="btn btn-light">
+                    Limpiar
+                </button>
+                <button id="btnBuscar" type="submit" class="btn btn-primary">
+                    Buscar
+                </button>
+            </div>
+        </form>
+
+        <p id="cargandoProductos" class="estado-busqueda">Cargando productos...</p>
+        <p id="sinResultados" class="estado-vacio oculto"></p>
+
+        <div id="contenedorResultados" class="tabla-contenedor oculto">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Estado</th>
+                    <th>Stock actual</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="productosBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="seccionReposicion" class="card oculto">
+        <div class="card-header">
+            <h3>2. Registrar reposición</h3>
+            <p>Verificá el producto y el stock antes de confirmar.</p>
+        </div>
+
+        <div class="producto-seleccionado">
+            <div>
+                <span>Producto seleccionado</span>
+                <strong id="productoSeleccionado">-</strong>
+                <small id="productoId">-</small>
+            </div>
+            <span id="productoEstado" class="badge">-</span>
+        </div>
+
+        <div class="stock-resumen">
+            <span>Stock actual</span>
+            <strong id="stockActual">0</strong>
+        </div>
+
+        <form id="formReposicion" novalidate>
+            <div class="campo campo-cantidad">
+                <label for="cantidad">Cantidad a reponer</label>
+                <input id="cantidad" type="text" inputmode="numeric" maxlength="7"
+                       autocomplete="off" placeholder="Ej.: 10">
+                <small>Ingresá un número entero entre 1 y 1.000.000.</small>
+            </div>
+
+            <div class="acciones-filtros acciones-reposicion">
+                <button id="btnCancelar" type="button" class="btn btn-light">
+                    Cancelar
+                </button>
+                <button id="btnConfirmar" type="submit" class="btn btn-primary">
+                    Confirmar reposición
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section id="resultadoReposicion" class="card resultado-reposicion oculto" aria-live="polite">
+        <h3>Reposición registrada</h3>
+        <div class="resultado-grid">
+            <div><span>Producto</span><strong id="resultadoProducto">-</strong></div>
+            <div><span>Cantidad</span><strong id="resultadoCantidad">-</strong></div>
+            <div><span>Stock anterior</span><strong id="resultadoAnterior">-</strong></div>
+            <div><span>Stock posterior</span><strong id="resultadoPosterior">-</strong></div>
+            <div><span>Tipo</span><strong id="resultadoTipo">-</strong></div>
+            <div><span>Origen</span><strong id="resultadoOrigen">-</strong></div>
+        </div>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/reposicion-stock.js"></script>
+
+</body>
+</html>
