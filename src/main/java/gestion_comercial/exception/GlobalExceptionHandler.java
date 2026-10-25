@@ -20,6 +20,22 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+        @ExceptionHandler(AjusteManualStockException.class)
+        public ResponseEntity<ApiErrorResponse> handleAjusteManualStock(
+                        AjusteManualStockException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                exception.getStatus().value(),
+                                exception.getStatus().getReasonPhrase(),
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(exception.getStatus())
+                                .body(body);
+        }
+
         @ExceptionHandler(ConsultaMovimientoStockException.class)
         public ResponseEntity<ApiErrorResponse> handleConsultaMovimientoStock(
                         ConsultaMovimientoStockException exception,

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ajuste manual de stock | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/productos-stock.css">
+    <link rel="stylesheet" href="/css/ajuste-manual-stock.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo-simbolo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Gestión de stock</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" type="button" class="btn btn-outline">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor ajuste-contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Gestión / Stock / Ajuste manual</p>
+            <h2>Realizar ajuste manual de stock</h2>
+            <p class="subtitulo">
+                Corregí el stock de un producto y dejá registrado el movimiento.
+            </p>
+        </div>
+
+        <a href="/admin/index.html" class="btn btn-light">Volver al panel</a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section class="card">
+        <div class="card-header">
+            <h3>1. Buscar producto</h3>
+            <p>Buscá por ID o por una parte del nombre.</p>
+        </div>
+
+        <form id="formBuscar" class="busqueda-ajuste" novalidate>
+            <div class="campo">
+                <label for="busqueda">ID o nombre del producto</label>
+                <input id="busqueda" type="search" maxlength="120" autocomplete="off"
+                       placeholder="Ej.: 15 o vaso">
+            </div>
+
+            <div class="acciones-filtros acciones-busqueda">
+                <button id="btnLimpiar" type="button" class="btn btn-light">
+                    Limpiar
+                </button>
+                <button id="btnBuscar" type="submit" class="btn btn-primary">
+                    Buscar
+                </button>
+            </div>
+        </form>
+
+        <p id="cargandoProductos" class="estado-busqueda">Cargando productos...</p>
+        <p id="sinResultados" class="estado-vacio oculto"></p>
+
+        <div id="contenedorResultados" class="tabla-contenedor oculto">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Estado</th>
+                    <th>Stock actual</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="productosBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="seccionAjuste" class="card oculto">
+        <div class="card-header">
+            <h3>2. Registrar ajuste</h3>
+            <p>Verificá el producto, elegí el tipo de ajuste e ingresá la cantidad.</p>
+        </div>
+
+        <div class="producto-seleccionado">
+            <div>
+                <span>Producto seleccionado</span>
+                <strong id="productoSeleccionado">-</strong>
+                <small id="productoId">-</small>
+            </div>
+            <span id="productoEstado" class="badge">-</span>
+        </div>
+
+        <div class="stock-resumen">
+            <div>
+                <span>Stock actual</span>
+                <strong id="stockActual">0</strong>
+            </div>
+            <div id="stockPosteriorVista" class="stock-posterior-vista oculto">
+                <span>Stock posterior</span>
+                <strong id="stockPosterior">0</strong>
+            </div>
+        </div>
+
+        <form id="formAjuste" novalidate>
+            <fieldset class="tipo-ajuste">
+                <legend>Tipo de ajuste</legend>
+                <label class="opcion-ajuste opcion-positiva">
+                    <input type="radio" name="tipoAjuste" value="POSITIVO">
+                    <span>
+                        <strong>Positivo</strong>
+                        <small>Aumenta el stock actual.</small>
+                    </span>
+                </label>
+                <label class="opcion-ajuste opcion-negativa">
+                    <input type="radio" name="tipoAjuste" value="NEGATIVO">
+                    <span>
+                        <strong>Negativo</strong>
+                        <small>Disminuye el stock actual.</small>
+                    </span>
+                </label>
+            </fieldset>
+
+            <div class="campo campo-cantidad">
+                <label for="cantidad">Cantidad del ajuste</label>
+                <input id="cantidad" type="text" inputmode="numeric" maxlength="7"
+                       autocomplete="off" placeholder="Ej.: 10">
+                <small>Ingresá un número entero entre 1 y 1.000.000.</small>
+            </div>
+
+            <div class="acciones-filtros acciones-ajuste">
+                <button id="btnCancelar" type="button" class="btn btn-light">
+                    Cancelar
+                </button>
+                <button id="btnConfirmar" type="submit" class="btn btn-primary">
+                    Confirmar ajuste
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section id="resultadoAjuste" class="card resultado-ajuste oculto" aria-live="polite">
+        <h3>Ajuste manual registrado</h3>
+        <div class="resultado-grid">
+            <div><span>Producto</span><strong id="resultadoProducto">-</strong></div>
+            <div><span>Cantidad</span><strong id="resultadoCantidad">-</strong></div>
+            <div><span>Stock anterior</span><strong id="resultadoAnterior">-</strong></div>
+            <div><span>Stock posterior</span><strong id="resultadoPosterior">-</strong></div>
+            <div><span>Tipo</span><strong id="resultadoTipo">-</strong></div>
+            <div><span>Origen</span><strong id="resultadoOrigen">-</strong></div>
+        </div>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/ajuste-manual-stock.js"></script>
+
+</body>
+</html>
