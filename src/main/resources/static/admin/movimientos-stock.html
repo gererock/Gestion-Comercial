@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Movimientos de stock | Todo Descartable</title>
+    <link rel="stylesheet" href="/css/productos-stock.css">
+    <link rel="stylesheet" href="/css/movimientos-stock.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-contenido">
+        <div class="marca">
+            <div class="logo-simbolo">TD</div>
+            <div>
+                <h1>Todo Descartable</h1>
+                <p>Historial de stock</p>
+            </div>
+        </div>
+
+        <div class="usuario">
+            <span id="nombreUsuario">Administrador</span>
+            <button id="btnCerrarSesion" type="button" class="btn btn-outline">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="contenedor movimientos-contenedor">
+    <section class="titulo-pagina">
+        <div>
+            <p class="ruta">Gestión / Stock / Movimientos</p>
+            <h2>Movimientos de stock</h2>
+            <p class="subtitulo">
+                Consultá el historial de entradas, salidas, reservas y ajustes.
+            </p>
+        </div>
+
+        <a href="/admin/index.html" class="btn btn-light">Volver al panel</a>
+    </section>
+
+    <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite"></div>
+
+    <section class="card">
+        <div class="card-header">
+            <h3>Filtrar movimientos</h3>
+            <p>Podés combinar todos los filtros.</p>
+        </div>
+
+        <form id="formFiltros" novalidate>
+            <div class="filtros-grid movimientos-filtros">
+                <div class="campo">
+                    <label for="idProducto">ID del producto</label>
+                    <input id="idProducto" type="text" inputmode="numeric"
+                           maxlength="10" autocomplete="off" placeholder="Ej.: 15">
+                </div>
+
+                <div class="campo">
+                    <label for="tipoMovimiento">Tipo de movimiento</label>
+                    <select id="tipoMovimiento">
+                        <option value="">Todos</option>
+                        <option value="ENTRADA">Entrada</option>
+                        <option value="SALIDA">Salida</option>
+                        <option value="AJUSTE_POSITIVO">Ajuste positivo</option>
+                        <option value="AJUSTE_NEGATIVO">Ajuste negativo</option>
+                        <option value="DEVOLUCION">Devolución</option>
+                        <option value="RESERVA">Reserva</option>
+                        <option value="LIBERACION_RESERVA">Liberación de reserva</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="origen">Origen</label>
+                    <select id="origen">
+                        <option value="">Todos</option>
+                        <option value="VENTA_LOCAL">Venta local</option>
+                        <option value="PEDIDO_ONLINE">Pedido online</option>
+                        <option value="REPOSICION_STOCK">Reposición de stock</option>
+                        <option value="AJUSTE_MANUAL">Ajuste manual</option>
+                        <option value="DEVOLUCION">Devolución</option>
+                        <option value="RESERVA_PEDIDO">Reserva de pedido</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="fechaDesde">Fecha desde</label>
+                    <input id="fechaDesde" type="date">
+                </div>
+
+                <div class="campo">
+                    <label for="fechaHasta">Fecha hasta</label>
+                    <input id="fechaHasta" type="date">
+                </div>
+            </div>
+
+            <div class="acciones-filtros">
+                <button id="btnLimpiar" type="button" class="btn btn-light">
+                    Limpiar filtros
+                </button>
+                <button id="btnBuscar" type="submit" class="btn btn-primary">
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="card-header resultados-header">
+            <div>
+                <h3>Historial</h3>
+                <p id="cantidadResultados">Cargando movimientos...</p>
+            </div>
+            <span class="solo-lectura">Solo lectura</span>
+        </div>
+
+        <div id="cargando" class="estado-busqueda">Cargando movimientos...</div>
+        <div id="estadoVacio" class="estado-vacio oculto"></div>
+
+        <div id="contenedorTabla" class="tabla-contenedor oculto">
+            <table>
+                <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Usuario</th>
+                    <th>Tipo</th>
+                    <th>Origen</th>
+                    <th>Cantidad</th>
+                    <th>Anterior</th>
+                    <th>Posterior</th>
+                </tr>
+                </thead>
+                <tbody id="movimientosBody"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script src="/js/auth.js"></script>
+<script src="/js/movimientos-stock.js"></script>
+
+</body>
+</html>
