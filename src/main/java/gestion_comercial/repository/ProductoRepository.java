@@ -216,4 +216,13 @@ public interface ProductoRepository
                 @Param("idProducto") Integer idProducto
         );
 
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        @Query("""
+            SELECT p FROM Producto p
+            WHERE p.idProducto = :idProducto
+            """)
+        Optional<Producto> buscarParaReponerStock(
+                @Param("idProducto") Integer idProducto
+        );
+
 }

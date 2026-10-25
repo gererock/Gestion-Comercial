@@ -1,0 +1,130 @@
+.reposicion-contenedor {
+    max-width: 1050px;
+}
+
+.busqueda-reposicion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 18px;
+}
+
+.acciones-busqueda {
+    margin-top: 0;
+}
+
+.estado-busqueda {
+    margin: 22px 0 0;
+    color: var(--gris-texto);
+}
+
+.producto-seleccionado,
+.stock-resumen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.producto-seleccionado span:first-child,
+.producto-seleccionado small,
+.stock-resumen span,
+.campo-cantidad small,
+.resultado-grid span {
+    color: var(--gris-texto);
+}
+
+.producto-seleccionado strong,
+.producto-seleccionado small {
+    display: block;
+    margin-top: 5px;
+}
+
+.stock-resumen {
+    margin: 18px 0;
+}
+
+.stock-resumen strong {
+    font-size: 30px;
+    color: var(--azul);
+}
+
+.campo-cantidad {
+    max-width: 360px;
+}
+
+.campo-cantidad small {
+    line-height: 1.45;
+}
+
+.acciones-reposicion {
+    margin-top: 24px;
+}
+
+.mensaje-exito {
+    color: #166534;
+    border: 1px solid #b7dfc0;
+    background: #f1fbf3;
+}
+
+.resultado-reposicion {
+    border-color: #b7dfc0;
+}
+
+.resultado-reposicion h3 {
+    margin-top: 0;
+    color: #166534;
+}
+
+.resultado-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.resultado-grid div {
+    padding: 14px;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.resultado-grid span,
+.resultado-grid strong {
+    display: block;
+}
+
+.resultado-grid strong {
+    margin-top: 5px;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+@media (max-width: 720px) {
+    .busqueda-reposicion,
+    .resultado-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .producto-seleccionado {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .campo-cantidad {
+        max-width: none;
+    }
+
+    .acciones-reposicion {
+        flex-direction: column-reverse;
+    }
+
+    .acciones-reposicion .btn {
+        width: 100%;
+    }
+}
