@@ -32,7 +32,6 @@ public class PedidoConfirmacionService {
     private final MovimientoStockRepository movimientoRepository;
     private final IConfiguracionComercioService configuracionService;
 
-    private static final BigDecimal CIEN = new BigDecimal("100");
 
 
     public PedidoConfirmacionService(
@@ -85,7 +84,8 @@ public class PedidoConfirmacionService {
         if (existente.isPresent()) {
             Pedido anterior = existente.get();
 
-            if (anterior.getCliente() == null
+            if (anterior.getTipoVenta() != TipoVenta.ONLINE
+                    || anterior.getCliente() == null
                     || !anterior.getCliente().getIdCliente()
                             .equals(cliente.getIdCliente())) {
                 throw new PedidoConfirmacionException(
@@ -181,22 +181,8 @@ public class PedidoConfirmacionService {
                 .subtract(descuentoOferta)
                 .subtract(descuentoMayorista);
 
-        BigDecimal porcentajeCliente = cliente.getDescuentoPorcentaje();
-        if (porcentajeCliente == null) {
-            porcentajeCliente = BigDecimal.ZERO;
-        }
-
-        if (porcentajeCliente.compareTo(BigDecimal.ZERO) < 0
-                || porcentajeCliente.compareTo(CIEN) > 0) {
-            throw new PedidoConfirmacionException(
-                    "El descuento del cliente no es válido."
-            );
-        }
-
-        BigDecimal descuentoCliente = dinero(
-                netoProductos.multiply(porcentajeCliente)
-                        .divide(CIEN, 6, RoundingMode.HALF_UP)
-        );
+        BigDecimal descuentoCliente = calcularDescuentoCliente(
+                netoProductos, cliente.getDescuentoPorcentaje());
 
         BigDecimal total = dinero(netoProductos.subtract(descuentoCliente));
 

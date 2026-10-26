@@ -27,6 +27,7 @@ public class VentaLocalService implements IVentaLocalService {
     private final DetallePedidoRepository detalles;
     private final MovimientoStockRepository movimientos;
     private final UsuarioRepository usuarios;
+    private final ClienteRepository clientes;
 
     @Override
     @Transactional(readOnly = true)
@@ -58,9 +59,10 @@ public class VentaLocalService implements IVentaLocalService {
 
         Optional<Pedido> anterior = pedidos.findByClaveConfirmacion(request.claveOperacion());
         if (anterior.isPresent()) {
-            return recuperarOperacion(anterior.get(), usuario, cantidades);
+            return recuperarOperacion(anterior.get(), usuario, cantidades, request.idCliente());
         }
 
+        Cliente cliente = obtenerCliente(request.idCliente());
         List<Linea> lineas = new ArrayList<>();
         // TreeMap garantiza el mismo orden de bloqueo para todas las confirmaciones.
         for (Map.Entry<Integer, Integer> entrada : cantidades.entrySet()) {
@@ -83,7 +85,10 @@ public class VentaLocalService implements IVentaLocalService {
                 .reduce(new BigDecimal("0.00"), BigDecimal::add);
         BigDecimal mayorista = lineas.stream().map(Linea::mayorista)
                 .reduce(new BigDecimal("0.00"), BigDecimal::add);
-        BigDecimal total = bruto.subtract(oferta).subtract(mayorista);
+        BigDecimal netoProductos = bruto.subtract(oferta).subtract(mayorista);
+        BigDecimal descuentoCliente = calcularDescuentoCliente(netoProductos,
+                cliente == null ? null : cliente.getDescuentoPorcentaje());
+        BigDecimal total = netoProductos.subtract(descuentoCliente);
         validarImporte(bruto);
         validarImporte(total);
 
@@ -93,6 +98,8 @@ public class VentaLocalService implements IVentaLocalService {
         pedido.setNumeroPedido("TMP-" + UUID.randomUUID().toString().replace("-", "").substring(0, 20));
         pedido.setClaveConfirmacion(request.claveOperacion());
         pedido.setVendedorResponsable(usuario);
+        pedido.setCliente(cliente);
+        pedido.setDescuentoCliente(descuentoCliente);
         pedido.setTipoVenta(TipoVenta.LOCAL);
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
         pedido.setEstadoPago(EstadoPago.PENDIENTE);
@@ -103,7 +110,7 @@ public class VentaLocalService implements IVentaLocalService {
         pedido.setDescuentoOferta(oferta);
         pedido.setDescuentoMayorista(mayorista);
         pedido.setTotal(total);
-        // Cliente y pago se registran en US25 y US26 respectivamente.
+        // El pago queda pendiente para US26.
         pedidos.saveAndFlush(pedido);
         pedido.setNumeroPedido("PED-" + pedido.getIdPedido());
 
@@ -140,11 +147,25 @@ public class VentaLocalService implements IVentaLocalService {
         return respuesta(pedido, guardados);
     }
 
+    private Cliente obtenerCliente(Integer idCliente) {
+        if (idCliente == null) return null;
+        // Reutiliza el bloqueo de cliente utilizado para leer/modificar su descuento.
+        Cliente cliente = clientes.buscarPorIdParaModificarDescuento(idCliente)
+                .orElseThrow(() -> new ClienteNoEncontradoException("El cliente indicado no existe."));
+        if (!Boolean.TRUE.equals(cliente.getEstado())) {
+            throw new PedidoConfirmacionException("El cliente indicado está inactivo.");
+        }
+        return cliente;
+    }
+
     private TreeMap<Integer, Integer> consolidar(VentaLocalRequest request) {
         if (request == null || request.claveOperacion() == null || request.items() == null
                 || request.items().isEmpty() || request.items().size() > 100) {
             throw new IllegalArgumentException(
                     "La venta debe contener entre 1 y 100 items y una clave de operación.");
+        }
+        if (request.idCliente() != null && request.idCliente() <= 0) {
+            throw new IllegalArgumentException("El ID del cliente debe ser un entero positivo.");
         }
         TreeMap<Integer, Integer> cantidades = new TreeMap<>();
         for (VentaLocalRequest.Item item : request.items()) {
@@ -162,10 +183,14 @@ public class VentaLocalService implements IVentaLocalService {
     }
 
     private VentaLocalResponse recuperarOperacion(Pedido pedido, Usuario usuario,
-                                                  TreeMap<Integer, Integer> cantidades) {
+                                                  TreeMap<Integer, Integer> cantidades, Integer idCliente) {
         if (pedido.getTipoVenta() != TipoVenta.LOCAL || pedido.getVendedorResponsable() == null
                 || !usuario.getIdUsuario().equals(pedido.getVendedorResponsable().getIdUsuario())) {
             throw new PedidoConfirmacionException("La clave de operación pertenece a otra operación.");
+        }
+        Integer clienteOriginal = pedido.getCliente() == null ? null : pedido.getCliente().getIdCliente();
+        if (!Objects.equals(clienteOriginal, idCliente)) {
+            throw new PedidoConfirmacionException("La clave ya fue utilizada con otro cliente.");
         }
         List<DetallePedido> guardados = detalles.findByPedido_IdPedidoOrderByIdDetallePedidoAsc(pedido.getIdPedido());
         TreeMap<Integer, Integer> previas = new TreeMap<>();
@@ -182,6 +207,9 @@ public class VentaLocalService implements IVentaLocalService {
                 pedido.getDescuentoOferta(), pedido.getDescuentoMayorista(), pedido.getTotal(),
                 guardados.stream().map(d -> new VentaLocalResponse.Item(
                         d.getProducto().getIdProducto(), d.getProducto().getNombre(), d.getCantidad(),
-                        d.getPrecioUnitario(), d.getDescuentoAplicado(), d.getSubtotal())).toList());
+                        d.getPrecioUnitario(), d.getDescuentoAplicado(), d.getSubtotal())).toList(),
+                pedido.getDescuentoCliente(), pedido.getCliente() == null ? null :
+                new VentaLocalResponse.ClienteVenta(pedido.getCliente().getIdCliente(),
+                        pedido.getCliente().getNombre(), pedido.getCliente().getApellido()));
     }
 }

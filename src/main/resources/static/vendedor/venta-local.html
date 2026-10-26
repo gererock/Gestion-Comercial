@@ -8,8 +8,24 @@
 <button>Buscar</button></form><p id="estadoBusqueda" role="status" aria-live="polite"></p>
 <div id="resultados" class="productos"></div><h2>Productos de la venta</h2>
 <p id="vacia">Agregá al menos un producto.</p><div id="lineas" class="productos"></div>
+<section id="seccionCliente" aria-labelledby="tituloCliente">
+<h2 id="tituloCliente">Cliente opcional</h2>
+<div id="clienteSeleccionado" aria-live="polite">Consumidor final</div>
+<div class="acciones"><button id="buscarCliente" type="button" aria-controls="buscadorCliente" aria-expanded="false">Buscar cliente</button>
+<button id="quitarCliente" type="button" hidden>Quitar cliente</button></div>
+<div id="buscadorCliente" hidden>
+<form id="busquedaClientes"><label for="consultaCliente">Nombre, apellido, DNI, teléfono o correo</label>
+<input id="consultaCliente" type="search" maxlength="120" autocomplete="off"><button>Buscar clientes</button></form>
+<p id="estadoClientes" role="status" aria-live="polite"></p><div id="resultadosClientes" class="productos"></div>
+</div></section>
+<h2>Resumen de importes</h2>
+<dl class="resumen"><dt>Subtotal bruto</dt><dd id="subtotalBruto">$ 0,00</dd>
+<dt>Descuento oferta</dt><dd id="descuentoOferta">$ 0,00</dd>
+<dt>Descuento mayorista</dt><dd id="descuentoMayorista">$ 0,00</dd>
+<dt>Descuento cliente estimado</dt><dd id="descuentoCliente">$ 0,00</dd></dl>
 <p id="total" class="total">Total estimado: $ 0,00</p><p id="mensaje" role="status" aria-live="polite"></p>
 <div class="acciones"><button id="confirmar" disabled>Confirmar venta</button><button id="cancelar" type="button">Cancelar</button></div>
 <section id="comprobante" hidden><h2>Venta registrada</h2><p id="numero"></p><div id="detalleFinal"></div>
+<p id="clienteFinal"></p><p id="descuentoClienteFinal"></p>
 <p id="totalFinal" class="total"></p><p>Entregada · Pago pendiente</p><button id="nueva">Registrar otra venta</button></section>
 </main><script src="/js/auth.js"></script><script src="/js/venta-local.js"></script></body></html>
