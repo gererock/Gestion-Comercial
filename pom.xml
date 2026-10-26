@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<!-- US24: leer el nombre estructurado del constraint en PSQLException. -->
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
