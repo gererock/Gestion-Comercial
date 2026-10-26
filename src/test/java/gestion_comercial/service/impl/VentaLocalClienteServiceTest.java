@@ -48,7 +48,7 @@ class VentaLocalClienteServiceTest {
         producto = productos.saveAndFlush(producto);
     }
     VentaLocalRequest request(Integer idCliente) {
-        return new VentaLocalRequest(List.of(new VentaLocalRequest.Item(producto.getIdProducto(),10)), UUID.randomUUID(), idCliente);
+        return new VentaLocalRequest(List.of(new VentaLocalRequest.Item(producto.getIdProducto(),10)), UUID.randomUUID(), idCliente, medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
     }
     long cantidad(String tabla) { return jdbc.queryForObject("select count(*) from " + tabla, Long.class); }
     String estadoCliente() { return jdbc.queryForObject("select row_to_json(c)::text from clientes c where id_cliente=?", String.class, cliente.getIdCliente()); }
@@ -80,7 +80,7 @@ class VentaLocalClienteServiceTest {
         assertEquals(new BigDecimal("0.00"), respuesta.descuentoCliente());
         assertEquals(new BigDecimal("1000.00"), respuesta.total());
         assertEquals(TipoVenta.LOCAL, pedido.getTipoVenta()); assertEquals(EstadoPedido.ENTREGADO, pedido.getEstadoPedido());
-        assertEquals(EstadoPago.PENDIENTE,pedido.getEstadoPago()); assertNull(pedido.getMedioPago());
+        assertEquals(EstadoPago.PENDIENTE,pedido.getEstadoPago()); assertNotNull(pedido.getMedioPago());
     }
     @ParameterizedTest @NullSource @ValueSource(strings={"0","10","100"})
     void porcentajesValidosIncluidoNull(String valor) {
@@ -118,13 +118,13 @@ class VentaLocalClienteServiceTest {
     @Test void mismaClaveOtroClienteSeRechaza() {
         var req = request(cliente.getIdCliente()); ventas.confirmar("vendedor@gestion.local",req);
         Cliente otro = new Cliente(); otro.setNombre("QA US25 otro"); otro = clientes.saveAndFlush(otro);
-        var diferente = new VentaLocalRequest(req.items(),req.claveOperacion(),otro.getIdCliente());
+        var diferente = new VentaLocalRequest(req.items(),req.claveOperacion(),otro.getIdCliente(), medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
         assertThrows(PedidoConfirmacionException.class,()->ventas.confirmar("vendedor@gestion.local",diferente));
         assertEquals(90,producto.getStockActual());
     }
     @ParameterizedTest @ValueSource(booleans={true,false}) void clienteYNullNoCompartenOperacion(boolean originalConCliente) {
         var req = request(originalConCliente ? cliente.getIdCliente() : null); ventas.confirmar("vendedor@gestion.local",req);
-        var diferente = new VentaLocalRequest(req.items(),req.claveOperacion(),originalConCliente ? null : cliente.getIdCliente());
+        var diferente = new VentaLocalRequest(req.items(),req.claveOperacion(),originalConCliente ? null : cliente.getIdCliente(), medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
         assertThrows(PedidoConfirmacionException.class,()->ventas.confirmar("vendedor@gestion.local",diferente));
         assertEquals(90,producto.getStockActual());
     }

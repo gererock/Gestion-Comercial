@@ -18,6 +18,17 @@
 <input id="consultaCliente" type="search" maxlength="120" autocomplete="off"><button>Buscar clientes</button></form>
 <p id="estadoClientes" role="status" aria-live="polite"></p><div id="resultadosClientes" class="productos"></div>
 </div></section>
+<section id="seccionPago" aria-labelledby="tituloPago">
+<h2 id="tituloPago">Pago</h2>
+<p id="estadoMedios" role="status" aria-live="polite">Cargando medios de pago…</p>
+<button id="recargarMedios" type="button" hidden>Reintentar carga de medios</button>
+<div class="camposPago"><label for="medioPago">Medio de pago (obligatorio)</label>
+<select id="medioPago" required disabled><option value="">Seleccioná un medio</option></select>
+<label for="estadoPago">Estado de pago (obligatorio)</label>
+<select id="estadoPago" required><option value="">Seleccioná un estado</option><option value="PAGADO">Pagado</option><option value="PENDIENTE">Pendiente</option></select>
+<label id="labelDescripcionPago" for="descripcionPago">Descripción de pago (opcional)</label>
+<textarea id="descripcionPago" rows="3" aria-describedby="ayudaPago"></textarea>
+<p id="ayudaPago">Para pagos pendientes, indicá una descripción con letras o números.</p></div></section>
 <h2>Resumen de importes</h2>
 <dl class="resumen"><dt>Subtotal bruto</dt><dd id="subtotalBruto">$ 0,00</dd>
 <dt>Descuento oferta</dt><dd id="descuentoOferta">$ 0,00</dd>
@@ -27,5 +38,5 @@
 <div class="acciones"><button id="confirmar" disabled>Confirmar venta</button><button id="cancelar" type="button">Cancelar</button></div>
 <section id="comprobante" hidden><h2>Venta registrada</h2><p id="numero"></p><div id="detalleFinal"></div>
 <p id="clienteFinal"></p><p id="descuentoClienteFinal"></p>
-<p id="totalFinal" class="total"></p><p>Entregada · Pago pendiente</p><button id="nueva">Registrar otra venta</button></section>
+<p id="totalFinal" class="total"></p><p>Entregada</p><p id="pagoFinal"></p><p id="descripcionPagoFinal"></p><button id="nueva">Registrar otra venta</button></section>
 </main><script src="/js/auth.js"></script><script src="/js/venta-local.js"></script></body></html>

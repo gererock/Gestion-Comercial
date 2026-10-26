@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 @org.springframework.test.context.ContextConfiguration(initializers = gestion_comercial.support.TestDatabaseGuard.class)
 @SpringBootTest
 class VentaLocalAtomicidadTest {
+ @Autowired MedioPagoRepository medios;
     @Autowired VentaLocalService servicio;
     @Autowired ProductoRepository productos;
     @Autowired JdbcTemplate jdbc;
@@ -33,7 +34,7 @@ class VentaLocalAtomicidadTest {
     }
 
     private VentaLocalRequest request(Producto p, int cantidad) {
-        return new VentaLocalRequest(List.of(new VentaLocalRequest.Item(p.getIdProducto(), cantidad)), UUID.randomUUID());
+        return new VentaLocalRequest(List.of(new VentaLocalRequest.Item(p.getIdProducto(), cantidad)), UUID.randomUUID(), null, medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
     }
 
     private void limpiar(Producto p) {
@@ -56,7 +57,7 @@ class VentaLocalAtomicidadTest {
                         m.getProducto().getIdProducto().equals(b.getIdProducto())));
         try {
             var req = new VentaLocalRequest(List.of(new VentaLocalRequest.Item(a.getIdProducto(), 2),
-                    new VentaLocalRequest.Item(b.getIdProducto(), 3)), UUID.randomUUID());
+                    new VentaLocalRequest.Item(b.getIdProducto(), 3)), UUID.randomUUID(), null, medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
             assertThrows(IllegalStateException.class, () -> servicio.confirmar("vendedor@gestion.local", req));
             assertEquals(pedidosAntes, jdbc.queryForObject("select count(*) from pedidos", Long.class));
             assertEquals(10, productos.findById(a.getIdProducto()).orElseThrow().getStockActual());

@@ -38,7 +38,7 @@ class VentaLocalColisionHttpTest {
         return jwt.generateToken(usuarios.findByEmailIgnoreCase(email).orElseThrow());
     }
     private String body(int producto, int cantidad, UUID clave) {
-        return "{\"items\":[{\"idProducto\":" + producto + ",\"cantidad\":" + cantidad
+        return "{\"idMedioPago\":" + jdbc.queryForObject("select id_medio_pago from medios_pago where activo order by nombre limit 1", Integer.class) + ",\"estadoPago\":\"PAGADO\",\"items\":[{\"idProducto\":" + producto + ",\"cantidad\":" + cantidad
                 + "}],\"claveOperacion\":\"" + clave + "\"}";
     }
     private HttpResponse<String> post(String token, String body) throws Exception {

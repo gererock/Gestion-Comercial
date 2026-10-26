@@ -3,7 +3,7 @@
 if (!Auth.requerirRol('VENDEDOR','ADMINISTRADOR')) return;
 const $=id=>document.getElementById(id), api='/api/vendedor/ventas-locales';
 $('volver').href=Auth.obtenerRutaPorRol(Auth.obtenerRol());
-let clienteSeleccionado=null, versionClientes=0;
+let clienteSeleccionado=null, versionClientes=0, mediosDisponibles=false;
 const lineas=new Map(); let guardando=false, pendiente=null, confirmada=false, versionBusqueda=0;
 const moneda=n=>Number(n).toLocaleString('es-AR',{style:'currency',currency:'ARS'});
 const entero=v=>/^[0-9]+$/.test(String(v)) && Number.isSafeInteger(Number(v)) && Number(v)>0 && Number(v)<=2147483647;
@@ -31,8 +31,8 @@ input.addEventListener('input',()=>{
 const quitar=nodo('button','Eliminar');quitar.disabled=bloquear();quitar.onclick=()=>{lineas.delete(id);actualizar();};
 card.append(desc,label,input,quitar);$('lineas').append(card);}
 $('vacia').hidden=lineas.size>0;$('total').textContent='Total estimado: '+moneda(total);
-$('confirmar').disabled=guardando||confirmada||!valida;$('confirmar').textContent=guardando?'Confirmando…':pendiente?'Reintentar confirmación':'Confirmar venta';
-$('cancelar').disabled=bloquear();document.querySelectorAll('#resultados button').forEach(b=>b.disabled=bloquear());actualizarResumen();actualizarCliente();}
+$('confirmar').disabled=guardando||confirmada||!valida||(!pendiente&&!pagoValido());$('confirmar').textContent=guardando?'Confirmando…':pendiente?'Reintentar confirmación':'Confirmar venta';
+$('cancelar').disabled=bloquear();document.querySelectorAll('#resultados button').forEach(b=>b.disabled=bloquear());actualizarResumen();actualizarCliente();actualizarPago();}
 $('busqueda').onsubmit=async event=>{event.preventDefault();const version=++versionBusqueda;$('resultados').replaceChildren();
 const id=$('idProducto').value.trim(),nombre=$('nombre').value.trim();if(id&&!entero(id)){$('estadoBusqueda').textContent='Ingresá un ID entero positivo.';return;}
 $('estadoBusqueda').textContent='Buscando…';const params=new URLSearchParams();if(id)params.set('idProducto',id);if(nombre)params.set('nombre',nombre);
@@ -43,20 +43,22 @@ const boton=nodo('button','Agregar');boton.disabled=bloquear();boton.onclick=()=
 if(!entero(cantidad)||cantidad>p.stockActual){$('mensaje').textContent='La cantidad acumulada supera el stock disponible.';return;}
 lineas.set(p.idProducto,{p,cantidad:String(cantidad)});$('mensaje').textContent='';actualizar();};card.append(desc,boton);$('resultados').append(card);}
 }catch(e){if(version===versionBusqueda){$('resultados').replaceChildren();$('estadoBusqueda').textContent=e.message;}}};
-$('cancelar').onclick=()=>{if(bloquear())return;lineas.clear();reiniciarCliente();$('mensaje').textContent='Venta cancelada. No se guardaron cambios.';actualizar();};
+$('cancelar').onclick=()=>{if(bloquear())return;lineas.clear();reiniciarCliente();reiniciarPago();$('mensaje').textContent='Venta cancelada. No se guardaron cambios.';actualizar();};
 $('confirmar').onclick=async()=>{if(guardando||confirmada)return;
-if(!pendiente){const items=[];for(const [id,l]of lineas){if(!entero(l.cantidad)||Number(l.cantidad)>l.p.stockActual){$('mensaje').textContent='Revisá las cantidades.';return;}items.push({idProducto:id,cantidad:Number(l.cantidad)});}if(!items.length)return;pendiente={items,claveOperacion:crypto.randomUUID(),idCliente:clienteSeleccionado?.idCliente??null};}
+if(!pendiente){if(!pagoValido()){$('mensaje').textContent='Seleccioná medio y estado. Para pendiente, ingresá una descripción válida.';return;}const items=[];for(const [id,l]of lineas){if(!entero(l.cantidad)||Number(l.cantidad)>l.p.stockActual){$('mensaje').textContent='Revisá las cantidades.';return;}items.push({idProducto:id,cantidad:Number(l.cantidad)});}if(!items.length)return;pendiente={items,claveOperacion:crypto.randomUUID(),idCliente:clienteSeleccionado?.idCliente??null,idMedioPago:Number($('medioPago').value),estadoPago:$('estadoPago').value,descripcionPago:$('descripcionPago').value.trim()||null};}
 guardando=true;$('mensaje').textContent='';actualizar();
 try{const res=await Auth.fetchAutenticado(api,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pendiente)});if(!res)throw Error('La sesión terminó.');
 const data=await res.json();if(!res.ok){if(res.status<500)pendiente=null;throw Error(data.message||data.mensaje||'No se pudo registrar la venta.');}
 confirmada=true;pendiente=null;$('comprobante').hidden=false;$('numero').textContent='Número interno: '+data.numeroPedido;
 $('detalleFinal').replaceChildren();for(const d of data.items)$('detalleFinal').append(nodo('p',d.nombre+' × '+d.cantidad+' · Unitario: '+moneda(d.precioUnitario)+' · Descuento: '+moneda(d.descuentoAplicado)+' · Subtotal: '+moneda(d.subtotal)));
 $('clienteFinal').textContent=data.cliente?'Cliente: '+[data.cliente.nombre,data.cliente.apellido].filter(Boolean).join(' '):'Consumidor final';
+$('pagoFinal').textContent='Medio: '+data.medioPago.nombre+' · Estado: '+data.estadoPago;
+$('descripcionPagoFinal').textContent=data.descripcionPago||'';
 $('descuentoClienteFinal').textContent='Descuento cliente confirmado: '+moneda(data.descuentoCliente);
 $('totalFinal').textContent='Total confirmado: '+moneda(data.total);$('mensaje').textContent='Venta registrada correctamente.';
 }catch(e){$('mensaje').textContent=e.message+(pendiente?' Reintentá con la misma operación para consultar o completar su resultado.':'');}
 finally{guardando=false;actualizar();}};
-$('nueva').onclick=()=>{lineas.clear();reiniciarCliente();confirmada=false;$('comprobante').hidden=true;$('mensaje').textContent='';$('resultados').replaceChildren();$('estadoBusqueda').textContent='';actualizar();};
+$('nueva').onclick=()=>{lineas.clear();reiniciarCliente();reiniciarPago();confirmada=false;$('comprobante').hidden=true;$('mensaje').textContent='';$('resultados').replaceChildren();$('estadoBusqueda').textContent='';actualizar();};
 
 function actualizarResumen(){
  let bruto=0,oferta=0,mayorista=0,neto=0,valida=lineas.size>0;
@@ -75,7 +77,7 @@ function actualizarResumen(){
  $('descuentoMayorista').textContent=moneda(mayorista);
  $('descuentoCliente').textContent=moneda(descuento)+' ('+porcentaje+'%)';
  $('total').textContent='Total estimado: '+moneda(neto-descuento);
- $('confirmar').disabled=guardando||confirmada||!valida;
+ $('confirmar').disabled=guardando||confirmada||!valida||(!pendiente&&!pagoValido());
 }
 function actualizarCliente(){
  const contenedor=$('clienteSeleccionado');contenedor.replaceChildren();
@@ -135,5 +137,24 @@ $('busquedaClientes').onsubmit=async event=>{
   }
  }catch(error){if(version===versionClientes){$('resultadosClientes').replaceChildren();$('estadoClientes').textContent=error.message;}}
 };
-actualizar();
+function pagoValido(){return mediosDisponibles&&entero($('medioPago').value)&&['PAGADO','PENDIENTE'].includes($('estadoPago').value)&&($('estadoPago').value!=='PENDIENTE'||/[\p{L}\p{N}]/u.test($('descripcionPago').value.trim()));}
+function actualizarPago(){
+ for(const id of ['medioPago','estadoPago','descripcionPago'])$(id).disabled=bloquear()||(id==='medioPago'&&!mediosDisponibles);
+ const obligatorio=$('estadoPago').value==='PENDIENTE';$('descripcionPago').required=obligatorio;
+ $('labelDescripcionPago').textContent='Descripción de pago ('+(obligatorio?'obligatoria':'opcional')+')';
+ $('recargarMedios').disabled=bloquear();
+}
+function reiniciarPago(){$('medioPago').value='';$('estadoPago').value='';$('descripcionPago').value='';}
+async function cargarMedios(){
+ mediosDisponibles=false;$('estadoMedios').textContent='Cargando medios de pago…';$('recargarMedios').hidden=true;
+ $('medioPago').replaceChildren(nodo('option','Seleccioná un medio'));$('medioPago').firstChild.value='';actualizar();
+ try{const res=await Auth.fetchAutenticado(api+'/medios-pago');if(!res)throw Error('La sesión terminó.');const data=await res.json();if(!res.ok)throw Error(data.message||'No se pudieron cargar los medios.');
+ for(const medio of data){const opcion=nodo('option',medio.nombre);opcion.value=medio.idMedioPago;$('medioPago').append(opcion);}
+ mediosDisponibles=data.length>0;$('estadoMedios').textContent=mediosDisponibles?'Elegí un medio de pago activo.':'No hay medios de pago activos. No se puede confirmar la venta.';
+ $('recargarMedios').hidden=mediosDisponibles;
+ }catch(e){$('estadoMedios').textContent=e.message;$('recargarMedios').hidden=false;}finally{actualizar();}
+}
+for(const id of ['medioPago','estadoPago','descripcionPago'])$(id).addEventListener('input',()=>{actualizarPago();actualizarResumen();});
+$('recargarMedios').onclick=cargarMedios;
+actualizar();cargarMedios();
 })();

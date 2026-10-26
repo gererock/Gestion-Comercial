@@ -93,7 +93,7 @@ class PedidoConfirmacionIdempotenciaHttpTest {
 
     private HttpResponse<String> local(Integer idCliente, UUID clave) throws Exception {
         claves.add(clave);
-        String body = "{\"claveOperacion\":\"" + clave + "\",\"idCliente\":" + idCliente
+        String body = "{\"idMedioPago\":" + medioPago + ",\"estadoPago\":\"PAGADO\",\"claveOperacion\":\"" + clave + "\",\"idCliente\":" + idCliente
                 + ",\"items\":[{\"idProducto\":" + producto.getIdProducto() + ",\"cantidad\":2}]}";
         Usuario vendedor = usuarios.findByEmailIgnoreCase("vendedor@gestion.local").orElseThrow();
         return post("/api/vendedor/ventas-locales", vendedor, body);

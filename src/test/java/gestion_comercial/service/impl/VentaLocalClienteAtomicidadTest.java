@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @ContextConfiguration(initializers=TestDatabaseGuard.class)
 class VentaLocalClienteAtomicidadTest {
+ @Autowired MedioPagoRepository medios;
     @Autowired VentaLocalService ventas;
     @Autowired ClienteRepository clientes;
     @Autowired ProductoRepository productos;
@@ -31,7 +32,7 @@ class VentaLocalClienteAtomicidadTest {
         Cliente c=new Cliente();c.setNombre("QA US25 rollback");c.setDescuentoPorcentaje(new BigDecimal("10"));c=clientes.saveAndFlush(c);
         Producto a=producto(),b=producto();UUID clave=UUID.randomUUID();
         String antes=jdbc.queryForObject("select row_to_json(c)::text from clientes c where id_cliente=?",String.class,c.getIdCliente());
-        var request=new VentaLocalRequest(List.of(new VentaLocalRequest.Item(a.getIdProducto(),2),new VentaLocalRequest.Item(b.getIdProducto(),3)),clave,c.getIdCliente());
+        var request=new VentaLocalRequest(List.of(new VentaLocalRequest.Item(a.getIdProducto(),2),new VentaLocalRequest.Item(b.getIdProducto(),3)),clave,c.getIdCliente(), medios.findByActivoOrderByNombreAsc(true).getFirst().getIdMedioPago(), EstadoPago.PENDIENTE, "Abona al retirar");
         doThrow(new IllegalStateException("Fallo controlado US25")).when(movimientos).save(argThat(m->m!=null&&m.getProducto().getIdProducto().equals(b.getIdProducto())));
         try {
             assertThrows(IllegalStateException.class,()->ventas.confirmar("vendedor@gestion.local",request));

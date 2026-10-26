@@ -28,6 +28,7 @@ public class VentaLocalService implements IVentaLocalService {
     private final MovimientoStockRepository movimientos;
     private final UsuarioRepository usuarios;
     private final ClienteRepository clientes;
+    private final MedioPagoRepository medios;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +48,7 @@ public class VentaLocalService implements IVentaLocalService {
     @Transactional
     public VentaLocalResponse confirmar(String email, VentaLocalRequest request) {
         TreeMap<Integer, Integer> cantidades = consolidar(request);
+        String descripcion = normalizarPago(request);
 
         // Serializa reintentos del mismo responsable antes de consultar la clave única.
         // La restricción UNIQUE de clave_confirmacion protege también entre responsables.
@@ -59,10 +61,12 @@ public class VentaLocalService implements IVentaLocalService {
 
         Optional<Pedido> anterior = pedidos.findByClaveConfirmacion(request.claveOperacion());
         if (anterior.isPresent()) {
-            return recuperarOperacion(anterior.get(), usuario, cantidades, request.idCliente());
+            return recuperarOperacion(anterior.get(), usuario, cantidades, request, descripcion);
         }
 
         Cliente cliente = obtenerCliente(request.idCliente());
+        MedioPago medio = medios.findByIdMedioPagoAndActivoTrue(request.idMedioPago())
+                .orElseThrow(() -> new IllegalArgumentException("El medio de pago seleccionado no existe o no está activo."));
         List<Linea> lineas = new ArrayList<>();
         // TreeMap garantiza el mismo orden de bloqueo para todas las confirmaciones.
         for (Map.Entry<Integer, Integer> entrada : cantidades.entrySet()) {
@@ -102,7 +106,9 @@ public class VentaLocalService implements IVentaLocalService {
         pedido.setDescuentoCliente(descuentoCliente);
         pedido.setTipoVenta(TipoVenta.LOCAL);
         pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-        pedido.setEstadoPago(EstadoPago.PENDIENTE);
+        pedido.setEstadoPago(request.estadoPago());
+        pedido.setMedioPago(medio);
+        pedido.setDescripcionPago(descripcion);
         pedido.setMedioEntrega(MedioEntrega.RETIRO_LOCAL);
         pedido.setFechaCreacion(ahora);
         pedido.setFechaActualizacion(ahora);
@@ -110,7 +116,7 @@ public class VentaLocalService implements IVentaLocalService {
         pedido.setDescuentoOferta(oferta);
         pedido.setDescuentoMayorista(mayorista);
         pedido.setTotal(total);
-        // El pago queda pendiente para US26.
+
         pedidos.saveAndFlush(pedido);
         pedido.setNumeroPedido("PED-" + pedido.getIdPedido());
 
@@ -145,6 +151,19 @@ public class VentaLocalService implements IVentaLocalService {
         // Los productos están administrados por JPA: dirty checking persiste el stock.
         pedidos.flush();
         return respuesta(pedido, guardados);
+    }
+
+    private String normalizarPago(VentaLocalRequest request) {
+        if (request.idMedioPago() == null || request.idMedioPago() <= 0 || request.estadoPago() == null) {
+            throw new IllegalArgumentException("Seleccioná un medio de pago y un estado válidos.");
+        }
+        String descripcion = request.descripcionPago() == null ? null : request.descripcionPago().trim();
+        if (descripcion != null && descripcion.isEmpty()) descripcion = null;
+        if (request.estadoPago() == EstadoPago.PENDIENTE
+                && (descripcion == null || !descripcion.codePoints().anyMatch(Character::isLetterOrDigit))) {
+            throw new IllegalArgumentException("El pago pendiente requiere una descripción con letras o números.");
+        }
+        return descripcion;
     }
 
     private Cliente obtenerCliente(Integer idCliente) {
@@ -183,14 +202,20 @@ public class VentaLocalService implements IVentaLocalService {
     }
 
     private VentaLocalResponse recuperarOperacion(Pedido pedido, Usuario usuario,
-                                                  TreeMap<Integer, Integer> cantidades, Integer idCliente) {
+                                                  TreeMap<Integer, Integer> cantidades, VentaLocalRequest request, String descripcion) {
         if (pedido.getTipoVenta() != TipoVenta.LOCAL || pedido.getVendedorResponsable() == null
                 || !usuario.getIdUsuario().equals(pedido.getVendedorResponsable().getIdUsuario())) {
             throw new PedidoConfirmacionException("La clave de operación pertenece a otra operación.");
         }
         Integer clienteOriginal = pedido.getCliente() == null ? null : pedido.getCliente().getIdCliente();
-        if (!Objects.equals(clienteOriginal, idCliente)) {
+        if (!Objects.equals(clienteOriginal, request.idCliente())) {
             throw new PedidoConfirmacionException("La clave ya fue utilizada con otro cliente.");
+        }
+        if (pedido.getMedioPago() == null
+                || !Objects.equals(pedido.getMedioPago().getIdMedioPago(), request.idMedioPago())
+                || pedido.getEstadoPago() != request.estadoPago()
+                || !Objects.equals(pedido.getDescripcionPago(), descripcion)) {
+            throw new PedidoConfirmacionException("La clave ya fue utilizada con otros datos de pago.");
         }
         List<DetallePedido> guardados = detalles.findByPedido_IdPedidoOrderByIdDetallePedidoAsc(pedido.getIdPedido());
         TreeMap<Integer, Integer> previas = new TreeMap<>();
@@ -210,6 +235,9 @@ public class VentaLocalService implements IVentaLocalService {
                         d.getPrecioUnitario(), d.getDescuentoAplicado(), d.getSubtotal())).toList(),
                 pedido.getDescuentoCliente(), pedido.getCliente() == null ? null :
                 new VentaLocalResponse.ClienteVenta(pedido.getCliente().getIdCliente(),
-                        pedido.getCliente().getNombre(), pedido.getCliente().getApellido()));
+                        pedido.getCliente().getNombre(), pedido.getCliente().getApellido()),
+                pedido.getMedioPago() == null ? null : new VentaLocalResponse.MedioPagoVenta(
+                        pedido.getMedioPago().getIdMedioPago(), pedido.getMedioPago().getNombre()),
+                pedido.getDescripcionPago());
     }
 }
