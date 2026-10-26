@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Registrar venta local</title><link rel="stylesheet" href="/css/venta-local.css"></head>
+<body><main><a id="volver" href="/vendedor/index.html">Volver al panel</a><h1>Registrar venta local</h1>
+<p>Seleccioná los productos vendidos. El stock y los precios se verifican al confirmar.</p>
+<form id="busqueda"><label for="nombre">Nombre del producto</label><input id="nombre" maxlength="120" type="search">
+<label for="idProducto">ID del producto</label><input id="idProducto" inputmode="numeric" pattern="[0-9]+">
+<button>Buscar</button></form><p id="estadoBusqueda" role="status" aria-live="polite"></p>
+<div id="resultados" class="productos"></div><h2>Productos de la venta</h2>
+<p id="vacia">Agregá al menos un producto.</p><div id="lineas" class="productos"></div>
+<p id="total" class="total">Total estimado: $ 0,00</p><p id="mensaje" role="status" aria-live="polite"></p>
+<div class="acciones"><button id="confirmar" disabled>Confirmar venta</button><button id="cancelar" type="button">Cancelar</button></div>
+<section id="comprobante" hidden><h2>Venta registrada</h2><p id="numero"></p><div id="detalleFinal"></div>
+<p id="totalFinal" class="total"></p><p>Entregada · Pago pendiente</p><button id="nueva">Registrar otra venta</button></section>
+</main><script src="/js/auth.js"></script><script src="/js/venta-local.js"></script></body></html>

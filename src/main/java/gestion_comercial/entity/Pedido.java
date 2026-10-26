@@ -27,9 +27,13 @@ public class Pedido {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_medio_pago", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_medio_pago")
     private MedioPago medioPago;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_vendedor_responsable")
+    private Usuario vendedorResponsable;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_direccion_envio")
