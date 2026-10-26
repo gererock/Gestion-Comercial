@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
+import gestion_comercial.service.impl.PrecioPedidoCalculator.Linea;
+import static gestion_comercial.service.impl.PrecioPedidoCalculator.*;
 
 @Service
 public class PedidoConfirmacionService {
@@ -30,9 +32,7 @@ public class PedidoConfirmacionService {
     private final MovimientoStockRepository movimientoRepository;
     private final IConfiguracionComercioService configuracionService;
 
-    private static final BigDecimal CIEN = new BigDecimal("100");
-    private static final BigDecimal MAX_IMPORTE =
-            new BigDecimal("9999999999.99");
+
 
     public PedidoConfirmacionService(
             PedidoRepository pedidoRepository,
@@ -84,7 +84,8 @@ public class PedidoConfirmacionService {
         if (existente.isPresent()) {
             Pedido anterior = existente.get();
 
-            if (anterior.getCliente() == null
+            if (anterior.getTipoVenta() != TipoVenta.ONLINE
+                    || anterior.getCliente() == null
                     || !anterior.getCliente().getIdCliente()
                             .equals(cliente.getIdCliente())) {
                 throw new PedidoConfirmacionException(
@@ -180,22 +181,8 @@ public class PedidoConfirmacionService {
                 .subtract(descuentoOferta)
                 .subtract(descuentoMayorista);
 
-        BigDecimal porcentajeCliente = cliente.getDescuentoPorcentaje();
-        if (porcentajeCliente == null) {
-            porcentajeCliente = BigDecimal.ZERO;
-        }
-
-        if (porcentajeCliente.compareTo(BigDecimal.ZERO) < 0
-                || porcentajeCliente.compareTo(CIEN) > 0) {
-            throw new PedidoConfirmacionException(
-                    "El descuento del cliente no es válido."
-            );
-        }
-
-        BigDecimal descuentoCliente = dinero(
-                netoProductos.multiply(porcentajeCliente)
-                        .divide(CIEN, 6, RoundingMode.HALF_UP)
-        );
+        BigDecimal descuentoCliente = calcularDescuentoCliente(
+                netoProductos, cliente.getDescuentoPorcentaje());
 
         BigDecimal total = dinero(netoProductos.subtract(descuentoCliente));
 
@@ -319,6 +306,8 @@ public class PedidoConfirmacionService {
         return respuesta(pedido);
     }
 
+    private BigDecimal dinero(BigDecimal valor) { return valor.setScale(2, RoundingMode.HALF_UP); }
+
     private DireccionEnvioCliente validarEntrega(
             Cliente cliente,
             ConfirmarPedidoRequest request,
@@ -388,80 +377,6 @@ public class PedidoConfirmacionService {
         return direccion;
     }
 
-    private Linea calcularLinea(Producto producto, int cantidad) {
-
-        BigDecimal precio = producto.getPrecioVenta();
-
-        if (precio == null
-                || precio.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new PedidoConfirmacionException(
-                    "El precio del producto no es válido."
-            );
-        }
-
-        BigDecimal bruto = dinero(
-                precio.multiply(BigDecimal.valueOf(cantidad))
-        );
-
-        BigDecimal oferta = BigDecimal.ZERO;
-        BigDecimal mayorista = BigDecimal.ZERO;
-
-        // La oferta tiene prioridad, igual que en el carrito.
-        if (Boolean.TRUE.equals(producto.getEnOferta())) {
-
-            oferta = descuento(bruto, producto.getPorcentajeDescuentoOferta());
-
-        } else if (producto.getCantidadMinimaMayorista() != null
-                && producto.getPorcentajeDescuentoMayorista() != null
-                && cantidad >= producto.getCantidadMinimaMayorista()) {
-
-            mayorista = descuento(
-                    bruto,
-                    producto.getPorcentajeDescuentoMayorista()
-            );
-        }
-
-        BigDecimal neto = dinero(
-                bruto.subtract(oferta).subtract(mayorista)
-        );
-
-        validarImporte(bruto);
-        validarImporte(neto);
-
-        return new Linea(
-                producto, cantidad, bruto, oferta, mayorista, neto
-        );
-    }
-
-    private BigDecimal descuento(BigDecimal monto, BigDecimal porcentaje) {
-
-        if (porcentaje == null
-                || porcentaje.compareTo(BigDecimal.ZERO) < 0
-                || porcentaje.compareTo(CIEN) > 0) {
-            throw new PedidoConfirmacionException(
-                    "El descuento configurado no es válido."
-            );
-        }
-
-        return dinero(
-                monto.multiply(porcentaje)
-                        .divide(CIEN, 6, RoundingMode.HALF_UP)
-        );
-    }
-
-    private BigDecimal dinero(BigDecimal valor) {
-        return valor.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private void validarImporte(BigDecimal importe) {
-        if (importe.compareTo(BigDecimal.ZERO) < 0
-                || importe.compareTo(MAX_IMPORTE) > 0) {
-            throw new PedidoConfirmacionException(
-                    "El importe del pedido supera los límites permitidos."
-            );
-        }
-    }
-
     private ConfirmarPedidoResponse respuesta(Pedido pedido) {
 
         return new ConfirmarPedidoResponse(
@@ -480,13 +395,4 @@ public class PedidoConfirmacionService {
         );
     }
 
-    private record Linea(
-            Producto producto,
-            int cantidad,
-            BigDecimal bruto,
-            BigDecimal oferta,
-            BigDecimal mayorista,
-            BigDecimal neto
-    ) {
-    }
 }
