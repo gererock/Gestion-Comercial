@@ -53,6 +53,15 @@ public final class PrecioPedidoCalculator {
         );
     }
 
+    /** Descuento global sobre el neto de productos, con la política del checkout online. */
+    public static BigDecimal calcularDescuentoCliente(BigDecimal netoProductos, BigDecimal porcentaje) {
+        BigDecimal valor = porcentaje == null ? BigDecimal.ZERO : porcentaje;
+        if (valor.compareTo(BigDecimal.ZERO) < 0 || valor.compareTo(CIEN) > 0) {
+            throw new PedidoConfirmacionException("El descuento del cliente no es válido.");
+        }
+        return dinero(netoProductos.multiply(valor).divide(CIEN, 6, RoundingMode.HALF_UP));
+    }
+
     private static BigDecimal descuento(BigDecimal monto, BigDecimal porcentaje) {
 
         if (porcentaje == null
