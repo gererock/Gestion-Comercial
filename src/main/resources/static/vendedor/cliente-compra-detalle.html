@@ -1,0 +1,333 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        Detalle de compra | Todo Descartable
+    </title>
+
+    <link rel="stylesheet" href="/css/pedido-detalle.css">
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Historial de compras
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Usuario
+                </span>
+
+                <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Clientes / Historial / Detalle
+                </p>
+
+                <h2>
+                    Detalle de la compra
+                </h2>
+
+                <p class="subtitulo">
+                    Información histórica de la compra seleccionada.
+                </p>
+
+            </div>
+
+
+            <a id="btnVolverHistorial" href="/vendedor/clientes.html" class="btn">
+                ← Volver a clientes
+            </a>
+
+        </section>
+
+
+        <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite">
+        </div>
+
+
+        <section id="cargando" class="card estado-contenedor">
+
+            <div class="spinner"></div>
+
+            <p>
+                Cargando detalle de la compra...
+            </p>
+
+        </section>
+
+
+        <div id="detalle" class="detalle oculto">
+
+
+            <section class="card encabezado-pedido">
+
+                <div>
+
+                    <p class="etiqueta">
+                        Compra
+                    </p>
+
+                    <h3 id="numeroPedido">
+                        -
+                    </h3>
+
+                    <p id="fechaCreacion" class="texto-suave">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="badges">
+
+                    <span id="tipoVenta" class="badge">
+                        -
+                    </span>
+
+                    <span id="estadoPedido" class="badge">
+                        -
+                    </span>
+
+                    <span id="estadoPago" class="badge badge-secundario">
+                        -
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <section class="card seccion">
+
+                <h3>
+                    Pago y entrega
+                </h3>
+
+                <dl class="datos">
+
+                    <div>
+
+                        <dt>
+                            Medio de pago
+                        </dt>
+
+                        <dd id="medioPago">
+                            -
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt>
+                            Medio de entrega
+                        </dt>
+
+                        <dd id="medioEntrega">
+                            -
+                        </dd>
+
+                    </div>
+
+                </dl>
+
+            </section>
+
+
+            <section class="card seccion">
+
+                <h3>
+                    Productos
+                </h3>
+
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Cantidad
+                                </th>
+
+                                <th>
+                                    Precio unitario
+                                </th>
+
+                                <th>
+                                    Descuento
+                                </th>
+
+                                <th>
+                                    Subtotal
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="productos">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <p id="sinProductos" class="texto-suave oculto">
+                    La compra no contiene productos.
+                </p>
+
+            </section>
+
+
+            <section class="card seccion resumen">
+
+                <h3>
+                    Resumen
+                </h3>
+
+
+                <dl class="totales">
+
+                    <div>
+
+                        <dt>
+                            Subtotal
+                        </dt>
+
+                        <dd id="subtotal">
+                            -
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt>
+                            Descuento por oferta
+                        </dt>
+
+                        <dd id="descuentoOferta">
+                            -
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt>
+                            Descuento mayorista
+                        </dt>
+
+                        <dd id="descuentoMayorista">
+                            -
+                        </dd>
+
+                    </div>
+
+
+                    <div>
+
+                        <dt>
+                            Descuento cliente
+                        </dt>
+
+                        <dd id="descuentoCliente">
+                            -
+                        </dd>
+
+                    </div>
+
+
+                    <div class="total">
+
+                        <dt>
+                            Total
+                        </dt>
+
+                        <dd id="total">
+                            -
+                        </dd>
+
+                    </div>
+
+                </dl>
+
+            </section>
+
+
+        </div>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/cliente-compra-detalle.js"></script>
+
+
+</body>
+
+</html>
