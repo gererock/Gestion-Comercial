@@ -320,119 +320,125 @@ public class GlobalExceptionHandler {
 
         @ExceptionHandler(ProductoNoEncontradoException.class)
         public ResponseEntity<ApiErrorResponse> handleProductoNoEncontrado(
-                ProductoNoEncontradoException exception,
-                HttpServletRequest request
-        ) {
+                        ProductoNoEncontradoException exception,
+                        HttpServletRequest request) {
                 ApiErrorResponse body = ApiErrorResponse.simple(
-                        HttpStatus.NOT_FOUND.value(),
-                        "Not Found",
-                        exception.getMessage(),
-                        request.getRequestURI()
-                );
-
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
-                }
-
-        @ExceptionHandler(ImagenProductoNoEncontradaException.class)
-        public ResponseEntity<ApiErrorResponse> handleImagenProductoNoEncontrada(
-                ImagenProductoNoEncontradaException exception,
-                HttpServletRequest request
-        ) {
-
-                ApiErrorResponse body =
-                        ApiErrorResponse.simple(
                                 HttpStatus.NOT_FOUND.value(),
                                 "Not Found",
                                 exception.getMessage(),
-                                request.getRequestURI()
-                        );
+                                request.getRequestURI());
 
-
-                return ResponseEntity
-                        .status(
-                                HttpStatus.NOT_FOUND
-                        )
-                        .body(
-                                body
-                        );
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
         }
 
+        @ExceptionHandler(ImagenProductoNoEncontradaException.class)
+        public ResponseEntity<ApiErrorResponse> handleImagenProductoNoEncontrada(
+                        ImagenProductoNoEncontradaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(
+                                                HttpStatus.NOT_FOUND)
+                                .body(
+                                                body);
+        }
 
         @ExceptionHandler(ImagenProductoAlmacenamientoException.class)
         public ResponseEntity<ApiErrorResponse> handleImagenProductoAlmacenamiento(
-                ImagenProductoAlmacenamientoException exception,
-                HttpServletRequest request
-        ) {
+                        ImagenProductoAlmacenamientoException exception,
+                        HttpServletRequest request) {
 
-                ApiErrorResponse body =
-                        ApiErrorResponse.simple(
+                ApiErrorResponse body = ApiErrorResponse.simple(
                                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                                 "Internal Server Error",
                                 exception.getMessage(),
-                                request.getRequestURI()
-                        );
-
+                                request.getRequestURI());
 
                 return ResponseEntity
-                        .status(
-                                HttpStatus.INTERNAL_SERVER_ERROR
-                        )
-                        .body(
-                                body
-                        );
+                                .status(
+                                                HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(
+                                                body);
         }
-
 
         @ExceptionHandler(MaxUploadSizeExceededException.class)
         public ResponseEntity<ApiErrorResponse> handleArchivoDemasiadoGrande(
-                MaxUploadSizeExceededException exception,
-                HttpServletRequest request
-        ) {
+                        MaxUploadSizeExceededException exception,
+                        HttpServletRequest request) {
 
-                ApiErrorResponse body =
-                        ApiErrorResponse.simple(
+                ApiErrorResponse body = ApiErrorResponse.simple(
                                 HttpStatus.PAYLOAD_TOO_LARGE.value(),
                                 "Payload Too Large",
                                 "La imagen no puede superar los 5 MB",
-                                request.getRequestURI()
-                        );
-
+                                request.getRequestURI());
 
                 return ResponseEntity
-                        .status(
-                                HttpStatus.PAYLOAD_TOO_LARGE
-                        )
-                        .body(
-                                body
-                        );
+                                .status(
+                                                HttpStatus.PAYLOAD_TOO_LARGE)
+                                .body(
+                                                body);
         }
-
 
         @ExceptionHandler(MethodArgumentTypeMismatchException.class)
         public ResponseEntity<ApiErrorResponse> handleTipoArgumentoInvalido(
-                MethodArgumentTypeMismatchException exception,
-                HttpServletRequest request
-        ) {
+                        MethodArgumentTypeMismatchException exception,
+                        HttpServletRequest request) {
 
-                ApiErrorResponse body =
-                        ApiErrorResponse.simple(
+                ApiErrorResponse body = ApiErrorResponse.simple(
                                 HttpStatus.BAD_REQUEST.value(),
                                 "Bad Request",
                                 "El valor enviado para '"
-                                        + exception.getName()
-                                        + "' no tiene un formato válido",
-                                request.getRequestURI()
-                        );
-
+                                                + exception.getName()
+                                                + "' no tiene un formato válido",
+                                request.getRequestURI());
 
                 return ResponseEntity
-                        .status(
-                                HttpStatus.BAD_REQUEST
-                        )
-                        .body(
-                                body
-                        );
+                                .status(
+                                                HttpStatus.BAD_REQUEST)
+                                .body(
+                                                body);
         }
 
+        @ExceptionHandler(CategoriaGastoNoEncontradaException.class)
+        public ResponseEntity<ApiErrorResponse> handleCategoriaGastoNoEncontrada(
+                        CategoriaGastoNoEncontradaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(
+                                                HttpStatus.NOT_FOUND)
+                                .body(
+                                                body);
+        }
+
+        @ExceptionHandler(CategoriaGastoDuplicadaException.class)
+        public ResponseEntity<ApiErrorResponse> handleCategoriaGastoDuplicada(
+                        CategoriaGastoDuplicadaException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                HttpStatus.CONFLICT.value(),
+                                "Conflict",
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(
+                                                HttpStatus.CONFLICT)
+                                .body(
+                                                body);
+        }
 
 }
