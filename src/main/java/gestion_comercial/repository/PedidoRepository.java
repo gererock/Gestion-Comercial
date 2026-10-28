@@ -16,85 +16,71 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
 public interface PedidoRepository
-        extends JpaRepository<Pedido, Integer> {
+                extends JpaRepository<Pedido, Integer> {
 
+        Optional<Pedido> findByClaveConfirmacion(
+                        UUID claveConfirmacion);
 
+        @EntityGraph(attributePaths = {
+                        "cliente"
+        })
+        List<Pedido> findByTipoVentaAndEstadoPedidoAndClienteIsNotNullOrderByFechaCreacionDesc(
+                        TipoVenta tipoVenta,
+                        EstadoPedido estadoPedido);
 
-    Optional<Pedido> findByClaveConfirmacion(
-            UUID claveConfirmacion
-    );
+        @EntityGraph(attributePaths = {
+                        "cliente"
+        })
+        Optional<Pedido> findByIdPedidoAndTipoVentaAndEstadoPedidoAndClienteIsNotNull(
+                        Integer idPedido,
+                        TipoVenta tipoVenta,
+                        EstadoPedido estadoPedido);
 
+        @EntityGraph(attributePaths = {
+                        "cliente",
+                        "medioPago"
+        })
+        Optional<Pedido> findByIdPedidoAndTipoVentaAndClienteIsNotNull(
+                        Integer idPedido,
+                        TipoVenta tipoVenta);
 
-    @EntityGraph(
-            attributePaths = {
-                    "cliente"
-            }
-    )
-    List<Pedido>
-    findByTipoVentaAndEstadoPedidoAndClienteIsNotNullOrderByFechaCreacionDesc(
-            TipoVenta tipoVenta,
-            EstadoPedido estadoPedido
-    );
+        @Lock(LockModeType.PESSIMISTIC_WRITE)
+        @Query("""
+                        SELECT p
+                        FROM Pedido p
+                        WHERE p.idPedido = :idPedido
+                        """)
+        Optional<Pedido> buscarPorIdParaDecision(
+                        @Param("idPedido") Integer idPedido);
 
+        @EntityGraph(attributePaths = {
+                        "medioPago"
+        })
+        List<Pedido> findByCliente_IdClienteAndTipoVentaOrderByFechaCreacionDesc(
+                        Integer idCliente,
+                        TipoVenta tipoVenta);
 
-    @EntityGraph(
-            attributePaths = {
-                    "cliente"
-            }
-    )
-    Optional<Pedido>
-    findByIdPedidoAndTipoVentaAndEstadoPedidoAndClienteIsNotNull(
-            Integer idPedido,
-            TipoVenta tipoVenta,
-            EstadoPedido estadoPedido
-    );
+        @EntityGraph(attributePaths = {
+                        "medioPago"
+        })
+        Optional<Pedido> findByIdPedidoAndCliente_IdClienteAndTipoVenta(
+                        Integer idPedido,
+                        Integer idCliente,
+                        TipoVenta tipoVenta);
 
+        @EntityGraph(attributePaths = {
+                        "medioPago"
+        })
+        List<Pedido> findByCliente_IdClienteOrderByFechaCreacionDescIdPedidoDesc(
+                        Integer idCliente);
 
-    @EntityGraph(
-            attributePaths = {
-                    "cliente",
-                    "medioPago"
-            }
-    )
-    Optional<Pedido>
-    findByIdPedidoAndTipoVentaAndClienteIsNotNull(
-            Integer idPedido,
-            TipoVenta tipoVenta
-    );
-
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("""
-            SELECT p
-            FROM Pedido p
-            WHERE p.idPedido = :idPedido
-            """)
-    Optional<Pedido> buscarPorIdParaDecision(
-            @Param("idPedido") Integer idPedido
-    );
-
-
-    @EntityGraph(
-            attributePaths = {
-                    "medioPago"
-            }
-    )
-    List<Pedido> findByCliente_IdClienteAndTipoVentaOrderByFechaCreacionDesc(
-            Integer idCliente,
-            TipoVenta tipoVenta
-    );
-
-
-    @EntityGraph(
-            attributePaths = {
-                    "medioPago"
-            }
-    )
-    Optional<Pedido> findByIdPedidoAndCliente_IdClienteAndTipoVenta(
-            Integer idPedido,
-            Integer idCliente,
-            TipoVenta tipoVenta
-    );
+                        
+        @EntityGraph(attributePaths = {
+                        "medioPago",
+                        "cliente"
+        })
+        Optional<Pedido> findByIdPedidoAndCliente_IdCliente(
+                        Integer idPedido,
+                        Integer idCliente);
 }

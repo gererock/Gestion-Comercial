@@ -68,6 +68,15 @@
 
             return;
         }
+        
+        const btnHistorialCompras =
+            document.getElementById(
+                'btnHistorialCompras'
+            );
+
+
+        btnHistorialCompras.href =
+            `/vendedor/cliente-historial.html?idCliente=${idCliente}`;
 
 
         if (
@@ -148,7 +157,7 @@
 
 
     async function cargarCliente(
-            idCliente
+        idCliente
     ) {
 
         try {
@@ -205,7 +214,7 @@
 
 
     function mostrarCliente(
-            cliente
+        cliente
     ) {
 
         document.getElementById(
@@ -393,8 +402,8 @@
 
 
     function ponerTexto(
-            id,
-            valor
+        id,
+        valor
     ) {
 
         document.getElementById(
@@ -407,12 +416,12 @@
 
 
     function obtenerNombreCompleto(
-            cliente
+        cliente
     ) {
 
         const completo =
             `${cliente.nombre || ''} ${cliente.apellido || ''}`
-                    .trim();
+                .trim();
 
 
         return completo
@@ -422,7 +431,7 @@
 
 
     function obtenerNombreUsuario(
-            cliente
+        cliente
     ) {
 
         if (
@@ -435,7 +444,7 @@
 
         const nombre =
             `${cliente.nombreUsuario || ''} ${cliente.apellidoUsuario || ''}`
-                    .trim();
+                .trim();
 
 
         return nombre
@@ -445,7 +454,7 @@
 
 
     function obtenerDescuento(
-            valor
+        valor
     ) {
 
         const numero =
@@ -469,7 +478,7 @@
 
 
     function formatearFecha(
-            valor
+        valor
     ) {
 
         if (
@@ -512,7 +521,7 @@
 
 
     async function obtenerMensajeError(
-            response
+        response
     ) {
 
         try {
@@ -535,7 +544,7 @@
 
 
     function mostrarError(
-            texto
+        texto
     ) {
 
         mensaje.textContent =
