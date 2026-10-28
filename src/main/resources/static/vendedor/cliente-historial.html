@@ -1,0 +1,139 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        Historial de compras | Todo Descartable
+    </title>
+
+    <link rel="stylesheet" href="/css/clientes.css">
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Historial de compras
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Usuario
+                </span>
+
+                <button id="btnCerrarSesion" class="btn btn-outline" type="button">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="titulo-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Clientes / Historial
+                </p>
+
+                <h2>
+                    Historial de compras
+                </h2>
+
+                <p id="nombreCliente" class="subtitulo">
+                    Cargando cliente...
+                </p>
+
+            </div>
+
+
+            <div class="titulo-acciones">
+
+                <a id="btnVolverCliente" href="/vendedor/clientes.html" class="btn btn-light">
+                    ← Volver a clientes
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <div id="mensaje" class="mensaje oculto" role="alert" aria-live="polite">
+        </div>
+
+
+        <section id="cargando" class="card estado-contenedor">
+
+            <div class="spinner"></div>
+
+            <p>
+                Cargando historial...
+            </p>
+
+        </section>
+
+
+        <section id="sinCompras" class="card estado-contenedor oculto">
+
+            <h3>
+                Sin compras registradas
+            </h3>
+
+            <p>
+                El cliente no posee compras registradas.
+            </p>
+
+        </section>
+
+
+        <section id="historial" class="clientes-grid oculto">
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/cliente-historial.js"></script>
+
+
+</body>
+
+</html>
