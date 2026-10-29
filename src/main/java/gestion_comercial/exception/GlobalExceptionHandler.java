@@ -441,4 +441,22 @@ public class GlobalExceptionHandler {
                                                 body);
         }
 
+        @ExceptionHandler(GastoException.class)
+        public ResponseEntity<ApiErrorResponse> handleGasto(
+                        GastoException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                exception.getStatus().value(),
+                                exception.getStatus().getReasonPhrase(),
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(
+                                                exception.getStatus())
+                                .body(
+                                                body);
+        }
+
 }
