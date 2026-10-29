@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Registrar gasto | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/registrar-gasto.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Gastos
+                </p>
+
+                <h2>
+                    Registrar gasto
+                </h2>
+
+                <p class="subtitulo">
+                    Registrá una salida de dinero del comercio.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Datos del gasto
+                    </h3>
+
+                    <p>
+                        Los campos marcados con * son obligatorios.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="cargandoDatos"
+                class="cargando oculto"
+            >
+
+                <div class="spinner">
+                </div>
+
+                <span>
+                    Cargando categorías y medios de pago...
+                </span>
+
+            </div>
+
+
+            <form
+                id="formGasto"
+                novalidate
+            >
+
+
+                <input
+                    type="hidden"
+                    id="claveOperacion"
+                >
+
+
+                <div class="form-grid">
+
+
+                    <div class="campo">
+
+                        <label for="categoriaGasto">
+
+                            Categoría de gasto
+
+                            <span class="requerido">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <select
+                            id="categoriaGasto"
+                            required
+                        >
+
+                            <option value="">
+                                Seleccioná una categoría
+                            </option>
+
+                        </select>
+
+
+                        <small id="ayudaCategoria">
+                            Solo se muestran categorías activas.
+                        </small>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="medioPago">
+                            Medio de pago
+                        </label>
+
+
+                        <select id="medioPago">
+
+                            <option value="">
+                                Sin medio de pago
+                            </option>
+
+                        </select>
+
+
+                        <small>
+                            Es opcional. Solo se muestran medios activos.
+                        </small>
+
+                    </div>
+
+
+                    <div class="campo campo-completo">
+
+                        <label for="descripcion">
+
+                            Descripción
+
+                            <span class="requerido">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <textarea
+                            id="descripcion"
+                            maxlength="500"
+                            rows="4"
+                            placeholder="Ej: Pago de servicio de internet"
+                            required
+                        ></textarea>
+
+
+                        <div class="contador">
+
+                            <span id="contadorDescripcion">
+                                0
+                            </span>
+
+                            / 500
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="monto">
+
+                            Monto
+
+                            <span class="requerido">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <div class="input-monto">
+
+                            <span>
+                                $
+                            </span>
+
+                            <input
+                                type="number"
+                                id="monto"
+                                min="0.01"
+                                max="9999999999.99"
+                                step="0.01"
+                                inputmode="decimal"
+                                placeholder="0.00"
+                                required
+                            >
+
+                        </div>
+
+
+                        <small>
+                            Usá punto para los decimales. Ej: 1500.50
+                        </small>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="fecha">
+
+                            Fecha
+
+                            <span class="requerido">
+                                *
+                            </span>
+
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="fecha"
+                            required
+                        >
+
+
+                        <small>
+                            No se permiten fechas futuras.
+                        </small>
+
+                    </div>
+
+
+                    <div class="campo campo-completo">
+
+                        <label for="observaciones">
+                            Observaciones
+                        </label>
+
+
+                        <textarea
+                            id="observaciones"
+                            maxlength="1000"
+                            rows="4"
+                            placeholder="Información adicional opcional"
+                        ></textarea>
+
+
+                        <div class="contador">
+
+                            <span id="contadorObservaciones">
+                                0
+                            </span>
+
+                            / 1000
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="acciones">
+
+                    <button
+                        type="button"
+                        id="btnCancelar"
+                        class="btn btn-light"
+                    >
+                        Cancelar
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        id="btnGuardar"
+                        class="btn btn-primary"
+                    >
+                        Registrar gasto
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <section class="card ayuda">
+
+            <h3>
+                Información
+            </h3>
+
+            <p>
+                El gasto quedará asociado automáticamente al administrador
+                que se encuentra autenticado.
+            </p>
+
+            <p>
+                Las categorías o medios de pago inactivos no pueden utilizarse
+                para registrar nuevos gastos.
+            </p>
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/registrar-gasto.js"></script>
+
+
+</body>
+
+</html>
