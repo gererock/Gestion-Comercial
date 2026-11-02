@@ -459,4 +459,22 @@ public class GlobalExceptionHandler {
                                                 body);
         }
 
+        @ExceptionHandler(ConsultaGastoException.class)
+        public ResponseEntity<ApiErrorResponse> handleConsultaGasto(
+                        ConsultaGastoException exception,
+                        HttpServletRequest request) {
+
+                ApiErrorResponse body = ApiErrorResponse.simple(
+                                exception.getStatus().value(),
+                                exception.getStatus().getReasonPhrase(),
+                                exception.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(
+                                                exception.getStatus())
+                                .body(
+                                                body);
+        }
+
 }
