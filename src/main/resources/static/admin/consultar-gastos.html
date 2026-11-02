@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Consultar gastos | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/consultar-gastos.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Gastos
+                </p>
+
+                <h2>
+                    Consultar gastos
+                </h2>
+
+                <p class="subtitulo">
+                    Consultá las salidas de dinero del comercio
+                    por período y aplicá filtros si lo necesitás.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Buscar y filtrar
+                    </h3>
+
+                    <p>
+                        Seleccioná un período y aplicá
+                        filtros opcionales.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="formConsulta">
+
+                <div class="form-grid">
+
+
+                    <div class="campo">
+
+                        <label for="periodo">
+                            Período
+                        </label>
+
+                        <select id="periodo">
+
+                            <option value="">
+                                Seleccioná un período
+                            </option>
+
+                            <option value="DIA">
+                                Día
+                            </option>
+
+                            <option value="SEMANA">
+                                Semana
+                            </option>
+
+                            <option value="MES">
+                                Mes
+                            </option>
+
+                            <option value="RANGO">
+                                Rango personalizado
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="desde">
+                            Desde
+                        </label>
+
+                        <input
+                            type="date"
+                            id="desde"
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="hasta">
+                            Hasta
+                        </label>
+
+                        <input
+                            type="date"
+                            id="hasta"
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="categoriaGasto">
+                            Categoría
+                        </label>
+
+                        <select id="categoriaGasto">
+
+                            <option value="">
+                                Todas las categorías
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="medioPago">
+                            Medio de pago
+                        </label>
+
+                        <select id="medioPago">
+
+                            <option value="">
+                                Todos los medios de pago
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="acciones">
+
+                    <button
+                        type="button"
+                        id="btnLimpiar"
+                        class="btn btn-light"
+                    >
+                        Limpiar
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="btnConsultar"
+                        class="btn btn-primary"
+                    >
+                        Consultar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <section class="resumen-grid">
+
+
+            <article class="card resumen-card">
+
+                <p class="resumen-etiqueta">
+                    Total gastado
+                </p>
+
+                <p
+                    id="totalGastos"
+                    class="resumen-valor"
+                >
+                    $ 0,00
+                </p>
+
+            </article>
+
+
+            <article class="card resumen-card">
+
+                <p class="resumen-etiqueta">
+                    Cantidad de gastos
+                </p>
+
+                <p
+                    id="cantidadGastos"
+                    class="resumen-valor"
+                >
+                    0
+                </p>
+
+            </article>
+
+
+            <article class="card resumen-card">
+
+                <p class="resumen-etiqueta">
+                    Período consultado
+                </p>
+
+                <p
+                    id="periodoConsultado"
+                    class="resumen-texto"
+                >
+                    Sin consulta
+                </p>
+
+            </article>
+
+
+        </section>
+
+
+        <section class="card">
+
+
+            <div class="card-header listado-header">
+
+                <div>
+
+                    <h3>
+                        Gastos encontrados
+                    </h3>
+
+                    <p id="textoResultados">
+                        Realizá una consulta para ver los gastos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="cargando"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner">
+                </div>
+
+                <p>
+                    Consultando gastos...
+                </p>
+
+            </div>
+
+
+            <div
+                id="sinResultados"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    🔎
+                </div>
+
+                <h4>
+                    No se encontraron gastos
+                </h4>
+
+                <p>
+                    No existen gastos para el período
+                    y los filtros seleccionados.
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenedorTabla"
+                class="tabla-responsive oculto"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Categoría
+                            </th>
+
+                            <th>
+                                Descripción
+                            </th>
+
+                            <th>
+                                Monto
+                            </th>
+
+                            <th>
+                                Medio de pago
+                            </th>
+
+                            <th>
+                                Registrado por
+                            </th>
+
+                            <th>
+                                Observaciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tablaGastos">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/consultar-gastos.js"></script>
+
+
+</body>
+
+</html>
