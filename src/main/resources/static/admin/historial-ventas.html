@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Historial de ventas | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/historial-ventas.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Ventas
+                </p>
+
+                <h2>
+                    Historial de ventas
+                </h2>
+
+                <p class="subtitulo">
+                    Consultá las ventas online y locales realizadas
+                    por el comercio.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header listado-header">
+
+                <div>
+
+                    <h3>
+                        Ventas registradas
+                    </h3>
+
+                    <p id="textoResultados">
+                        Cargando historial de ventas...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="cargando"
+                class="estado-contenedor"
+            >
+
+                <div class="spinner">
+                </div>
+
+                <p>
+                    Cargando ventas...
+                </p>
+
+            </div>
+
+
+            <div
+                id="sinResultados"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    🧾
+                </div>
+
+                <h4>
+                    No hay ventas registradas
+                </h4>
+
+                <p>
+                    Todavía no existen ventas para mostrar
+                    en el historial.
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenedorTabla"
+                class="tabla-responsive oculto"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                N° venta
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th>
+                                Tipo
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th>
+                                Pago
+                            </th>
+
+                            <th>
+                                Medio de pago
+                            </th>
+
+                            <th>
+                                Entrega
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Acción
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tablaVentas">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+        <section
+            id="seccionDetalle"
+            class="card oculto"
+        >
+
+
+            <div class="card-header detalle-header">
+
+                <div>
+
+                    <p class="detalle-etiqueta">
+                        Detalle de la venta
+                    </p>
+
+                    <h3 id="detalleNumeroVenta">
+                        Venta
+                    </h3>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarDetalle"
+                    class="btn btn-light"
+                >
+                    Cerrar detalle
+                </button>
+
+            </div>
+
+
+            <div
+                id="cargandoDetalle"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner">
+                </div>
+
+                <p>
+                    Cargando detalle...
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenidoDetalle"
+                class="oculto"
+            >
+
+
+                <div class="detalle-grid">
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Fecha
+                        </span>
+
+                        <strong id="detalleFecha">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Cliente
+                        </span>
+
+                        <strong id="detalleCliente">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Tipo de venta
+                        </span>
+
+                        <strong id="detalleTipoVenta">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Estado
+                        </span>
+
+                        <strong id="detalleEstadoPedido">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Estado de pago
+                        </span>
+
+                        <strong id="detalleEstadoPago">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Medio de pago
+                        </span>
+
+                        <strong id="detalleMedioPago">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detalle-dato">
+
+                        <span class="detalle-label">
+                            Medio de entrega
+                        </span>
+
+                        <strong id="detalleMedioEntrega">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="separador">
+                </div>
+
+
+                <h4 class="titulo-productos">
+                    Productos vendidos
+                </h4>
+
+
+                <div class="tabla-responsive">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Cantidad
+                                </th>
+
+                                <th>
+                                    Precio unitario
+                                </th>
+
+                                <th>
+                                    Descuento
+                                </th>
+
+                                <th>
+                                    Subtotal
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tablaDetalleProductos">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="totales">
+
+
+                    <div class="total-fila">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong id="detalleSubtotal">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="total-fila">
+
+                        <span>
+                            Descuento cliente
+                        </span>
+
+                        <strong id="detalleDescuentoCliente">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="total-fila">
+
+                        <span>
+                            Descuento mayorista
+                        </span>
+
+                        <strong id="detalleDescuentoMayorista">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="total-fila">
+
+                        <span>
+                            Descuento por oferta
+                        </span>
+
+                        <strong id="detalleDescuentoOferta">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                    <div class="total-fila total-final">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="detalleTotal">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/historial-ventas.js"></script>
+
+
+</body>
+
+</html>
