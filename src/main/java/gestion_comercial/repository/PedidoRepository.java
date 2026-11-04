@@ -6,10 +6,11 @@ import gestion_comercial.entity.TipoVenta;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import jakarta.persistence.LockModeType;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PedidoRepository
-                extends JpaRepository<Pedido, Integer> {
+                extends JpaRepository<Pedido, Integer>, JpaSpecificationExecutor<Pedido> {
 
         Optional<Pedido> findByClaveConfirmacion(
                         UUID claveConfirmacion);
@@ -75,7 +76,6 @@ public interface PedidoRepository
         List<Pedido> findByCliente_IdClienteOrderByFechaCreacionDescIdPedidoDesc(
                         Integer idCliente);
 
-                        
         @EntityGraph(attributePaths = {
                         "medioPago",
                         "cliente"
@@ -83,4 +83,13 @@ public interface PedidoRepository
         Optional<Pedido> findByIdPedidoAndCliente_IdCliente(
                         Integer idPedido,
                         Integer idCliente);
+
+        @EntityGraph(attributePaths = {
+                        "cliente",
+                        "medioPago"
+        })
+        List<Pedido> findAllByOrderByFechaCreacionDescIdPedidoDesc();
+
+        Optional<Pedido> findByIdPedido(
+                        Integer idPedido);
 }
