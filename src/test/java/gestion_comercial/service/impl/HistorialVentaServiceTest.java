@@ -20,7 +20,7 @@ class HistorialVentaServiceTest {
     @Mock PedidoRepository pedidos;
     @Mock DetallePedidoRepository detalles;
     HistorialVentaService service;
-    @BeforeEach void preparar() { service=new HistorialVentaService(pedidos,detalles); }
+    @BeforeEach void preparar() { service=new HistorialVentaService(pedidos,detalles,mock(ClienteRepository.class)); }
     static BigDecimal dinero(String n) { return new BigDecimal(n); }
     static Pedido venta() {
         var p=new Pedido(); p.setIdPedido(44); p.setNumeroPedido("US44-44");
@@ -36,8 +36,8 @@ class HistorialVentaServiceTest {
         var p=venta(); p.setTipoVenta(tipo);
         var c=new Cliente();c.setNombre("Ana");c.setApellido("Perez");p.setCliente(c);
         var m=new MedioPago();m.setNombre("Efectivo");p.setMedioPago(m);
-        when(pedidos.findAllByOrderByFechaCreacionDescIdPedidoDesc()).thenReturn(List.of(p));
-        var r=service.listarHistorial().getFirst();
+        when(pedidos.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Sort.class))).thenReturn(List.of(p));
+        var r=service.listarHistorial(null,null,null,null,null,null,null).getFirst();
         assertAll(()->assertEquals(44,r.idPedido()),()->assertEquals(p.getNumeroPedido(),r.numeroPedido()),
             ()->assertEquals(p.getFechaCreacion(),r.fecha()),()->assertEquals("Ana Perez",r.cliente()),
             ()->assertEquals(tipo,r.tipoVenta()),()->assertEquals(p.getEstadoPedido(),r.estadoPedido()),
@@ -53,11 +53,11 @@ class HistorialVentaServiceTest {
         assertEquals(esperado,service.buscarDetalle(44).cliente());
     }
     @Test void consumidorFinalYMedioPagoNulo() {
-        when(pedidos.findAllByOrderByFechaCreacionDescIdPedidoDesc()).thenReturn(List.of(venta()));
-        var r=service.listarHistorial().getFirst();assertEquals("Consumidor final",r.cliente());assertEquals("Sin medio de pago",r.medioPago());
+        when(pedidos.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Sort.class))).thenReturn(List.of(venta()));
+        var r=service.listarHistorial(null,null,null,null,null,null,null).getFirst();assertEquals("Consumidor final",r.cliente());assertEquals("Sin medio de pago",r.medioPago());
     }
     @Test void listadoVacio() {
-        when(pedidos.findAllByOrderByFechaCreacionDescIdPedidoDesc()).thenReturn(List.of());assertTrue(service.listarHistorial().isEmpty());
+        when(pedidos.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Sort.class))).thenReturn(List.of());assertTrue(service.listarHistorial(null,null,null,null,null,null,null).isEmpty());
     }
     @ParameterizedTest @EnumSource(TipoVenta.class)
     void detalleConservaProductosPreciosHistoricosDescuentosYTotal(TipoVenta tipo) {

@@ -163,9 +163,79 @@
         );
 
 
+    /*
+     * ELEMENTOS DE LOS FILTROS
+     */
+
+    const formFiltros =
+        document.getElementById(
+            'formFiltros'
+        );
+
+
+    const filtroFecha =
+        document.getElementById(
+            'filtroFecha'
+        );
+
+
+    const filtroDesde =
+        document.getElementById(
+            'filtroDesde'
+        );
+
+
+    const filtroHasta =
+        document.getElementById(
+            'filtroHasta'
+        );
+
+
+    const filtroCliente =
+        document.getElementById(
+            'filtroCliente'
+        );
+
+
+    const filtroMontoMinimo =
+        document.getElementById(
+            'filtroMontoMinimo'
+        );
+
+
+    const filtroMontoMaximo =
+        document.getElementById(
+            'filtroMontoMaximo'
+        );
+
+
+    const filtroTipoVenta =
+        document.getElementById(
+            'filtroTipoVenta'
+        );
+
+
+    const btnLimpiarFiltros =
+        document.getElementById(
+            'btnLimpiarFiltros'
+        );
+
+
+    /*
+     * VARIABLES DE CONTROL
+     */
+
     let cargandoVentaDetalle =
         false;
 
+
+    let cargandoHistorial =
+        false;
+
+
+    /*
+     * INICIO
+     */
 
     document.addEventListener(
         'DOMContentLoaded',
@@ -189,9 +259,16 @@
 
         registrarEventos();
 
-        await cargarVentas();
+        await cargarVentas(
+            API_VENTAS,
+            false
+        );
     }
 
+
+    /*
+     * USUARIO
+     */
 
     function mostrarUsuario() {
 
@@ -214,6 +291,10 @@
     }
 
 
+    /*
+     * EVENTOS
+     */
+
     function registrarEventos() {
 
         btnCerrarSesion.addEventListener(
@@ -232,10 +313,466 @@
             'click',
             manejarAccionTabla
         );
+
+
+        formFiltros.addEventListener(
+            'submit',
+            aplicarFiltros
+        );
+
+
+        btnLimpiarFiltros.addEventListener(
+            'click',
+            limpiarFiltros
+        );
     }
 
 
-    async function cargarVentas() {
+    /*
+     * APLICAR FILTROS
+     */
+
+    async function aplicarFiltros(
+        event
+    ) {
+
+        event.preventDefault();
+
+
+        ocultarMensaje();
+
+
+        const filtros =
+            obtenerFiltros();
+
+
+        const error =
+            validarFiltros(
+                filtros
+            );
+
+
+        if (
+            error
+        ) {
+
+            mostrarMensaje(
+                error,
+                'error'
+            );
+
+
+            return;
+        }
+
+
+        const url =
+            construirUrlFiltros(
+                filtros
+            );
+
+
+        cerrarDetalle();
+
+
+        await cargarVentas(
+            url,
+            hayFiltrosAplicados(
+                filtros
+            )
+        );
+    }
+
+
+    /*
+     * OBTENER VALORES DE LOS INPUTS
+     */
+
+    function obtenerFiltros() {
+
+        return {
+
+            fecha:
+                filtroFecha.value,
+
+            desde:
+                filtroDesde.value,
+
+            hasta:
+                filtroHasta.value,
+
+            cliente:
+                filtroCliente.value,
+
+            montoMinimo:
+                filtroMontoMinimo.value,
+
+            montoMaximo:
+                filtroMontoMaximo.value,
+
+            tipoVenta:
+                filtroTipoVenta.value
+        };
+    }
+
+
+    /*
+     * VALIDACIONES FRONTEND
+     */
+
+    function validarFiltros(
+        filtros
+    ) {
+
+        if (
+            filtros.fecha
+            &&
+            (
+                filtros.desde
+                ||
+                filtros.hasta
+            )
+        ) {
+
+            return 'No podés usar una fecha exacta junto con un rango de fechas.';
+        }
+
+
+        if (
+            filtros.desde
+            &&
+            filtros.hasta
+            &&
+            filtros.desde > filtros.hasta
+        ) {
+
+            return 'La fecha desde no puede ser posterior a la fecha hasta.';
+        }
+
+
+        if (
+            filtros.cliente
+            &&
+            filtros.cliente.trim() === ''
+        ) {
+
+            return 'El filtro de cliente no puede contener solamente espacios.';
+        }
+
+
+        if (
+            filtros.cliente
+            &&
+            !contieneCaracterValido(
+                filtros.cliente
+            )
+        ) {
+
+            return 'El filtro de cliente contiene un valor inválido.';
+        }
+
+
+        if (
+            filtros.montoMinimo !== ''
+        ) {
+
+            const montoMinimo =
+                Number(
+                    filtros.montoMinimo
+                );
+
+
+            if (
+                !Number.isFinite(
+                    montoMinimo
+                )
+            ) {
+
+                return 'El monto mínimo no es válido.';
+            }
+
+
+            if (
+                montoMinimo < 0
+            ) {
+
+                return 'El monto mínimo no puede ser negativo.';
+            }
+        }
+
+
+        if (
+            filtros.montoMaximo !== ''
+        ) {
+
+            const montoMaximo =
+                Number(
+                    filtros.montoMaximo
+                );
+
+
+            if (
+                !Number.isFinite(
+                    montoMaximo
+                )
+            ) {
+
+                return 'El monto máximo no es válido.';
+            }
+
+
+            if (
+                montoMaximo < 0
+            ) {
+
+                return 'El monto máximo no puede ser negativo.';
+            }
+        }
+
+
+        if (
+            filtros.montoMinimo !== ''
+            &&
+            filtros.montoMaximo !== ''
+        ) {
+
+            const montoMinimo =
+                Number(
+                    filtros.montoMinimo
+                );
+
+
+            const montoMaximo =
+                Number(
+                    filtros.montoMaximo
+                );
+
+
+            if (
+                montoMinimo > montoMaximo
+            ) {
+
+                return 'El monto mínimo no puede ser mayor al monto máximo.';
+            }
+        }
+
+
+        if (
+            filtros.tipoVenta
+            &&
+            filtros.tipoVenta !== 'ONLINE'
+            &&
+            filtros.tipoVenta !== 'LOCAL'
+        ) {
+
+            return 'El tipo de venta seleccionado no es válido.';
+        }
+
+
+        return null;
+    }
+
+
+    /*
+     * VALIDAR TEXTO DE CLIENTE
+     */
+
+    function contieneCaracterValido(
+        texto
+    ) {
+
+        return /[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/.test(
+            texto
+        );
+    }
+
+
+    /*
+     * CONSTRUIR URL CON QUERY PARAMS
+     */
+
+    function construirUrlFiltros(
+        filtros
+    ) {
+
+        const parametros =
+            new URLSearchParams();
+
+
+        if (
+            filtros.fecha
+        ) {
+
+            parametros.set(
+                'fecha',
+                filtros.fecha
+            );
+        }
+
+
+        if (
+            filtros.desde
+        ) {
+
+            parametros.set(
+                'desde',
+                filtros.desde
+            );
+        }
+
+
+        if (
+            filtros.hasta
+        ) {
+
+            parametros.set(
+                'hasta',
+                filtros.hasta
+            );
+        }
+
+
+        if (
+            filtros.cliente.trim()
+        ) {
+
+            parametros.set(
+                'cliente',
+                filtros.cliente.trim()
+            );
+        }
+
+
+        if (
+            filtros.montoMinimo !== ''
+        ) {
+
+            parametros.set(
+                'montoMinimo',
+                filtros.montoMinimo
+            );
+        }
+
+
+        if (
+            filtros.montoMaximo !== ''
+        ) {
+
+            parametros.set(
+                'montoMaximo',
+                filtros.montoMaximo
+            );
+        }
+
+
+        if (
+            filtros.tipoVenta
+        ) {
+
+            parametros.set(
+                'tipoVenta',
+                filtros.tipoVenta
+            );
+        }
+
+
+        const query =
+            parametros.toString();
+
+
+        if (
+            !query
+        ) {
+
+            return API_VENTAS;
+        }
+
+
+        return `${API_VENTAS}?${query}`;
+    }
+
+
+    /*
+     * SABER SI HAY FILTROS ACTIVOS
+     */
+
+    function hayFiltrosAplicados(
+        filtros
+    ) {
+
+        return Boolean(
+
+            filtros.fecha
+
+            ||
+
+            filtros.desde
+
+            ||
+
+            filtros.hasta
+
+            ||
+
+            filtros.cliente.trim()
+
+            ||
+
+            filtros.montoMinimo !== ''
+
+            ||
+
+            filtros.montoMaximo !== ''
+
+            ||
+
+            filtros.tipoVenta
+        );
+    }
+
+
+    /*
+     * LIMPIAR FILTROS
+     */
+
+    async function limpiarFiltros() {
+
+        formFiltros.reset();
+
+
+        ocultarMensaje();
+
+
+        cerrarDetalle();
+
+
+        await cargarVentas(
+            API_VENTAS,
+            false
+        );
+    }
+
+
+    /*
+     * CARGAR HISTORIAL
+     */
+
+    async function cargarVentas(
+        url,
+        filtrosAplicados
+    ) {
+
+        if (
+            cargandoHistorial
+        ) {
+
+            return;
+        }
+
+
+        cargandoHistorial =
+            true;
+
 
         mostrarCargando(
             true
@@ -249,7 +786,7 @@
 
             const response =
                 await Auth.fetchAutenticado(
-                    API_VENTAS,
+                    url,
                     {
                         method: 'GET'
                     }
@@ -281,7 +818,8 @@
 
 
             mostrarVentas(
-                ventas
+                ventas,
+                filtrosAplicados
             );
 
         } catch (error) {
@@ -316,6 +854,10 @@
 
         } finally {
 
+            cargandoHistorial =
+                false;
+
+
             mostrarCargando(
                 false
             );
@@ -323,8 +865,13 @@
     }
 
 
+    /*
+     * MOSTRAR RESULTADOS
+     */
+
     function mostrarVentas(
-        ventas
+        ventas,
+        filtrosAplicados
     ) {
 
         limpiarTablaVentas();
@@ -346,8 +893,78 @@
             ventas.length === 0
         ) {
 
-            textoResultados.textContent =
-                'No hay ventas registradas.';
+            if (
+                filtrosAplicados
+            ) {
+
+                textoResultados.textContent =
+                    'No se encontraron ventas con los filtros aplicados.';
+
+
+                const titulo =
+                    sinResultados.querySelector(
+                        'h4'
+                    );
+
+
+                const descripcion =
+                    sinResultados.querySelector(
+                        'p'
+                    );
+
+
+                if (
+                    titulo
+                ) {
+
+                    titulo.textContent =
+                        'No se encontraron ventas';
+                }
+
+
+                if (
+                    descripcion
+                ) {
+
+                    descripcion.textContent =
+                        'No existen ventas que coincidan con los filtros seleccionados.';
+                }
+
+            } else {
+
+                textoResultados.textContent =
+                    'No hay ventas registradas.';
+
+
+                const titulo =
+                    sinResultados.querySelector(
+                        'h4'
+                    );
+
+
+                const descripcion =
+                    sinResultados.querySelector(
+                        'p'
+                    );
+
+
+                if (
+                    titulo
+                ) {
+
+                    titulo.textContent =
+                        'No hay ventas registradas';
+                }
+
+
+                if (
+                    descripcion
+                ) {
+
+                    descripcion.textContent =
+                        'Todavía no existen ventas para mostrar en el historial.';
+                }
+            }
 
 
             contenedorTabla.classList.add(
@@ -364,10 +981,22 @@
         }
 
 
-        textoResultados.textContent =
-            ventas.length === 1
-                ? 'Se encontró 1 venta.'
-                : `Se encontraron ${ventas.length} ventas.`;
+        if (
+            filtrosAplicados
+        ) {
+
+            textoResultados.textContent =
+                ventas.length === 1
+                    ? 'Se encontró 1 venta con los filtros aplicados.'
+                    : `Se encontraron ${ventas.length} ventas con los filtros aplicados.`;
+
+        } else {
+
+            textoResultados.textContent =
+                ventas.length === 1
+                    ? 'Se encontró 1 venta.'
+                    : `Se encontraron ${ventas.length} ventas.`;
+        }
 
 
         sinResultados.classList.add(
@@ -392,6 +1021,10 @@
         );
     }
 
+
+    /*
+     * CREAR FILA DEL HISTORIAL
+     */
 
     function crearFilaVenta(
         venta
@@ -464,9 +1097,11 @@
 
         celdaTipo.appendChild(
             crearBadge(
+
                 formatearTipoVenta(
                     venta.tipoVenta
                 ),
+
                 obtenerClaseTipoVenta(
                     venta.tipoVenta
                 )
@@ -482,9 +1117,11 @@
 
         celdaEstado.appendChild(
             crearBadge(
+
                 formatearEstadoPedido(
                     venta.estadoPedido
                 ),
+
                 obtenerClaseEstadoPedido(
                     venta.estadoPedido
                 )
@@ -500,9 +1137,11 @@
 
         celdaPago.appendChild(
             crearBadge(
+
                 formatearEstadoPago(
                     venta.estadoPago
                 ),
+
                 obtenerClaseEstadoPago(
                     venta.estadoPago
                 )
@@ -641,6 +1280,10 @@
     }
 
 
+    /*
+     * EVENTO VER DETALLE
+     */
+
     function manejarAccionTabla(
         event
     ) {
@@ -689,6 +1332,10 @@
     }
 
 
+    /*
+     * CARGAR DETALLE
+     */
+
     async function cargarDetalle(
         idPedido
     ) {
@@ -722,7 +1369,9 @@
 
             const response =
                 await Auth.fetchAutenticado(
+
                     `${API_VENTAS}/${idPedido}`,
+
                     {
                         method: 'GET'
                     }
@@ -759,8 +1408,12 @@
 
 
             seccionDetalle.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+
+                behavior:
+                    'smooth',
+
+                block:
+                    'start'
             });
 
         } catch (error) {
@@ -793,6 +1446,10 @@
         }
     }
 
+
+    /*
+     * MOSTRAR DETALLE
+     */
 
     function mostrarDetalle(
         venta
@@ -883,6 +1540,10 @@
         );
     }
 
+
+    /*
+     * PRODUCTOS DEL DETALLE
+     */
 
     function mostrarProductosDetalle(
         productos
@@ -1048,6 +1709,10 @@
     }
 
 
+    /*
+     * BADGES
+     */
+
     function crearBadge(
         texto,
         clase
@@ -1153,6 +1818,10 @@
         return 'badge-estado';
     }
 
+
+    /*
+     * FORMATEADORES
+     */
 
     function formatearTipoVenta(
         tipoVenta
@@ -1384,12 +2053,19 @@
         return valor.toLocaleString(
             'es-AR',
             {
-                style: 'currency',
-                currency: 'ARS'
+                style:
+                    'currency',
+
+                currency:
+                    'ARS'
             }
         );
     }
 
+
+    /*
+     * SPINNERS
+     */
 
     function mostrarCargando(
         mostrar
@@ -1452,6 +2128,10 @@
     }
 
 
+    /*
+     * CERRAR DETALLE
+     */
+
     function cerrarDetalle() {
 
         seccionDetalle.classList.add(
@@ -1469,12 +2149,20 @@
     }
 
 
+    /*
+     * LIMPIAR TABLA
+     */
+
     function limpiarTablaVentas() {
 
         tablaVentas.innerHTML =
             '';
     }
 
+
+    /*
+     * MENSAJES
+     */
 
     function mostrarMensaje(
         texto,
@@ -1526,6 +2214,10 @@
         );
     }
 
+
+    /*
+     * ERRORES DEL BACKEND
+     */
 
     async function obtenerMensajeError(
         response
@@ -1593,18 +2285,27 @@
         ) {
 
             case 400:
-                return 'La solicitud realizada no es válida.';
+
+                return 'Los filtros enviados no son válidos.';
+
 
             case 401:
+
                 return 'La sesión no es válida o expiró.';
 
+
             case 403:
+
                 return 'No tenés permisos para consultar el historial de ventas.';
 
+
             case 404:
+
                 return 'La venta indicada no existe.';
 
+
             default:
+
                 return 'Ocurrió un error inesperado al consultar las ventas.';
         }
     }

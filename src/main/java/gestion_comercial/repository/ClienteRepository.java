@@ -5,6 +5,7 @@ import gestion_comercial.entity.Cliente;
 import jakarta.persistence.LockModeType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -57,6 +58,7 @@ public interface ClienteRepository
 
         ORDER BY c.nombre ASC, c.apellido ASC
         """)
+    @EntityGraph(attributePaths = {"usuario.rol"})
     List<Cliente> buscarClientes(
             @Param("busqueda") String busqueda
     );
