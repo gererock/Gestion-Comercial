@@ -55,11 +55,9 @@ body {
 .header {
 
     background:
-        linear-gradient(
-            110deg,
+        linear-gradient(110deg,
             var(--azul-oscuro),
-            var(--azul)
-        );
+            var(--azul));
 
     color:
         var(--blanco);
@@ -1036,10 +1034,181 @@ tbody tr:hover {
         none !important;
 }
 
+/* FILTROS DE VENTAS */
+
+.filtros-card {
+
+    margin-bottom:
+        22px;
+}
+
+
+.filtros-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:
+        18px;
+}
+
+
+.campo-filtro {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+}
+
+
+.campo-filtro label {
+
+    color:
+        var(--gris-oscuro);
+
+    font-size:
+        13px;
+
+    font-weight:
+        700;
+}
+
+
+.campo-filtro input,
+.campo-filtro select {
+
+    width:
+        100%;
+
+    min-height:
+        42px;
+
+    padding:
+        10px 12px;
+
+    border:
+        1px solid var(--gris-borde);
+
+    border-radius:
+        8px;
+
+    background-color:
+        var(--blanco);
+
+    color:
+        var(--gris-oscuro);
+
+    font-family:
+        inherit;
+
+    font-size:
+        14px;
+
+    outline:
+        none;
+
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+}
+
+
+.campo-filtro input::placeholder {
+
+    color:
+        #9aa3b2;
+}
+
+
+.campo-filtro input:focus,
+.campo-filtro select:focus {
+
+    border-color:
+        var(--azul);
+
+    box-shadow:
+        0 0 0 3px rgba(18, 70, 163, 0.12);
+}
+
+
+.campo-filtro input:disabled,
+.campo-filtro select:disabled {
+
+    background-color:
+        #f1f3f6;
+
+    color:
+        var(--gris-texto);
+
+    cursor:
+        not-allowed;
+}
+
+
+.campo-filtro-cliente {
+
+    grid-column:
+        span 2;
+}
+
+
+.acciones-filtros {
+
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        12px;
+
+    margin-top:
+        22px;
+}
+
+
+.btn-primary {
+
+    background-color:
+        var(--azul);
+
+    color:
+        var(--blanco);
+}
+
+
+.btn-primary:hover {
+
+    background-color:
+        var(--azul-oscuro);
+}
+
 
 /* TABLET */
 
 @media (max-width: 900px) {
+
+    .filtros-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .campo-filtro-cliente {
+
+        grid-column:
+            span 2;
+    }
 
     .header-contenido {
 
@@ -1092,6 +1261,33 @@ tbody tr:hover {
 /* CELULAR */
 
 @media (max-width: 560px) {
+
+    .filtros-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .campo-filtro-cliente {
+
+        grid-column:
+            span 1;
+    }
+
+
+    .acciones-filtros {
+
+        flex-direction:
+            column;
+    }
+
+
+    .acciones-filtros .btn {
+
+        width:
+            100%;
+    }
 
     .header-contenido {
 

@@ -3,10 +3,12 @@ package gestion_comercial.repository;
 import gestion_comercial.entity.EstadoPedido;
 import gestion_comercial.entity.Pedido;
 import gestion_comercial.entity.TipoVenta;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,11 @@ import java.util.UUID;
 
 public interface PedidoRepository
                 extends JpaRepository<Pedido, Integer>, JpaSpecificationExecutor<Pedido> {
+
+        @Override
+        @EntityGraph(attributePaths = {"cliente.usuario.rol", "medioPago"})
+        List<Pedido> findAll(Specification<Pedido> specification,
+                        Sort sort);
 
         Optional<Pedido> findByClaveConfirmacion(
                         UUID claveConfirmacion);

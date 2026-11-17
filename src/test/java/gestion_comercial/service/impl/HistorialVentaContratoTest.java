@@ -15,13 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HistorialVentaContratoTest {
     @Test void historialVacioResponde200ConArrayVacioSinEliminarDatos()throws Exception{
         var pedidos=mock(PedidoRepository.class);
-        when(pedidos.findAllByOrderByFechaCreacionDescIdPedidoDesc()).thenReturn(List.of());
-        var service=new HistorialVentaService(pedidos,mock(DetallePedidoRepository.class));
+        when(pedidos.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Sort.class))).thenReturn(List.of());
+        var service=new HistorialVentaService(pedidos,mock(DetallePedidoRepository.class),mock(ClienteRepository.class));
         MockMvcBuilders.standaloneSetup(new HistorialVentaController(service)).build()
             .perform(get("/api/admin/ventas")).andExpect(status().isOk()).andExpect(content().json("[]"));
     }
     @Test void servicioDeclaraTransaccionesDeSoloLectura()throws Exception{
-        assertTrue(HistorialVentaService.class.getMethod("listarHistorial").getAnnotation(Transactional.class).readOnly());
+        assertTrue(HistorialVentaService.class.getMethod("listarHistorial",java.time.LocalDate.class,java.time.LocalDate.class,java.time.LocalDate.class,String.class,java.math.BigDecimal.class,java.math.BigDecimal.class,gestion_comercial.entity.TipoVenta.class).getAnnotation(Transactional.class).readOnly());
         assertTrue(HistorialVentaService.class.getMethod("buscarDetalle",Integer.class).getAnnotation(Transactional.class).readOnly());
     }
     @Test void controladorSoloExponeGet(){
