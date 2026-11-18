@@ -15,6 +15,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import jakarta.persistence.LockModeType;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +25,7 @@ public interface PedidoRepository
                 extends JpaRepository<Pedido, Integer>, JpaSpecificationExecutor<Pedido> {
 
         @Override
-        @EntityGraph(attributePaths = {"cliente.usuario.rol", "medioPago"})
+        @EntityGraph(attributePaths = { "cliente.usuario.rol", "medioPago" })
         List<Pedido> findAll(Specification<Pedido> specification,
                         Sort sort);
 
@@ -99,4 +101,20 @@ public interface PedidoRepository
 
         Optional<Pedido> findByIdPedido(
                         Integer idPedido);
+
+        @Query("""
+                        SELECT p
+                        FROM Pedido p
+                        WHERE p.fechaCreacion >= :desde
+                        AND p.fechaCreacion < :hasta
+                        AND p.estadoPedido NOT IN :estadosExcluidos
+                        ORDER BY p.fechaCreacion ASC, p.idPedido ASC
+                        """)
+        List<Pedido> buscarVentasValidasPorPeriodo(
+
+                        @Param("desde") LocalDateTime desde,
+
+                        @Param("hasta") LocalDateTime hasta,
+
+                        @Param("estadosExcluidos") Collection<EstadoPedido> estadosExcluidos);
 }

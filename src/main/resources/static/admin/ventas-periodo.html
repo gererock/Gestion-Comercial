@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Ventas por período | Todo Descartable
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="/css/ventas-periodo.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Ventas por período
+                </h2>
+
+
+                <p class="subtitulo">
+                    Consultá el rendimiento comercial
+                    del día, semana o mes actual.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <h3>
+                    Seleccionar período
+                </h3>
+
+
+                <p>
+                    Elegí el período que querés consultar.
+                </p>
+
+            </div>
+
+
+            <div class="periodos">
+
+
+                <button
+                    type="button"
+                    class="btn-periodo activo"
+                    data-periodo="DIA"
+                >
+                    Hoy
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="SEMANA"
+                >
+                    Esta semana
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="MES"
+                >
+                    Este mes
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+
+        <section
+            id="cargando"
+            class="card estado-contenedor"
+        >
+
+            <div class="spinner">
+            </div>
+
+
+            <p>
+                Cargando información de ventas...
+            </p>
+
+        </section>
+
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="card resumen-periodo">
+
+
+                <div>
+
+                    <p class="etiqueta-periodo">
+                        Período consultado
+                    </p>
+
+
+                    <h3 id="nombrePeriodo">
+                        Hoy
+                    </h3>
+
+
+                    <p id="rangoFechas">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="actualizacion">
+
+                    <span>
+                        Información actualizada al momento de la consulta
+                    </span>
+
+                </div>
+
+
+            </section>
+
+
+            <div class="metricas-grid">
+
+
+                <article class="metrica-card realizadas">
+
+
+                    <div class="metrica-icono">
+                        🧾
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Ventas realizadas
+                        </p>
+
+
+                        <strong
+                            id="cantidadRealizadas"
+                            class="metrica-valor"
+                        >
+                            0
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Pedidos válidos registrados
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card vendido">
+
+
+                    <div class="metrica-icono">
+                        $
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Total vendido
+                        </p>
+
+
+                        <strong
+                            id="montoVendido"
+                            class="metrica-valor"
+                        >
+                            $ 0,00
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Incluye pagos pendientes y pagados
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card cobradas">
+
+
+                    <div class="metrica-icono">
+                        ✓
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Ventas cobradas
+                        </p>
+
+
+                        <strong
+                            id="cantidadCobradas"
+                            class="metrica-valor"
+                        >
+                            0
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Ventas con estado de pago PAGADO
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card cobrado">
+
+
+                    <div class="metrica-icono">
+                        $
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Total cobrado
+                        </p>
+
+
+                        <strong
+                            id="montoCobrado"
+                            class="metrica-valor"
+                        >
+                            $ 0,00
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Dinero efectivamente cobrado
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+            </div>
+
+
+            <section class="card detalle-resumen">
+
+
+                <div class="card-header">
+
+                    <h3>
+                        Resumen
+                    </h3>
+
+
+                    <p>
+                        Diferencia entre las ventas realizadas
+                        y las efectivamente cobradas.
+                    </p>
+
+                </div>
+
+
+                <div class="resumen-grid">
+
+
+                    <div class="resumen-dato">
+
+                        <span>
+                            Ventas pendientes de cobro
+                        </span>
+
+
+                        <strong id="cantidadPendientes">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="resumen-dato">
+
+                        <span>
+                            Monto pendiente de cobro
+                        </span>
+
+
+                        <strong id="montoPendiente">
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+            <section
+                id="sinVentas"
+                class="card estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    📊
+                </div>
+
+
+                <h3>
+                    No hay ventas en este período
+                </h3>
+
+
+                <p>
+                    No existen ventas válidas registradas
+                    para el período seleccionado.
+                </p>
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/ventas-periodo.js"></script>
+
+
+</body>
+
+</html>
