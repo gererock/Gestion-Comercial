@@ -1,5 +1,6 @@
 package gestion_comercial.repository;
 
+import gestion_comercial.entity.EstadoPago;
 import gestion_comercial.entity.EstadoPedido;
 import gestion_comercial.entity.Pedido;
 import gestion_comercial.entity.TipoVenta;
@@ -9,15 +10,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import jakarta.persistence.LockModeType;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -115,6 +117,25 @@ public interface PedidoRepository
                         @Param("desde") LocalDateTime desde,
 
                         @Param("hasta") LocalDateTime hasta,
+
+                        @Param("estadosExcluidos") Collection<EstadoPedido> estadosExcluidos);
+
+        @Query("""
+                        SELECT p
+                        FROM Pedido p
+                        WHERE p.fechaCreacion >= :desde
+                        AND p.fechaCreacion < :hasta
+                        AND p.estadoPago = :estadoPago
+                        AND p.estadoPedido NOT IN :estadosExcluidos
+                        ORDER BY p.fechaCreacion ASC, p.idPedido ASC
+                        """)
+        List<Pedido> buscarIngresosPorPeriodo(
+
+                        @Param("desde") LocalDateTime desde,
+
+                        @Param("hasta") LocalDateTime hasta,
+
+                        @Param("estadoPago") EstadoPago estadoPago,
 
                         @Param("estadosExcluidos") Collection<EstadoPedido> estadosExcluidos);
 }

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Ingresos por ventas | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/ingresos-ventas.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Ingresos por ventas
+                </h2>
+
+
+                <p class="subtitulo">
+                    Consultá el dinero efectivamente cobrado
+                    por las ventas del comercio.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <h3>
+                    Seleccionar período
+                </h3>
+
+
+                <p>
+                    Consultá los ingresos cobrados del día,
+                    semana, mes o un rango personalizado.
+                </p>
+
+            </div>
+
+
+            <div class="periodos">
+
+
+                <button
+                    type="button"
+                    class="btn-periodo activo"
+                    data-periodo="DIA"
+                >
+                    Hoy
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="SEMANA"
+                >
+                    Esta semana
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="MES"
+                >
+                    Este mes
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="RANGO"
+                >
+                    Rango personalizado
+                </button>
+
+
+            </div>
+
+
+            <form
+                id="formRango"
+                class="rango-form oculto"
+            >
+
+
+                <div class="campo">
+
+
+                    <label for="fechaDesde">
+                        Desde
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaDesde"
+                        name="desde"
+                        required
+                    >
+
+
+                </div>
+
+
+                <div class="campo">
+
+
+                    <label for="fechaHasta">
+                        Hasta
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaHasta"
+                        name="hasta"
+                        required
+                    >
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Consultar rango
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+        <section
+            id="cargando"
+            class="card estado-contenedor oculto"
+        >
+
+
+            <div class="spinner">
+            </div>
+
+
+            <p>
+                Consultando ingresos...
+            </p>
+
+
+        </section>
+
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="card resumen-periodo">
+
+
+                <div>
+
+                    <p class="etiqueta">
+                        Período consultado
+                    </p>
+
+
+                    <h3 id="nombrePeriodo">
+                        Hoy
+                    </h3>
+
+
+                    <p id="rangoFechas">
+                        -
+                    </p>
+
+                </div>
+
+
+            </section>
+
+
+            <div class="metricas-grid">
+
+
+                <article class="metrica-card">
+
+
+                    <div class="metrica-icono">
+                        $
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Total de ingresos
+                        </p>
+
+
+                        <strong
+                            id="montoTotalIngresos"
+                            class="metrica-valor"
+                        >
+                            $ 0,00
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Dinero proveniente de ventas pagadas
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card">
+
+
+                    <div class="metrica-icono">
+                        ✓
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Ventas cobradas
+                        </p>
+
+
+                        <strong
+                            id="cantidadVentasCobradas"
+                            class="metrica-valor"
+                        >
+                            0
+                        </strong>
+
+
+                        <p class="metrica-descripcion">
+                            Pedidos pagados y válidos
+                        </p>
+
+                    </div>
+
+
+                </article>
+
+
+            </div>
+
+
+            <section
+                id="sinIngresos"
+                class="card estado-contenedor oculto"
+            >
+
+
+                <div class="estado-icono">
+                    📊
+                </div>
+
+
+                <h3>
+                    No hay ingresos en este período
+                </h3>
+
+
+                <p>
+                    No existen ventas pagadas y válidas
+                    dentro del período seleccionado.
+                </p>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/ingresos-ventas.js"></script>
+
+
+</body>
+
+</html>
