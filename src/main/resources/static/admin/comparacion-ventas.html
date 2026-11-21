@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Comparación de ventas | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/comparacion-ventas.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Comparar ventas online y locales
+                </h2>
+
+
+                <p class="subtitulo">
+                    Compará la cantidad de operaciones
+                    y el total vendido por cada modalidad.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <h3>
+                    Seleccionar período
+                </h3>
+
+
+                <p>
+                    Consultá la comparación del día,
+                    semana, mes o un rango personalizado.
+                </p>
+
+            </div>
+
+
+            <div class="periodos">
+
+
+                <button
+                    type="button"
+                    class="btn-periodo activo"
+                    data-periodo="DIA"
+                >
+                    Hoy
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="SEMANA"
+                >
+                    Esta semana
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="MES"
+                >
+                    Este mes
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="RANGO"
+                >
+                    Rango personalizado
+                </button>
+
+
+            </div>
+
+
+            <form
+                id="formRango"
+                class="rango-form oculto"
+            >
+
+
+                <div class="campo">
+
+
+                    <label for="fechaDesde">
+                        Desde
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaDesde"
+                        name="desde"
+                        required
+                    >
+
+
+                </div>
+
+
+                <div class="campo">
+
+
+                    <label for="fechaHasta">
+                        Hasta
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaHasta"
+                        name="hasta"
+                        required
+                    >
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Consultar rango
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+        <section
+            id="cargando"
+            class="card estado-contenedor oculto"
+        >
+
+
+            <div class="spinner">
+            </div>
+
+
+            <p>
+                Consultando ventas...
+            </p>
+
+
+        </section>
+
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="card resumen-periodo">
+
+
+                <div>
+
+                    <p class="etiqueta">
+                        Período consultado
+                    </p>
+
+
+                    <h3 id="nombrePeriodo">
+                        Hoy
+                    </h3>
+
+
+                    <p id="rangoFechas">
+                        -
+                    </p>
+
+                </div>
+
+
+            </section>
+
+
+            <section class="comparacion-grid">
+
+
+                <article class="modalidad-card">
+
+
+                    <div class="modalidad-header">
+
+                        <div class="modalidad-icono online">
+                            O
+                        </div>
+
+
+                        <div>
+
+                            <p class="modalidad-etiqueta">
+                                Modalidad
+                            </p>
+
+                            <h3>
+                                Ventas online
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="metricas-modalidad">
+
+
+                        <div class="metrica-item">
+
+                            <span class="metrica-titulo">
+                                Cantidad de ventas
+                            </span>
+
+
+                            <strong
+                                id="cantidadVentasOnline"
+                                class="metrica-valor"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metrica-item">
+
+                            <span class="metrica-titulo">
+                                Total vendido
+                            </span>
+
+
+                            <strong
+                                id="montoTotalOnline"
+                                class="metrica-valor"
+                            >
+                                $ 0,00
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="modalidad-card">
+
+
+                    <div class="modalidad-header">
+
+                        <div class="modalidad-icono local">
+                            L
+                        </div>
+
+
+                        <div>
+
+                            <p class="modalidad-etiqueta">
+                                Modalidad
+                            </p>
+
+                            <h3>
+                                Ventas locales
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="metricas-modalidad">
+
+
+                        <div class="metrica-item">
+
+                            <span class="metrica-titulo">
+                                Cantidad de ventas
+                            </span>
+
+
+                            <strong
+                                id="cantidadVentasLocales"
+                                class="metrica-valor"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="metrica-item">
+
+                            <span class="metrica-titulo">
+                                Total vendido
+                            </span>
+
+
+                            <strong
+                                id="montoTotalLocal"
+                                class="metrica-valor"
+                            >
+                                $ 0,00
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+
+            </section>
+
+
+            <section
+                id="sinVentas"
+                class="card estado-contenedor oculto"
+            >
+
+
+                <div class="estado-icono">
+                    📊
+                </div>
+
+
+                <h3>
+                    No hay ventas en este período
+                </h3>
+
+
+                <p>
+                    No existen ventas online ni locales
+                    dentro del período seleccionado.
+                </p>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/comparacion-ventas.js"></script>
+
+
+</body>
+
+</html>
