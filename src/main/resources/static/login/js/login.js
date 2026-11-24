@@ -121,6 +121,11 @@
 
 
 
+    if (new URLSearchParams(window.location.search).get('sesion') === 'expirada') {
+        mostrarMensaje('La sesión expiró o no es válida. Volvé a iniciar sesión.');
+    }
+
+
     function ocultarMensaje() {
 
         loginMessage.hidden =
