@@ -54,11 +54,17 @@
 
     function cerrarSesion() {
 
+        finalizarSesion('');
+    }
+
+
+    function finalizarSesion(query) {
+
         sessionStorage.removeItem(TOKEN_KEY);
         sessionStorage.removeItem(ROLE_KEY);
         sessionStorage.removeItem(USER_KEY);
 
-        window.location.href = '/login/index.html';
+        window.location.href = '/login/index.html' + query;
     }
 
 
@@ -107,7 +113,7 @@
     }
 
 
-    async function fetchAutenticado(url, options = {}) {
+    async function fetchAutenticado(url, { avisarSesionExpirada = false, ...options } = {}) {
 
         const token = obtenerToken();
 
@@ -133,7 +139,7 @@
         );
 
         if (response.status === 401) {
-            cerrarSesion();
+            finalizarSesion(avisarSesionExpirada ? '?sesion=expirada' : '');
         }
 
         return response;

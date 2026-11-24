@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Ticket promedio | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/ticket-promedio.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Ticket promedio
+                </h2>
+
+
+                <p class="subtitulo">
+                    Consultá el valor promedio de las ventas
+                    realizadas según período y modalidad.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <h3>
+                    Filtros
+                </h3>
+
+
+                <p>
+                    Seleccioná el período y el tipo de venta
+                    que querés analizar.
+                </p>
+
+            </div>
+
+
+            <div class="grupo-filtro">
+
+
+                <p class="titulo-filtro">
+                    Período
+                </p>
+
+
+                <div class="botones-filtro">
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo activo"
+                        data-periodo="DIA"
+                    >
+                        Hoy
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="SEMANA"
+                    >
+                        Esta semana
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="MES"
+                    >
+                        Este mes
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="RANGO"
+                    >
+                        Rango personalizado
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="grupo-filtro">
+
+
+                <p class="titulo-filtro">
+                    Tipo de venta
+                </p>
+
+
+                <div class="botones-filtro">
+
+
+                    <button
+                        type="button"
+                        class="btn-tipo activo"
+                        data-tipo="GENERAL"
+                    >
+                        General
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-tipo"
+                        data-tipo="ONLINE"
+                    >
+                        Online
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-tipo"
+                        data-tipo="LOCAL"
+                    >
+                        Local
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+            <form
+                id="formRango"
+                novalidate
+                class="rango-form oculto"
+            >
+
+
+                <div class="campo">
+
+
+                    <label for="fechaDesde">
+                        Desde
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaDesde"
+                        name="desde"
+                        required
+                    >
+
+
+                </div>
+
+
+                <div class="campo">
+
+
+                    <label for="fechaHasta">
+                        Hasta
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaHasta"
+                        name="hasta"
+                        required
+                    >
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Consultar rango
+                </button>
+
+
+            </form>
+
+
+            <div class="acciones-filtros">
+
+                <button
+                    type="button"
+                    id="btnLimpiarFiltros"
+                    class="btn btn-light"
+                >
+                    Limpiar filtros
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <section
+            id="cargando"
+            role="status"
+            class="card estado-contenedor oculto"
+        >
+
+
+            <div class="spinner">
+            </div>
+
+
+            <p>
+                Calculando ticket promedio...
+            </p>
+
+
+        </section>
+
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="card resumen-periodo">
+
+
+                <div>
+
+                    <p class="etiqueta">
+                        Consulta actual
+                    </p>
+
+
+                    <h3 id="nombrePeriodo">
+                        Hoy
+                    </h3>
+
+
+                    <p id="detalleConsulta">
+                        General
+                    </p>
+
+
+                    <p id="rangoFechas">
+                        -
+                    </p>
+
+                </div>
+
+
+            </section>
+
+
+            <section class="metricas-grid">
+
+
+                <article class="metrica-card">
+
+
+                    <div class="metrica-icono">
+                        V
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Cantidad de ventas
+                        </p>
+
+
+                        <strong
+                            id="cantidadVentas"
+                            class="metrica-valor"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card">
+
+
+                    <div class="metrica-icono">
+                        $
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Total vendido
+                        </p>
+
+
+                        <strong
+                            id="totalVendido"
+                            class="metrica-valor"
+                        >
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                </article>
+
+
+                <article class="metrica-card destacada">
+
+
+                    <div class="metrica-icono">
+                        TP
+                    </div>
+
+
+                    <div>
+
+                        <p class="metrica-titulo">
+                            Ticket promedio
+                        </p>
+
+
+                        <strong
+                            id="ticketPromedio"
+                            class="metrica-valor"
+                        >
+                            $ 0,00
+                        </strong>
+
+                    </div>
+
+
+                </article>
+
+
+            </section>
+
+
+            <section
+                id="sinVentas"
+                class="card estado-contenedor oculto"
+            >
+
+
+                <div class="estado-icono">
+                    📊
+                </div>
+
+
+                <h3>
+                    No hay ventas válidas
+                </h3>
+
+
+                <p>
+                    No existen ventas válidas para el período
+                    y tipo seleccionados.
+                </p>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/ticket-promedio.js"></script>
+
+
+</body>
+
+</html>
