@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Productos más vendidos | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/productos-mas-vendidos.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Productos más vendidos
+                </h2>
+
+
+                <p class="subtitulo">
+                    Consultá qué productos tuvieron mayor salida
+                    durante un período determinado.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+        >
+        </div>
+
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <h3>
+                    Período
+                </h3>
+
+                <p>
+                    Seleccioná el período que querés analizar.
+                </p>
+
+            </div>
+
+
+            <div class="botones-periodo">
+
+
+                <button
+                    type="button"
+                    class="btn-periodo activo"
+                    data-periodo="DIA"
+                >
+                    Hoy
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="SEMANA"
+                >
+                    Esta semana
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="MES"
+                >
+                    Este mes
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-periodo"
+                    data-periodo="RANGO"
+                >
+                    Rango personalizado
+                </button>
+
+
+            </div>
+
+
+            <form
+                id="formRango"
+                class="rango-form oculto"
+            >
+
+
+                <div class="campo">
+
+                    <label for="fechaDesde">
+                        Desde
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fechaDesde"
+                        name="desde"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="fechaHasta">
+                        Hasta
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fechaHasta"
+                        name="hasta"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Consultar rango
+                </button>
+
+
+            </form>
+
+
+            <div class="acciones-filtros">
+
+                <button
+                    type="button"
+                    id="btnLimpiarFiltros"
+                    class="btn btn-light"
+                >
+                    Limpiar filtros
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <section
+            id="cargando"
+            class="card estado-contenedor oculto"
+            aria-live="polite"
+        >
+
+            <div class="spinner">
+            </div>
+
+            <p>
+                Consultando productos más vendidos...
+            </p>
+
+        </section>
+
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="resumen-grid">
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Período
+                    </p>
+
+                    <strong
+                        id="periodoConsultado"
+                        class="resumen-valor"
+                    >
+                        Hoy
+                    </strong>
+
+                    <span
+                        id="rangoConsultado"
+                        class="resumen-detalle"
+                    >
+                        -
+                    </span>
+
+                </article>
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Productos vendidos
+                    </p>
+
+                    <strong
+                        id="cantidadProductos"
+                        class="resumen-valor"
+                    >
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Unidades vendidas
+                    </p>
+
+                    <strong
+                        id="cantidadUnidades"
+                        class="resumen-valor"
+                    >
+                        0
+                    </strong>
+
+                </article>
+
+
+            </section>
+
+
+            <section
+                id="sinResultados"
+                class="card estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    📦
+                </div>
+
+                <h3>
+                    No hay productos vendidos
+                </h3>
+
+                <p>
+                    No existen productos vendidos en el período seleccionado.
+                </p>
+
+            </section>
+
+
+            <section
+                id="contenedorTabla"
+                class="card tabla-card oculto"
+            >
+
+
+                <div class="tabla-encabezado">
+
+                    <div>
+
+                        <h3>
+                            Ranking de productos
+                        </h3>
+
+                        <p>
+                            Ordenado de mayor a menor cantidad vendida.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="tabla-responsive">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Posición
+                                </th>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    Categoría
+                                </th>
+
+                                <th>
+                                    Marca
+                                </th>
+
+                                <th>
+                                    Cantidad vendida
+                                </th>
+
+                                <th>
+                                    Total vendido
+                                </th>
+
+                                <th>
+                                    Información
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tablaProductos">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <div
+        id="modalProducto"
+        class="modal oculto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModalProducto"
+    >
+
+
+        <div class="modal-contenido">
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <p class="ruta">
+                        Información del producto
+                    </p>
+
+                    <h3 id="tituloModalProducto">
+                        Detalle
+                    </h3>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarModal"
+                    class="btn-cerrar"
+                    aria-label="Cerrar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                id="cargandoDetalle"
+                class="estado-contenedor oculto"
+            >
+
+                <div class="spinner">
+                </div>
+
+                <p>
+                    Cargando producto...
+                </p>
+
+            </div>
+
+
+            <div
+                id="contenidoDetalle"
+                class="detalle-grid oculto"
+            >
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        ID
+                    </span>
+
+                    <strong id="detalleId">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Nombre
+                    </span>
+
+                    <strong id="detalleNombre">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Categoría
+                    </span>
+
+                    <strong id="detalleCategoria">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Marca
+                    </span>
+
+                    <strong id="detalleMarca">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Precio de venta
+                    </span>
+
+                    <strong id="detallePrecio">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Stock actual
+                    </span>
+
+                    <strong id="detalleStockActual">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Stock mínimo
+                    </span>
+
+                    <strong id="detalleStockMinimo">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detalle-item">
+
+                    <span>
+                        Estado
+                    </span>
+
+                    <strong id="detalleEstado">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    id="btnCerrarModalFooter"
+                    class="btn btn-light"
+                >
+                    Cerrar
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/productos-mas-vendidos.js"></script>
+
+
+</body>
+
+</html>
