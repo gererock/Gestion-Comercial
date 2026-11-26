@@ -1,0 +1,584 @@
+<!doctype html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Clientes frecuentes | Todo Descartable
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/clientes-frecuentes.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <header class="header">
+
+        <div class="header-contenido">
+
+
+            <div class="marca">
+
+                <div class="logo">
+                    TD
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Todo Descartable
+                    </h1>
+
+                    <p>
+                        Panel de administración
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <span id="nombreUsuario">
+                    Administrador
+                </span>
+
+
+                <button
+                    type="button"
+                    id="btnCerrarSesion"
+                    class="btn btn-outline"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <main class="contenedor">
+
+
+        <section class="encabezado-pagina">
+
+
+            <div>
+
+                <p class="ruta">
+                    Administración / Reportes
+                </p>
+
+
+                <h2>
+                    Clientes frecuentes
+                </h2>
+
+
+                <p class="subtitulo">
+                    Consultá qué clientes realizan más compras
+                    o generan un mayor monto de ventas.
+                </p>
+
+            </div>
+
+
+            <a
+                href="/admin/index.html"
+                class="btn btn-light enlace-boton"
+            >
+                ← Volver al panel
+            </a>
+
+
+        </section>
+
+
+        <div
+            id="mensaje"
+            class="mensaje oculto"
+            role="alert"
+            aria-live="polite"
+        >
+        </div>
+
+
+        <!-- ==================================== -->
+        <!-- FILTROS -->
+        <!-- ==================================== -->
+
+        <section class="card">
+
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Filtros de consulta
+                    </h3>
+
+                    <p>
+                        Buscá clientes, seleccioná un período
+                        y elegí cómo querés ordenar los resultados.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="formFiltros"
+                class="filtros"
+            >
+
+
+                <div class="campo campo-busqueda">
+
+                    <label for="buscar">
+                        Buscar cliente
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="buscar"
+                        name="buscar"
+                        maxlength="150"
+                        autocomplete="off"
+                        placeholder="Nombre, apellido o razón social"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="orden">
+                        Ordenar por
+                    </label>
+
+
+                    <select
+                        id="orden"
+                        name="orden"
+                    >
+
+                        <option value="CANTIDAD_COMPRAS">
+                            Cantidad de compras
+                        </option>
+
+                        <option value="TOTAL_COMPRADO">
+                            Total comprado
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="acciones-principales">
+
+                    <button
+                        type="submit"
+                        id="btnBuscar"
+                        class="btn btn-primary"
+                    >
+                        Buscar
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+            <div class="separador"></div>
+
+
+            <div class="periodo-seccion">
+
+
+                <p class="label-periodo">
+                    Período
+                </p>
+
+
+                <div class="botones-periodo">
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo activo"
+                        data-periodo="DIA"
+                    >
+                        Hoy
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="SEMANA"
+                    >
+                        Esta semana
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="MES"
+                    >
+                        Este mes
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-periodo"
+                        data-periodo="RANGO"
+                    >
+                        Rango personalizado
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+            <form
+                id="formRango"
+                class="rango-form oculto"
+            >
+
+
+                <div class="campo">
+
+                    <label for="fechaDesde">
+                        Desde
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaDesde"
+                        name="desde"
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="fechaHasta">
+                        Hasta
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="fechaHasta"
+                        name="hasta"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="btnConsultarRango"
+                    class="btn btn-primary"
+                >
+                    Consultar rango
+                </button>
+
+
+            </form>
+
+
+            <div class="acciones-filtros">
+
+                <button
+                    type="button"
+                    id="btnLimpiarFiltros"
+                    class="btn btn-light"
+                >
+                    Limpiar filtros
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ==================================== -->
+        <!-- CARGANDO -->
+        <!-- ==================================== -->
+
+        <section
+            id="cargando"
+            class="card estado-contenedor oculto"
+            aria-live="polite"
+        >
+
+            <div class="spinner">
+            </div>
+
+            <p>
+                Consultando clientes frecuentes...
+            </p>
+
+        </section>
+
+
+        <!-- ==================================== -->
+        <!-- RESULTADOS -->
+        <!-- ==================================== -->
+
+        <section
+            id="contenidoReporte"
+            class="oculto"
+        >
+
+
+            <section class="resumen-grid">
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Período
+                    </p>
+
+
+                    <strong
+                        id="periodoConsultado"
+                        class="resumen-valor"
+                    >
+                        Hoy
+                    </strong>
+
+
+                    <span
+                        id="rangoConsultado"
+                        class="resumen-detalle"
+                    >
+                        Día actual
+                    </span>
+
+                </article>
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Clientes encontrados
+                    </p>
+
+
+                    <strong
+                        id="cantidadClientes"
+                        class="resumen-valor"
+                    >
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Compras realizadas
+                    </p>
+
+
+                    <strong
+                        id="cantidadCompras"
+                        class="resumen-valor"
+                    >
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="resumen-card">
+
+                    <p class="resumen-titulo">
+                        Total comprado
+                    </p>
+
+
+                    <strong
+                        id="totalComprado"
+                        class="resumen-valor resumen-moneda"
+                    >
+                        $ 0,00
+                    </strong>
+
+                </article>
+
+
+            </section>
+
+
+            <!-- ==================================== -->
+            <!-- SIN RESULTADOS -->
+            <!-- ==================================== -->
+
+            <section
+                id="sinResultados"
+                class="card estado-contenedor oculto"
+            >
+
+                <div class="estado-icono">
+                    👥
+                </div>
+
+
+                <h3>
+                    Sin clientes frecuentes
+                </h3>
+
+
+                <p id="textoSinResultados">
+                    No existen clientes con compras válidas
+                    para los criterios seleccionados.
+                </p>
+
+            </section>
+
+
+            <!-- ==================================== -->
+            <!-- TABLA -->
+            <!-- ==================================== -->
+
+            <section
+                id="contenedorTabla"
+                class="card tabla-card oculto"
+            >
+
+
+                <div class="tabla-encabezado">
+
+
+                    <div>
+
+                        <h3>
+                            Ranking de clientes
+                        </h3>
+
+
+                        <p id="descripcionOrden">
+                            Ordenados de mayor a menor cantidad de compras.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="tabla-responsive">
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Posición
+                                </th>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Nombre
+                                </th>
+
+                                <th>
+                                    Apellido
+                                </th>
+
+                                <th>
+                                    Razón social
+                                </th>
+
+                                <th>
+                                    Contacto
+                                </th>
+
+                                <th>
+                                    Compras
+                                </th>
+
+                                <th>
+                                    Total comprado
+                                </th>
+
+                                <th>
+                                    Información
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tablaClientes">
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="/js/auth.js"></script>
+
+    <script src="/js/clientes-frecuentes.js"></script>
+
+
+</body>
+
+</html>
