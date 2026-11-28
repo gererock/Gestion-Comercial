@@ -1,0 +1,33 @@
+Inicial — Maven 3.9.16, JDK 24 y release 21 — mvn -o -B test
+[INFO] Tests run: 347, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+US50 dirigido — mvn -o -B -Dtest=ProductoMasVendidoHttpTest test
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 39.89 s -- in gestion_comercial.service.impl.ProductoMasVendidoHttpTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+Final — mvn -o -B test
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.831 s -- in gestion_comercial.exception.VentaLocalExceptionHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.49 s -- in gestion_comercial.GestionComercialApplicationTests
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.46 s -- in gestion_comercial.service.impl.ConsultaGastoHttpTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.017 s -- in gestion_comercial.service.impl.ConsultaGastoServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in gestion_comercial.service.impl.DescuentoClienteCalculatorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.866 s -- in gestion_comercial.service.impl.HistorialVentaContratoTest
+[INFO] Tests run: 75, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.25 s -- in gestion_comercial.service.impl.HistorialVentaFiltrosHttpTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in gestion_comercial.service.impl.HistorialVentaFiltrosServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.448 s -- in gestion_comercial.service.impl.HistorialVentaHttpTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 s -- in gestion_comercial.service.impl.HistorialVentaServiceTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.507 s -- in gestion_comercial.service.impl.IngresosVentasHttpTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.318 s -- in gestion_comercial.service.impl.IngresosVentasServiceTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.928 s -- in gestion_comercial.service.impl.PedidoConfirmacionIdempotenciaHttpTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.080 s -- in gestion_comercial.service.impl.PedidoDetalleServiceTest
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.151 s -- in gestion_comercial.service.impl.ProductoMasVendidoHttpTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.222 s -- in gestion_comercial.service.impl.VentaLocalAtomicidadTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.107 s -- in gestion_comercial.service.impl.VentaLocalClienteAtomicidadTest
+[INFO] Tests run: 28, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.006 s -- in gestion_comercial.service.impl.VentaLocalClienteServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.653 s -- in gestion_comercial.service.impl.VentaLocalColisionHttpTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.731 s -- in gestion_comercial.service.impl.VentaLocalPagoHttpTest
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.679 s -- in gestion_comercial.service.impl.VentaLocalServiceTest
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.824 s -- in gestion_comercial.service.impl.VentasPeriodoHttpTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.437 s -- in gestion_comercial.support.TestDatabaseGuardTest
+[INFO] Tests run: 366, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS

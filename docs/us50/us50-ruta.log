@@ -1,0 +1,9 @@
+GET /admin/index.html 200
+GET /admin/productos-mas-vendidos.html 404
+GET /admin/producto-mas-vendido.html 200
+GET /css/productos-mas-vendidos.css 404
+GET /js/productos-mas-vendidos.js 404
+GET /admin/index.html 200
+GET /admin/productos-mas-vendidos.html 200
+GET /css/productos-mas-vendidos.css 200
+GET /js/productos-mas-vendidos.js 200

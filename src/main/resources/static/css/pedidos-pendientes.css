@@ -317,6 +317,56 @@ a {
         #ffffff;
 }
 
+.filtros {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.campo {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.campo label {
+    color: var(--text-soft);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid #cbd0d8;
+    border-radius: 7px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 3px solid rgb(37 99 235 / 18%);
+    border-color: var(--primary);
+}
+
+.acciones-filtros {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cantidad-pedidos {
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
 
 .pedidos-grid {
 
@@ -670,6 +720,10 @@ a {
 
 @media (max-width: 800px) {
 
+    .filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .pedidos-grid {
 
         grid-template-columns:
@@ -679,6 +733,19 @@ a {
 
 
 @media (max-width: 600px) {
+
+    .filtros {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .acciones-filtros {
+        flex-direction: column;
+    }
+
+    .acciones-filtros .btn {
+        width: 100%;
+    }
 
     .header-contenido {
 

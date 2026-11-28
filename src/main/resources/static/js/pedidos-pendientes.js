@@ -53,6 +53,11 @@
             'contenedorPedidos'
         );
 
+    const formularioFiltros = document.getElementById('filtrosPedidos');
+    const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
+    const btnActualizar = document.getElementById('btnActualizar');
+    const cantidadPedidos = document.getElementById('cantidadPedidos');
+
 
     iniciar();
 
@@ -70,6 +75,16 @@
             'click',
             volverAlPanel
         );
+
+        formularioFiltros.addEventListener('submit', event => {
+            event.preventDefault();
+            cargarPedidos();
+        });
+        btnLimpiarFiltros.addEventListener('click', () => {
+            formularioFiltros.reset();
+            cargarPedidos();
+        });
+        btnActualizar.addEventListener('click', cargarPedidos);
 
         cargarPedidos();
     }
@@ -123,11 +138,19 @@
         );
 
 
+        const parametros = new URLSearchParams();
+        new FormData(formularioFiltros).forEach((valor, clave) => {
+            const limpio = String(valor).trim();
+            if (limpio) parametros.set(clave, limpio);
+        });
+        const query = parametros.toString();
+        const url = query ? `${API}?${query}` : API;
+
         try {
 
             const response =
                 await Auth.fetchAutenticado(
-                    API
+                    url
                 );
 
 
@@ -193,6 +216,7 @@
             sinPedidos.classList.remove(
                 'oculto'
             );
+            cantidadPedidos.textContent = '0 pedidos';
 
             return;
         }
@@ -213,6 +237,7 @@
         contenedorPedidos.classList.remove(
             'oculto'
         );
+        cantidadPedidos.textContent = `${pedidos.length} ${pedidos.length === 1 ? 'pedido' : 'pedidos'}`;
     }
 
 
@@ -372,7 +397,7 @@
             'Ver detalle';
 
         enlace.href =
-            `/vendedor/pedido-detalle.html?id=${pedido.idPedido}`;
+            `/vendedor/pedido-detalle.html?id=${encodeURIComponent(pedido.idPedido)}&soloLectura=true`;
 
 
         acciones.appendChild(
@@ -635,6 +660,7 @@
         mensaje.classList.add(
             'oculto'
         );
+        cantidadPedidos.textContent = '';
     }
 
 })();

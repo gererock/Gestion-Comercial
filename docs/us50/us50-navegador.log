@@ -1,0 +1,56 @@
+ACCESO VISITANTE /login/index.html
+ACCESO VENDEDOR /vendedor/index.html
+ACCESO CLIENTE /cliente/index.html
+GET /api/admin/productos-mas-vendidos?periodo=DIA 401
+SESION VENCIDA redirige con aviso
+POST /api/auth/login 200
+LOGIN ADMINISTRADOR por formulario confirmado
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+ACCESO panel -> reporte, ranking visible
+GET /api/admin/productos-mas-vendidos?periodo=SEMANA 200
+PERIODO SEMANA actualizado
+GET /api/admin/productos-mas-vendidos?periodo=MES 200
+PERIODO MES actualizado
+RANGO inverso muestra validacion y no hace GET
+GET /api/admin/productos-mas-vendidos?periodo=RANGO&desde=2026-11-26&hasta=2026-11-26 200
+RANGO editado oculta el resultado anterior
+GET /api/admin/productos-mas-vendidos?periodo=RANGO&desde=1900-01-01&hasta=1900-01-01 200
+RANGO vacio, tabla anterior oculta y fechas disponibles
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+LIMPIAR reinicia DIA y fechas
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+REFRESH repite DIA y muestra ranking
+TABLA cuatro filas QA distintas, valores nulos visibles
+CAMPOS RANKING: posicion, ID, nombre, categoria, marca, 4 unidades, 40,00 y accion por fila QA
+GET /api/productos/1495 200
+DETALLE coincide con fixture ACTIVO
+GET /api/productos/1496 200
+DETALLE coincide con fixture PAUSADO
+GET /api/productos/1497 200
+DETALLE coincide con fixture DISCONTINUADO
+GET /api/productos/1495 200
+LAYOUT 1366 768 tabla, modal y cierre disponibles sin desborde de pagina
+GET /api/productos/1495 200
+LAYOUT 768 1024 tabla, modal y cierre disponibles sin desborde de pagina
+GET /api/productos/1495 200
+LAYOUT 390 844 tabla, modal y cierre disponibles sin desborde de pagina
+GET /api/productos/1495 200
+LAYOUT 430 932 tabla, modal y cierre disponibles sin desborde de pagina
+GET /api/admin/productos-mas-vendidos?periodo=SEMANA 400
+SIMULADO HTTP 400 mensaje visible y tabla anterior oculta
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+RECUPERACION backend real DIA 200
+GET /api/admin/productos-mas-vendidos?periodo=SEMANA 403
+SIMULADO HTTP 403 mensaje visible y tabla anterior oculta
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+RECUPERACION backend real DIA 200
+GET /api/admin/productos-mas-vendidos?periodo=SEMANA 404
+SIMULADO HTTP 404 mensaje visible y tabla anterior oculta
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+RECUPERACION backend real DIA 200
+GET /api/admin/productos-mas-vendidos?periodo=SEMANA 500
+SIMULADO HTTP 500 mensaje visible y tabla anterior oculta
+GET /api/admin/productos-mas-vendidos?periodo=DIA 200
+RECUPERACION backend real DIA 200
+VOLVER AL PANEL confirmado
+Consola Runtime.exceptionThrown: 0 en flujos ejecutados

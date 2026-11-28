@@ -1,0 +1,5 @@
+ACCESO VISITANTE /login/index.html
+ACCESO VENDEDOR /vendedor/index.html
+ACCESO CLIENTE /cliente/index.html
+GET /api/admin/productos-mas-vendidos?periodo=DIA 401
+Tiempo de espera agotado

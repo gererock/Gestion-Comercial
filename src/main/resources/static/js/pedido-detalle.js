@@ -18,6 +18,8 @@
     const btnActualizarEstado = document.getElementById('btnActualizarEstado');
     let idPedidoActual = null;
     let pedidoActual = null;
+    const soloLectura = new URLSearchParams(window.location.search)
+        .get('soloLectura') === 'true';
 
     iniciar();
 
@@ -25,9 +27,11 @@
         mostrarUsuario();
         document.getElementById('btnCerrarSesion')
             .addEventListener('click', Auth.cerrarSesion);
-        btnAprobar.addEventListener('click', () => decidirPedido('aprobar'));
-        btnCancelar.addEventListener('click', () => decidirPedido('cancelar'));
-        btnActualizarEstado.addEventListener('click', actualizarEstado);
+        if (!soloLectura) {
+            btnAprobar.addEventListener('click', () => decidirPedido('aprobar'));
+            btnCancelar.addEventListener('click', () => decidirPedido('cancelar'));
+            btnActualizarEstado.addEventListener('click', actualizarEstado);
+        }
 
         const idPedido = obtenerIdPedido();
         if (idPedido === null) {
@@ -99,6 +103,11 @@
     }
 
     function configurarAcciones(pedido) {
+        if (soloLectura) {
+            accionesPedido.classList.add('oculto');
+            gestionEstadoPedido.classList.add('oculto');
+            return;
+        }
         const pendiente = pedido.estadoPedido === 'PENDIENTE_APROBACION';
         accionesPedido.classList.toggle('oculto', !pendiente);
 
